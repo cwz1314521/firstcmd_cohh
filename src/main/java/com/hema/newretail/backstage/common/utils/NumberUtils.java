@@ -33,8 +33,8 @@ public class NumberUtils {
     public static String manufacturer(Integer number){
         StringBuffer result=new StringBuffer();
         String year =String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
-        year.substring(year.length() -2,year.length());
-        result.append(year).append("04").append(String.format("%04d", number));
+        String substring = year.substring(year.length() - 2, year.length());
+        result.append(substring).append("04").append(String.format("%04d", number));
         logger.info("执行原料厂商编号拼装......"+String.valueOf(Calendar.getInstance().get(Calendar.YEAR))+"04"+number);
         return result.toString();
     }

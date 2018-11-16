@@ -80,7 +80,7 @@ AND id NOT IN (#{id,jdbcType=BIGINT})
    select count(id) from `erp_ingredient_manufacturer` where YEAR(gmt_create)=YEAR(NOW())
   </select>
   <select id="selectBySelect" resultMap="BaseSelectListMap" parameterType="com.hema.newretail.backstage.common.queryparam.erp.ListManufacturerCondition" >
-    select distinct 
+    select distinct
     id,company_name
     from erp_ingredient_manufacturer
     where is_deleted = 0

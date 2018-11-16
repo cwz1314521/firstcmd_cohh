@@ -1,0 +1,36 @@
+package com.hema.newretail.backstage.common.utils;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
+
+import java.util.Calendar;
+
+import static org.junit.Assert.*;
+
+/**
+ * @Department 新零售
+ * @ClassName NumberUtilsTest
+ * @Description TODO
+ * @Author ---CWZ
+ * @Date 2018/11/16 9:45
+ * @Version 1.0
+ **/
+@RunWith(SpringRunner.class)
+@SpringBootTest
+public class NumberUtilsTest {
+
+    @Test
+    public void manufacturer() {
+
+        System.out.println(NumberUtils.manufacturer(4));
+        String year =String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
+        String substring = year.substring(year.length() - 2, year.length());
+        System.out.println(substring);
+    }
+
+    @Test
+    public void orderCode() {
+    }
+}
