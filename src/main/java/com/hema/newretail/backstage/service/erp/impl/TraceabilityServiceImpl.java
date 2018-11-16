@@ -548,7 +548,7 @@ public class TraceabilityServiceImpl implements TraceabilityService {
             if(orderListCondition.getEndDate() != null && !EMPTY.equals(orderListCondition.getEndDate())){
                 /*时间前后都有*/
                 orderListDBCondition.setStartDate(TimeUtil.stringToDate(orderListCondition.getStartDate(), SDFEIGHT));
-                orderListDBCondition.setEndDate(TimeUtil.stringToDate(orderListCondition.getEndDate(), SDFEIGHT));
+                orderListDBCondition.setEndDate(TimeUtil.getEndTime(TimeUtil.stringToDate(orderListCondition.getEndDate(), SDFEIGHT)));
             }else {
                 /*时间前有后没有*/
                 orderListDBCondition.setStartDate(TimeUtil.stringToDate(orderListCondition.getStartDate(), SDFEIGHT));
@@ -559,7 +559,7 @@ public class TraceabilityServiceImpl implements TraceabilityService {
             if(orderListCondition.getEndDate() != null && !EMPTY.equals(orderListCondition.getEndDate())){
                 /*时间前没有后有*/
                 orderListDBCondition.setStartDate(TimeUtil.threeMonthAgo(TimeUtil.stringToDate(orderListCondition.getEndDate(), SDFEIGHT)));
-                orderListDBCondition.setEndDate(TimeUtil.stringToDate(orderListCondition.getEndDate(), SDFEIGHT));
+                orderListDBCondition.setEndDate(TimeUtil.getEndTime(TimeUtil.stringToDate(orderListCondition.getEndDate(), SDFEIGHT)));
             }
         }
         if(orderListCondition.getStartPrice() != null && !EMPTY.equals(orderListCondition.getStartPrice())){
@@ -571,7 +571,7 @@ public class TraceabilityServiceImpl implements TraceabilityService {
             }else {
                 /*时间前有后没有*/
                 orderListDBCondition.setStartPrice(orderListCondition.getStartPrice());
-                orderListDBCondition.setEndPrice(orderListCondition.getStartPrice().add(new BigDecimal(10000)));
+                orderListDBCondition.setEndPrice(orderListCondition.getStartPrice().add(new BigDecimal(999999999)));
             }
         }else {
             /*时间前没有*/

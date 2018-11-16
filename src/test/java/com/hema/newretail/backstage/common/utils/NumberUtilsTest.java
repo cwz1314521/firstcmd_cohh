@@ -6,6 +6,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Calendar;
+import java.util.Date;
 
 import static org.junit.Assert.*;
 
@@ -31,6 +32,9 @@ public class NumberUtilsTest {
     }
 
     @Test
-    public void orderCode() {
+    public void orderCode() throws Exception{
+        Date endTime = TimeUtil.getEndTime(TimeUtil.stringToDate("2018-10-10", "yyyy-MM-dd"));
+        String stringByDateFormart = TimeUtil.getStringByDateFormart(endTime, "yyyy-MM-dd HH:mm:ss");
+        System.out.println(stringByDateFormart);
     }
 }

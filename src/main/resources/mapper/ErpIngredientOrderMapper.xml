@@ -55,7 +55,7 @@
    select count(id) from `erp_ingredient_order` where YEAR(gmt_create)=YEAR(NOW())
   </select>
   <select id="selectBaseThreeMap" resultMap="BaseThreeMap" parameterType="java.lang.Long" >
-   SELECT DISTINCT
+   SELECT
 	a.id,
 	i.ingredient_id,
 	i.num,

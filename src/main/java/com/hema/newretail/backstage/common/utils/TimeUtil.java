@@ -62,4 +62,15 @@ public class TimeUtil {
             return null;
         }
     }
+
+    public static Date getEndTime(Date date) {
+        Calendar time = Calendar.getInstance();
+        time.setTime(date);
+        time.set(Calendar.HOUR, 23);
+        time.set(Calendar.MINUTE, 59);
+        time.set(Calendar.SECOND, 59);
+        time.set(Calendar.MILLISECOND, 999);
+        return time.getTime();
+    }
+
 }
