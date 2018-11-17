@@ -1,12 +1,19 @@
 package com.hema.newretail.backstage.common.utils;
 
+import com.aliyun.oss.ClientException;
 import com.aliyun.oss.OSSClient;
+import com.aliyun.oss.OSSException;
 import com.aliyun.oss.model.ObjectMetadata;
+import com.aliyun.oss.model.PutObjectRequest;
 import com.aliyun.oss.model.PutObjectResult;
+import com.hema.newretail.CloudBohhApplication;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -22,6 +29,7 @@ public class UploadFileUtil {
 
     private static final String PROPORTION_IMAGE = "请上传正确比例图片";
 
+    private static final Logger logger = LoggerFactory.getLogger(CloudBohhApplication.class);
     /**
      * 上传图片到OSS
      */
@@ -124,4 +132,35 @@ public class UploadFileUtil {
     }
 
 
+    /**
+     * 上传文件到bucket
+     *
+     * @param file     本地文件
+     * @param dir      bucket存放目录(末尾要加/)
+     * @param fileName 上传文件名
+     * @return 访问地址
+     */
+    public static String uploadLocalFile(File file, String dir, String fileName) {
+        if (file == null || !file.exists()) {
+            return null;
+        }
+        // 创建OSSClient实例
+        OSSClient ossClient = new OSSClient(ENDPOINT, ACCESS_KEY_ID, ACCESS_KEY_SECRET);
+        try {
+            // 上传文件
+            PutObjectResult result = ossClient.putObject(new PutObjectRequest("上传文件夹", dir + fileName, file));
+            if (null != result) {
+                return "https://newretail.hemaapp.com/" + dir + fileName;
+            } else {
+                return null;
+            }
+        } catch (OSSException | ClientException oe) {
+            logger.error("上传OSS失败:", oe);
+            oe.printStackTrace();
+            return null;
+        } finally {
+            // 关闭OSS服务
+            ossClient.shutdown();
+        }
+    }
 }

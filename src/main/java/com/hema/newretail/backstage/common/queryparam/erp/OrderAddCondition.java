@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 
 import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -27,6 +28,7 @@ public class OrderAddCondition {
     @ApiModelProperty(value = "订单金额")
     private BigDecimal contractPrice;
 
+    @NotNull(message = "收货地址不能为空")
     @ApiModelProperty(value = "收货地址")
     private List<AddressesCondition> addresses;
 
