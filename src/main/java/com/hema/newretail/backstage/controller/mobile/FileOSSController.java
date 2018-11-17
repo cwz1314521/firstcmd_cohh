@@ -32,7 +32,7 @@ import java.io.*;
  * @Date 2018/11/16 10:16
  * @Version 1.0
  **/
-@Api(description =  "提供给文件中转操作接口")
+@Api(description =  "≡(▔﹏▔)≡提供给文件中转操作接口")
 @Controller
 @RequestMapping("/mobile")
 public class FileOSSController {
@@ -67,54 +67,19 @@ public class FileOSSController {
      * @author: cwz
      * @date: 2018/11/16 14:00
      */
-    @ApiOperation("机器日志上传")
+    @ApiOperation("≡(▔﹏▔)≡机器日志上传")
     @PostMapping("/uploadTxt")
     @ResponseBody
-    public  Response uploadTxt(HttpServletRequest request/*@RequestParam("file") MultipartFile file*/)throws Exception{
+    public  Response uploadTxt(@RequestParam("file") File file)throws Exception{
 
-        File file1 = (ResourceUtils.getFile("/BOOT-INF/classes/excelModel//测试上传.txt"));
-        FileInputStream input = new FileInputStream(file1);
-        MultipartFile file = new MockMultipartFile("file", file1.getName(), "text/plain", IOUtils.toByteArray(input));
-
-
-        {
-            String uppath = "classpath:resources/";
-            if (!file.isEmpty()) {
-                try {
-                    // 上传文件信息
-                    logger.info("OriginalFilename：" + file.getOriginalFilename());
-                    logger.info("ContentType：" + file.getContentType());
-                    logger.info("Name：" + file.getName());
-                    logger.info("Size：" + file.getSize());
-                    //TODO:文件大小、名称、类型检查的业务处理
-
-                    // 检查上传目录
-                    File targetFile = new File(uppath);
-                    if (!targetFile.exists()) {
-                        targetFile.mkdirs();
-                    }
-
-                    // 实例化输出流
-                    BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(uppath + file.getOriginalFilename()));
-                    out.write(file.getBytes());
-                    out.flush();
-                    out.close();
-
+//        File file = (ResourceUtils.getFile("E:/github/测试上传1.txt"));
                     // 上传到OSS
-                    String url = UploadFileUtil.uploadLocalFile(new File(uppath + file.getOriginalFilename()), "log/",file.getOriginalFilename());
+                    String url = UploadFileUtil.uploadLocalFile(file, "log/",file.getName());
                     if (url == null) {
                         //TODO:上传失败的业务处理
                         return Response.failure("上传失败");
                     }
                     logger.info("上传完毕,访问地址:"+url);
                     return Response.success("上传成功");
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    logger.error("上传失败", e);
-                    return Response.failure("上传失败");
-                }
-            }
-        }
-        return Response.failure("上传失败，因为文件是空的.");
     }
 }

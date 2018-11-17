@@ -148,7 +148,7 @@ public class UploadFileUtil {
         OSSClient ossClient = new OSSClient(ENDPOINT, ACCESS_KEY_ID, ACCESS_KEY_SECRET);
         try {
             // 上传文件
-            PutObjectResult result = ossClient.putObject(new PutObjectRequest("上传文件夹", dir + fileName, file));
+            PutObjectResult result = ossClient.putObject(new PutObjectRequest(BACKET_NAME, dir + fileName, file));
             if (null != result) {
                 return "https://newretail.hemaapp.com/" + dir + fileName;
             } else {
