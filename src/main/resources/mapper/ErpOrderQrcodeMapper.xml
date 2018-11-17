@@ -102,10 +102,10 @@ WHEN 7 THEN
 ELSE
 	'其他状态'
 END AS status,
-f.ingredient_name companyInstoreUserName,
+    u.user_name companyInstoreUserName,
 date_format(
 		q.company_instore_time,
-		'%Y-%m-%d'
+		'%Y-%m-%d %H:%i:%S'
 	) companyInstoreTime
 FROM
 	erp_order_qrcode q
@@ -116,13 +116,13 @@ LEFT JOIN base_ingredient_info f ON f.id = i.ingredient_id
 LEFT JOIN base_user_info u ON q.company_instore_user_id = f.id
 WHERE q.`status` not in (-1,0)
     <if test="qrcodeCode != null" >
-      and q.qrcode_code = #{qrcodeCode,jdbcType=VARCHAR}
+      and q.qrcode_code like "%"#{qrcodeCode,jdbcType=VARCHAR}"%"
     </if>
-    <if test="ingredientId != null" >
-      and i.ingredient_id = #{ingredientId,jdbcType=BIGINT}
+    <if test="ingredientName != null" >
+      and f.ingredient_name like "%"#{ingredientName,jdbcType=VARCHAR}"%"
     </if>
     <if test="orderCode != null" >
-      and o.order_code = #{orderCode,jdbcType=VARCHAR}
+      and o.order_code like "%"#{orderCode,jdbcType=VARCHAR}"%"
     </if>
     <if test="qualityGuaranteePeriod != null" >
       <![CDATA[   and DATE_FORMAT(q.quality_guarantee_period , '%Y-%m-%d')<
@@ -131,22 +131,23 @@ WHERE q.`status` not in (-1,0)
     <if test="isPeriod != null" >
       <if test="isPeriod == 1" >
         <![CDATA[   and DATE_FORMAT(q.quality_guarantee_period , '%Y-%m-%d')<
-       DATE_FORMAT( NOW(), '%Y-%m-%d')   ]]>
+       DATE_FORMAT( NOW(), '%Y-%m-%d %H:%i:%S')   ]]>
       </if>
       <if test="isPeriod == 0" >
         <![CDATA[   and DATE_FORMAT(q.quality_guarantee_period , '%Y-%m-%d')>
-         DATE_FORMAT( #{qualityGuaranteePeriod,jdbcType=TIMESTAMP}, '%Y-%m-%d')   ]]>
+         DATE_FORMAT( NOW(), '%Y-%m-%d %H:%i:%S')   ]]>
       </if>
     </if>
     <if test="status != null" >
       and q.status = #{status,jdbcType=BIGINT}
     </if>
-    <if test="companyInstoreId != null" >
-    and q.company_instore_user_id = #{companyInstoreId,jdbcType=BIGINT}
+    <if test="companyInstoreName != null" >
+    and u.user_name like "%"#{companyInstoreName,jdbcType=VARCHAR}"%"
     </if>
     <if test="startDate != null" >
       and q.quality_guarantee_period between #{startDate,jdbcType=TIMESTAMP} and #{endDate,jdbcType=TIMESTAMP}
    </if>
+    order by q.company_instore_time desc
   </select>
   <select id="selectInStoreTodayMap" resultMap="InStoreTodayMap">
         SELECT DISTINCT

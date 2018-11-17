@@ -134,14 +134,14 @@ GROUP BY i.ingredient_id
     <if test="startDate != null" >
       and o.gmt_create between #{startDate,jdbcType=TIMESTAMP} and #{endDate,jdbcType=TIMESTAMP}
     </if>
-    <if test="manufacturerName != null" >
-      and m.company_name like "%"#{manufacturerName,jdbcType=VARCHAR}"%"
+    <if test="manufacturerId != null" >
+      and o.ingredient_manufacturer_id = #{manufacturerId,jdbcType=BIGINT}
     </if>
     <if test="orderCode != null" >
-      and o.order_code like "%"#{orderCode,jdbcType=VARCHAR}"%"
+      and o.order_code = #{orderCode,jdbcType=VARCHAR}
     </if>
-    <if test="companyName != null" >
-      and bc.company_name like "%"#{companyName,jdbcType=VARCHAR}"%"
+    <if test="companyId != null" >
+      and a.company_id = #{companyId,jdbcType=BIGINT}
     </if>
     <if test="ingredientId != null" >
       and i.ingredient_id = #{ingredientId,jdbcType=BIGINT}

@@ -475,11 +475,11 @@ public class TraceabilityServiceImpl implements TraceabilityService {
      */
     private InStoreRecordListDBCondition inStoreRecordListCondition(InStoreRecordListCondition inStoreRecordListCondition)throws  Exception{
         InStoreRecordListDBCondition inStoreRecordListDBCondition = new InStoreRecordListDBCondition();
-        if(inStoreRecordListCondition.getCompanyInstoreId() != null && !EMPTY.equals(inStoreRecordListCondition.getCompanyInstoreId())){
-            inStoreRecordListDBCondition.setCompanyInstoreId(inStoreRecordListCondition.getCompanyInstoreId());
+        if(inStoreRecordListCondition.getCompanyInstoreName() != null && !EMPTY.equals(inStoreRecordListCondition.getCompanyInstoreName())){
+            inStoreRecordListDBCondition.setCompanyInstoreName(inStoreRecordListCondition.getCompanyInstoreName());
         }
-        if(inStoreRecordListCondition.getIngredientId() != null && !EMPTY.equals(inStoreRecordListCondition.getIngredientId())){
-            inStoreRecordListDBCondition.setIngredientId(inStoreRecordListCondition.getIngredientId());
+        if(inStoreRecordListCondition.getIngredientName() != null && !EMPTY.equals(inStoreRecordListCondition.getIngredientName())){
+            inStoreRecordListDBCondition.setIngredientName(inStoreRecordListCondition.getIngredientName());
         }
         if(inStoreRecordListCondition.getIsPeriod() != null && !EMPTY.equals(inStoreRecordListCondition.getIsPeriod())){
             inStoreRecordListDBCondition.setIsPeriod(inStoreRecordListCondition.getIsPeriod());
@@ -500,7 +500,7 @@ public class TraceabilityServiceImpl implements TraceabilityService {
             /*时间前有*/
             if(inStoreRecordListCondition.getEndDate() != null && !EMPTY.equals(inStoreRecordListCondition.getEndDate())){
                 /*时间前后都有*/
-                inStoreRecordListDBCondition.setEndDate(TimeUtil.stringToDate(inStoreRecordListCondition.getEndDate(), SDFEIGHT));
+                inStoreRecordListDBCondition.setEndDate(TimeUtil.getEndTime(TimeUtil.stringToDate(inStoreRecordListCondition.getEndDate(), SDFEIGHT)));
                 inStoreRecordListDBCondition.setStartDate(TimeUtil.stringToDate(inStoreRecordListCondition.getStartDate(), SDFEIGHT));
             }else {
                 /*时间前有后没有*/
@@ -512,7 +512,7 @@ public class TraceabilityServiceImpl implements TraceabilityService {
             if(inStoreRecordListCondition.getEndDate() != null && !EMPTY.equals(inStoreRecordListCondition.getEndDate())){
                 /*时间前没有后有*/
                 inStoreRecordListDBCondition.setStartDate(TimeUtil.threeMonthAgo(TimeUtil.stringToDate(inStoreRecordListCondition.getEndDate(), SDFEIGHT)));
-                inStoreRecordListDBCondition.setEndDate(TimeUtil.stringToDate(inStoreRecordListCondition.getEndDate(), SDFEIGHT));
+                inStoreRecordListDBCondition.setEndDate(TimeUtil.getEndTime(TimeUtil.stringToDate(inStoreRecordListCondition.getEndDate(), SDFEIGHT)));
             }
         }
         return inStoreRecordListDBCondition;
@@ -531,14 +531,14 @@ public class TraceabilityServiceImpl implements TraceabilityService {
      */
     private OrderListDBCondition orderListCondition(OrderListCondition orderListCondition)throws  Exception{
         OrderListDBCondition orderListDBCondition = new OrderListDBCondition();
-        if(orderListCondition.getCompanyName() != null && !EMPTY.equals(orderListCondition.getCompanyName())){
-            orderListDBCondition.setCompanyName(orderListCondition.getCompanyName());
+        if(orderListCondition.getCompanyId() != null && !EMPTY.equals(orderListCondition.getCompanyId())){
+            orderListDBCondition.setCompanyId(orderListCondition.getCompanyId());
         }
-        if(orderListCondition.getIngredientName() != null && !EMPTY.equals(orderListCondition.getIngredientName())){
-            orderListDBCondition.setIngredientName(orderListCondition.getIngredientName());
+        if(orderListCondition.getIngredientId() != null && !EMPTY.equals(orderListCondition.getIngredientId())){
+            orderListDBCondition.setIngredientId(orderListCondition.getIngredientId());
         }
-        if(orderListCondition.getManufacturerName() != null && !EMPTY.equals(orderListCondition.getManufacturerName())){
-            orderListDBCondition.setManufacturerName(orderListCondition.getManufacturerName());
+        if(orderListCondition.getManufacturerId() != null && !EMPTY.equals(orderListCondition.getManufacturerId())){
+            orderListDBCondition.setManufacturerId(orderListCondition.getManufacturerId());
         }
         if(orderListCondition.getOrderCode() != null && !EMPTY.equals(orderListCondition.getOrderCode())){
             orderListDBCondition.setOrderCode(orderListCondition.getOrderCode());

@@ -2,6 +2,7 @@ package com.hema.newretail.backstage.common.queryparam.erp;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
 
 import java.util.Date;
 
@@ -13,6 +14,7 @@ import java.util.Date;
  * @Date 2018/11/3 11:58
  * @Version 1.0
  **/
+@Data
 @ApiModel(value = "分后台---入库记录--列表",description = "分后台---入库记录--列表")
 public class InStoreRecordListDBCondition {
 
@@ -21,7 +23,7 @@ public class InStoreRecordListDBCondition {
     private String qrcodeCode;
 
     @ApiModelProperty(value = "配料名称")
-    private Long ingredientId;
+    private String ingredientName;
 
 
     @ApiModelProperty(value = "订单编码")
@@ -35,7 +37,6 @@ public class InStoreRecordListDBCondition {
     private Integer isPeriod;
 
 
-
     @ApiModelProperty(value = "目前状态 0待入库 1已入库")
     private Integer status;
 
@@ -46,78 +47,7 @@ public class InStoreRecordListDBCondition {
     private Date endDate;
 
     @ApiModelProperty(value = "分公司入库人")
-    private Long  companyInstoreId;
+    private String  companyInstoreName;
 
-    public String getQrcodeCode() {
-        return qrcodeCode;
-    }
-
-    public void setQrcodeCode(String qrcodeCode) {
-        this.qrcodeCode = qrcodeCode;
-    }
-
-    public Long getIngredientId() {
-        return ingredientId;
-    }
-
-    public void setIngredientId(Long ingredientId) {
-        this.ingredientId = ingredientId;
-    }
-
-    public String getOrderCode() {
-        return orderCode;
-    }
-
-    public void setOrderCode(String orderCode) {
-        this.orderCode = orderCode;
-    }
-
-    public Date getQualityGuaranteePeriod() {
-        return qualityGuaranteePeriod;
-    }
-
-    public void setQualityGuaranteePeriod(Date qualityGuaranteePeriod) {
-        this.qualityGuaranteePeriod = qualityGuaranteePeriod;
-    }
-
-    public Integer getIsPeriod() {
-        return isPeriod;
-    }
-
-    public void setIsPeriod(Integer isPeriod) {
-        this.isPeriod = isPeriod;
-    }
-
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
-    }
-
-    public Date getStartDate() {
-        return startDate;
-    }
-
-    public void setStartDate(Date startDate) {
-        this.startDate = startDate;
-    }
-
-    public Date getEndDate() {
-        return endDate;
-    }
-
-    public void setEndDate(Date endDate) {
-        this.endDate = endDate;
-    }
-
-    public Long getCompanyInstoreId() {
-        return companyInstoreId;
-    }
-
-    public void setCompanyInstoreId(Long companyInstoreId) {
-        this.companyInstoreId = companyInstoreId;
-    }
 
 }

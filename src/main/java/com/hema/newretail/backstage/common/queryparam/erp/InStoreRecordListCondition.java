@@ -2,6 +2,7 @@ package com.hema.newretail.backstage.common.queryparam.erp;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
 
 /**
  * @Department 新零售
@@ -12,6 +13,7 @@ import io.swagger.annotations.ApiModelProperty;
  * @Version 1.0
  **/
 @ApiModel(value = "分后台---入库记录--列表",description = "分后台---入库记录--列表")
+@Data
 public class InStoreRecordListCondition {
 
     @ApiModelProperty(value = "页码")
@@ -24,7 +26,7 @@ public class InStoreRecordListCondition {
     private String qrcodeCode;
 
     @ApiModelProperty(value = "配料名称")
-    private Long ingredientId;
+    private String ingredientName;
 
 
     @ApiModelProperty(value = "订单编码")
@@ -49,93 +51,7 @@ public class InStoreRecordListCondition {
     private String endDate;
 
     @ApiModelProperty(value = "分公司入库人")
-    private Long  companyInstoreId;
+    private String  companyInstoreName;
 
-    public Integer getPageNum() {
-        return pageNum;
-    }
 
-    public void setPageNum(Integer pageNum) {
-        this.pageNum = pageNum;
-    }
-
-    public Integer getPageSize() {
-        return pageSize;
-    }
-
-    public void setPageSize(Integer pageSize) {
-        this.pageSize = pageSize;
-    }
-
-    public String getQrcodeCode() {
-        return qrcodeCode;
-    }
-
-    public void setQrcodeCode(String qrcodeCode) {
-        this.qrcodeCode = qrcodeCode;
-    }
-
-    public Long getIngredientId() {
-        return ingredientId;
-    }
-
-    public void setIngredientId(Long ingredientId) {
-        this.ingredientId = ingredientId;
-    }
-
-    public String getOrderCode() {
-        return orderCode;
-    }
-
-    public void setOrderCode(String orderCode) {
-        this.orderCode = orderCode;
-    }
-
-    public String getQualityGuaranteePeriod() {
-        return qualityGuaranteePeriod;
-    }
-
-    public void setQualityGuaranteePeriod(String qualityGuaranteePeriod) {
-        this.qualityGuaranteePeriod = qualityGuaranteePeriod;
-    }
-
-    public Integer getIsPeriod() {
-        return isPeriod;
-    }
-
-    public void setIsPeriod(Integer isPeriod) {
-        this.isPeriod = isPeriod;
-    }
-
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
-    }
-
-    public String getStartDate() {
-        return startDate;
-    }
-
-    public void setStartDate(String startDate) {
-        this.startDate = startDate;
-    }
-
-    public String getEndDate() {
-        return endDate;
-    }
-
-    public void setEndDate(String endDate) {
-        this.endDate = endDate;
-    }
-
-    public Long getCompanyInstoreId() {
-        return companyInstoreId;
-    }
-
-    public void setCompanyInstoreId(Long companyInstoreId) {
-        this.companyInstoreId = companyInstoreId;
-    }
 }

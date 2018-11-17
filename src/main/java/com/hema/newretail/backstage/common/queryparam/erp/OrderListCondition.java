@@ -2,6 +2,7 @@ package com.hema.newretail.backstage.common.queryparam.erp;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
 
 import java.math.BigDecimal;
 
@@ -14,6 +15,7 @@ import java.math.BigDecimal;
  * @Version 1.0
  **/
 @ApiModel(value = "订单列表",description = "订单列表")
+@Data
 public class OrderListCondition {
 
     @ApiModelProperty(value = "页码")
@@ -26,13 +28,13 @@ public class OrderListCondition {
     private String orderCode;
 
     @ApiModelProperty(value = "原料厂商ID")
-    private String manufacturerName;
+    private Long manufacturerId;
 
     @ApiModelProperty(value = "分公司ID")
-    private String companyName;
+    private Long companyId;
 
     @ApiModelProperty(value = "配料ID")
-    private String ingredientName;
+    private Long ingredientId;
 
     @ApiModelProperty(value = "价格区间-开始价格")
     private BigDecimal startPrice;
@@ -48,91 +50,5 @@ public class OrderListCondition {
 
     private Integer status;
 
-    public Integer getPageNum() {
-        return pageNum;
-    }
 
-    public void setPageNum(Integer pageNum) {
-        this.pageNum = pageNum;
-    }
-
-    public Integer getPageSize() {
-        return pageSize;
-    }
-
-    public void setPageSize(Integer pageSize) {
-        this.pageSize = pageSize;
-    }
-
-    public String getOrderCode() {
-        return orderCode;
-    }
-
-    public void setOrderCode(String orderCode) {
-        this.orderCode = orderCode;
-    }
-
-    public String getManufacturerName() {
-        return manufacturerName;
-    }
-
-    public void setManufacturerName(String manufacturerName) {
-        this.manufacturerName = manufacturerName;
-    }
-
-    public String getCompanyName() {
-        return companyName;
-    }
-
-    public void setCompanyName(String companyName) {
-        this.companyName = companyName;
-    }
-
-    public String getIngredientName() {
-        return ingredientName;
-    }
-
-    public void setIngredientName(String ingredientName) {
-        this.ingredientName = ingredientName;
-    }
-
-    public BigDecimal getStartPrice() {
-        return startPrice;
-    }
-
-    public void setStartPrice(BigDecimal startPrice) {
-        this.startPrice = startPrice;
-    }
-
-    public BigDecimal getEndPrice() {
-        return endPrice;
-    }
-
-    public void setEndPrice(BigDecimal endPrice) {
-        this.endPrice = endPrice;
-    }
-
-    public String getStartDate() {
-        return startDate;
-    }
-
-    public void setStartDate(String startDate) {
-        this.startDate = startDate;
-    }
-
-    public String getEndDate() {
-        return endDate;
-    }
-
-    public void setEndDate(String endDate) {
-        this.endDate = endDate;
-    }
-
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
-    }
 }
