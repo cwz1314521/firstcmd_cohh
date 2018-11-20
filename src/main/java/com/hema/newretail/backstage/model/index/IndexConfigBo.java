@@ -2,6 +2,7 @@ package com.hema.newretail.backstage.model.index;
 
 import com.hema.newretail.backstage.entry.IndexpageDetailEntry;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -11,7 +12,7 @@ import java.util.List;
  * @Author: ZhangHaiSheng
  * @Date: 2018-08-20 17:26
  */
-public class IndexConfigBo {
+public class IndexConfigBo implements Serializable {
     private Long cssId;
     private String cssAbstract;
     private Short cssType;

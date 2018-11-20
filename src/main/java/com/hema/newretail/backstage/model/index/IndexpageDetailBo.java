@@ -1,5 +1,7 @@
 package com.hema.newretail.backstage.model.index;
 
+import java.io.Serializable;
+
 /**
  * hema-newRetail-crm-com.hema.newretail.backstage.model.index
  *
@@ -7,7 +9,7 @@ package com.hema.newretail.backstage.model.index;
  * @link
  * @date 2018-10-25 11:58
  */
-public class IndexpageDetailBo {
+public class IndexpageDetailBo implements Serializable {
     private Long id;
 
     private Long configId;

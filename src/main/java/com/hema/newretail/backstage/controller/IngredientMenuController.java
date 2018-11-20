@@ -15,6 +15,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -66,8 +67,8 @@ public class IngredientMenuController {
                          @RequestParam(value = "status", required = false) String status) {
         Map<String, Object> paramsMap = new HashMap<>(11);
         paramsMap.put("menuName", menuName);
-        paramsMap.put("priceStart", StringUtils.isEmpty(priceStart) ? null : Integer.valueOf(priceStart));
-        paramsMap.put("priceEnd", StringUtils.isEmpty(priceEnd) ? null : Integer.valueOf(priceEnd));
+        paramsMap.put("priceStart", StringUtils.isEmpty(priceStart) ? null : new BigDecimal(priceStart));
+        paramsMap.put("priceEnd", StringUtils.isEmpty(priceEnd) ? null : new BigDecimal(priceEnd));
         paramsMap.put("isRecommend", StringUtils.isEmpty(isRecommend) ? null : Integer.valueOf(isRecommend));
         paramsMap.put("status", StringUtils.isEmpty(status) ? null : Boolean.valueOf(status));
         paramsMap.put("saleNumStart", StringUtils.isEmpty(saleNumStart) ? null : Integer.valueOf(saleNumStart));

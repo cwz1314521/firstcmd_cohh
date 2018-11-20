@@ -67,6 +67,7 @@
 
   <select id="selectRecordMap" resultMap="RecordMap" parameterType="com.hema.newretail.backstage.common.queryparam.erp.InStoreRecordListDBCondition">
     SELECT
+    distinct
 	q.id id,
 	q.qrcode_code qrcodeCode,
 	o.order_code orderCode,
@@ -119,7 +120,7 @@ WHERE q.`status` not in (-1,0)
       and q.qrcode_code like "%"#{qrcodeCode,jdbcType=VARCHAR}"%"
     </if>
     <if test="ingredientName != null" >
-      and f.ingredient_name like "%"#{ingredientName,jdbcType=VARCHAR}"%"
+      and CONCAT(f.ingredient_name,f.ingredient_code) like "%"#{ingredientName,jdbcType=VARCHAR}"%"
     </if>
     <if test="orderCode != null" >
       and o.order_code like "%"#{orderCode,jdbcType=VARCHAR}"%"
@@ -145,7 +146,7 @@ WHERE q.`status` not in (-1,0)
     and u.user_name like "%"#{companyInstoreName,jdbcType=VARCHAR}"%"
     </if>
     <if test="startDate != null" >
-      and q.quality_guarantee_period between #{startDate,jdbcType=TIMESTAMP} and #{endDate,jdbcType=TIMESTAMP}
+      and q.company_instore_time between #{startDate,jdbcType=TIMESTAMP} and #{endDate,jdbcType=TIMESTAMP}
    </if>
     order by q.company_instore_time desc
   </select>
@@ -190,7 +191,7 @@ AND ioa.ingredient_order_id = eio.id
   <select id="selectInStoreTodaySonMap" resultMap="InStoreTodaySonMap" parameterType="java.util.Map" >
    SELECT distinct
 	bii.ingredient_name ingredientName,
-	sum(eoi.num) AS num
+	count(eoi.num) AS num
 FROM
 	erp_order_qrcode AS eoq,
 	erp_order_ingredient AS eoi,

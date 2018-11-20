@@ -70,7 +70,7 @@ public class FileOSSController {
     @ApiOperation("≡(▔﹏▔)≡机器日志上传")
     @PostMapping("/uploadTxt")
     @ResponseBody
-    public  Response uploadTxt(@RequestParam("file") File file)throws Exception{
+    public  Response uploadTxt(@RequestParam("file") File file){
 
 //        File file = (ResourceUtils.getFile("E:/github/测试上传1.txt"));
                     // 上传到OSS

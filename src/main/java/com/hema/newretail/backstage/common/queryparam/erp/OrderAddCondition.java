@@ -23,12 +23,12 @@ public class OrderAddCondition {
     @ApiModelProperty(value = "原料厂商名称")
     private Long manufacturerId;
 
-    @DecimalMax(value = "999999999",message = "输入范围有误 0.01-999999999")
-    @DecimalMin(value = "0.01",message = "输入范围有误 0.01-999999999")
+    @DecimalMax(value = "999999999.99",message = "输入范围有误 0.01-999999999.99")
+    @DecimalMin(value = "0.01",message = "输入范围有误 0.01-999999999.99")
     @ApiModelProperty(value = "订单金额")
     private BigDecimal contractPrice;
 
-    @NotNull(message = "收货地址不能为空")
+
     @ApiModelProperty(value = "收货地址")
     private List<AddressesCondition> addresses;
 

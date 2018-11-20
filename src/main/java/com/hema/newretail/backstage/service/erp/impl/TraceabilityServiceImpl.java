@@ -284,6 +284,10 @@ public class TraceabilityServiceImpl implements TraceabilityService {
                 ", remark='" + erpIngredientOrderEntry.getRemark() + '\'' +
                 '}');
         erpIngredientOrderMapper.insert(erpIngredientOrderEntry);
+        if(orderAddCondition.getAddresses() == null){
+            logger.error("收货地址为空");
+            return Response.failure("收货地址不能为空");
+        }
         for (AddressesCondition add:orderAddCondition.getAddresses()
              ) {
             ErpIngredientOrderAddressEntry entry = new ErpIngredientOrderAddressEntry();
@@ -382,21 +386,14 @@ public class TraceabilityServiceImpl implements TraceabilityService {
     @Override
     public Response inStoreInStore(HttpServletRequest request) {
         List<InStoreTodayBo> inStoreTodayBos = erpOrderQrcodeMapper.selectInStoreNowMap();
-        for (InStoreTodayBo i:inStoreTodayBos
-             ) {
-            
-        }
         String userinfoJson = redisUtils.hget(AuthConstants.SESSION + request.getSession().getId(), AuthConstants.USER_INFO, AuthConstants.REDIS_DB_INDEX);
         if(userinfoJson == null){
             logger.error("未检测到登录人数据");
-//            return Response.failure("未检测到登录人数据");
+            return Response.failure("未检测到登录人数据");
         }
-//        JSONObject jsStr = JSONObject.parseObject(userinfoJson);
-//
-//        long companyId = Long.valueOf(String.valueOf(jsStr.get("companyId"))).longValue();
-//        long userId = Long.valueOf(String.valueOf(jsStr.get("id"))).longValue();
-        long companyId = 1L;
-        long userId = 1L;
+        JSONObject jsStr = JSONObject.parseObject(userinfoJson);
+        long companyId = Long.valueOf(String.valueOf(jsStr.get("companyId"))).longValue();
+        long userId = Long.valueOf(String.valueOf(jsStr.get("id"))).longValue();
         InStoreDBCondition condition = new InStoreDBCondition();
         condition.setCompanyId(companyId);
         condition.setTime(new Date());

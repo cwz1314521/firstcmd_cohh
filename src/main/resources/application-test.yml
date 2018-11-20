@@ -47,6 +47,8 @@ spring:
 mybatis:
   mapper-locations: classpath:mapper/*.xml  #注意：一定要对应mapper映射xml文件的所在路径
   type-aliases-package: package com.hema.newretail.backstage.entry # 注意：对应实体类的路径
+  configuration:
+    cache-enabled: true
 
 #pagehelper分页插件
 pagehelper:
@@ -83,3 +85,33 @@ oss:
   folder_json : json/
   folder_img : img/
   web_url: http://newretail.hemaapp.com/
+
+#============== kafka ===================
+kafka:
+  consumer:
+    zookeeper:
+      connect: 47.105.117.19:2181
+    servers: 47.105.117.19:9092
+    enable:
+      auto:
+        commit: true
+    session:
+      timeout: 6000
+    auto:
+      commit:
+        interval: 100
+      offset:
+        reset: latest
+    topic: test
+    group:
+      id: test
+    concurrency: 10
+
+  producer:
+    servers: 47.105.117.19:9092
+    retries: 0
+    batch:
+      size: 4096
+    linger: 1
+    buffer:
+      memory: 40960
