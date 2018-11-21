@@ -1,5 +1,6 @@
 package com.hema.newretail.backstage.model.agent;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 /**
@@ -10,7 +11,7 @@ import java.math.BigDecimal;
  * @Date 2018/9/26 17:01
  * @Version 1.0
  **/
-public class AgentGridListBo {
+public class AgentGridListBo implements Serializable {
     /**账户名*/
     private String gridComPanyName;
 

@@ -1,5 +1,7 @@
 package com.hema.newretail.backstage.model.grid;
 
+import java.io.Serializable;
+
 /**
  * @Department 新零售
  * @ClassName ServiceBo
@@ -8,7 +10,7 @@ package com.hema.newretail.backstage.model.grid;
  * @Date 2018/10/13 14:00
  * @Version 1.0
  **/
-public class ServiceSonBo {
+public class ServiceSonBo implements Serializable {
 
     private String geoHashCode;
 

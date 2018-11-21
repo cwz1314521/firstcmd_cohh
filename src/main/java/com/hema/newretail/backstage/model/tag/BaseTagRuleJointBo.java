@@ -1,12 +1,14 @@
 package com.hema.newretail.backstage.model.tag;
 
+import java.io.Serializable;
+
 /**
  * @Auther: 程文政
  * @Date: 2018/8/20 15:30
  * @Description:字段拼接model
  * @Version: 1.0
  */
-public class BaseTagRuleJointBo {
+public class BaseTagRuleJointBo implements Serializable {
 
     private Long id;
 

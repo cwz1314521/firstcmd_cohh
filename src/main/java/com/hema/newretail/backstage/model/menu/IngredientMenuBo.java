@@ -1,5 +1,6 @@
 package com.hema.newretail.backstage.model.menu;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -10,7 +11,7 @@ import java.util.Date;
  * @Author: ZhangHaiSheng
  * @Date: 2018-08-23 12:10
  */
-public class IngredientMenuBo {
+public class IngredientMenuBo implements Serializable {
 
     private Long id;
     private String menuName;

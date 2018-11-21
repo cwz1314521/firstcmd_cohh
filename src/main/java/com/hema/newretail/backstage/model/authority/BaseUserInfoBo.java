@@ -3,9 +3,10 @@ package com.hema.newretail.backstage.model.authority;
 import com.hema.newretail.backstage.entry.BaseCompanyData;
 import com.hema.newretail.backstage.entry.BasePost;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class BaseUserInfoBo {
+public class BaseUserInfoBo implements Serializable {
     private Long id;
 
     private Date gmtCreate;

@@ -2,13 +2,15 @@ package com.hema.newretail.backstage.entry.orderentry;
 
 import org.bson.types.Decimal128;
 
+import java.io.Serializable;
+
 /**
  * @Auther: 程文政
  * @Date: 2018/8/23 13:17
  * @Description:
  * @Version: 1.0
  */
-public class Ingredients {
+public class Ingredients implements Serializable {
 
     private String id;
     private Decimal128 price;

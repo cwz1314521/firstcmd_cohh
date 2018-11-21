@@ -1,6 +1,8 @@
 package com.hema.newretail.backstage.entry.erp;
 
-public class ErpContractPicEntry {
+import java.io.Serializable;
+
+public class ErpContractPicEntry implements Serializable {
     private Long id;
 
     private Long ingredientManufacturerId;

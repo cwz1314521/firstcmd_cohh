@@ -1,8 +1,9 @@
 package com.hema.newretail.backstage.entry.erp;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class ErpOrderQrcodeEntry {
+public class ErpOrderQrcodeEntry implements Serializable {
     private Long id;
 
     private Long orderIngredientId;

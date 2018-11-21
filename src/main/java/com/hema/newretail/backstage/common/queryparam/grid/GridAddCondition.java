@@ -114,6 +114,7 @@ public class GridAddCondition {
     @DecimalMin(value = "0",message = "输入范围有误 0-99999")
     @NotNull(message = "补货任务时间不可为空")
     @ApiModelProperty(value = "补货任务时间")
+    @Pattern(regexp = "^//d+$",message = "只能是正整数")
     private Integer replenishmentTime;
 
     /**保洁任务时间*/
@@ -121,6 +122,7 @@ public class GridAddCondition {
     @DecimalMin(value = "0",message = "输入范围有误 0-99999")
     @NotNull(message = "保洁任务时间不可为空")
     @ApiModelProperty(value = "保洁任务时间")
+    @Pattern(regexp = "^//d+$",message = "只能是正整数")
     private Integer cleanupReward;
 
     /**换件任务时间*/
@@ -128,6 +130,7 @@ public class GridAddCondition {
     @DecimalMin(value = "0",message = "输入范围有误 0-99999")
     @NotNull(message = "换件任务时间不可为空")
     @ApiModelProperty(value = "换件任务时间")
+    @Pattern(regexp = "^//d+$",message = "只能是正整数")
     private Integer replaceReward;
 
     /**维修任务时间*/
@@ -135,6 +138,7 @@ public class GridAddCondition {
     @DecimalMin(value = "0",message = "输入范围有误 0-99999")
     @NotNull(message = "维修任务时间不可为空")
     @ApiModelProperty(value = "维修任务时间")
+    @Pattern(regexp = "^//d+$",message = "只能是正整数")
     private Integer maintenanceReward;
 
     /**巡检任务时间*/
@@ -142,6 +146,7 @@ public class GridAddCondition {
     @DecimalMin(value = "0",message = "输入范围有误 0-99999")
     @NotNull(message = "巡检任务时间不可为空")
     @ApiModelProperty(value = "巡检任务时间")
+    @Pattern(regexp = "^//d+$",message = "只能是正整数")
     private Integer inspectionReward;
 
     public String getPassword() {

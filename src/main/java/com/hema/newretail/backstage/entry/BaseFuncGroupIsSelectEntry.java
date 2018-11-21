@@ -1,8 +1,9 @@
 package com.hema.newretail.backstage.entry;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class BaseFuncGroupIsSelectEntry {
+public class BaseFuncGroupIsSelectEntry implements Serializable {
     private Long id;
 
     private String funcGroupCode;

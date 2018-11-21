@@ -4,6 +4,7 @@ import com.hema.newretail.backstage.entry.orderentry.OrderIngredients;
 import com.hema.newretail.backstage.entry.orderentry.Properties;
 import org.bson.types.Decimal128;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
@@ -14,7 +15,7 @@ import java.util.List;
  * @Description:出货订单实体类 ---------------对应mongoDB
  * @Version: 1.0
  */
-public class OrdersModel {
+public class OrdersModel implements Serializable {
 
     private String id;
 

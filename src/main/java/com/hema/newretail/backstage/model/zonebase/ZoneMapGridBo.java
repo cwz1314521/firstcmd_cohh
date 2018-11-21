@@ -1,5 +1,6 @@
 package com.hema.newretail.backstage.model.zonebase;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -10,7 +11,7 @@ import java.util.List;
  * @Author: ZhangHaiSheng
  * @Date: 2018-08-25 14:35
  */
-public class ZoneMapGridBo {
+public class ZoneMapGridBo implements Serializable {
     private Long zoneId;
     private String zoneName;
     private Integer machineNum;

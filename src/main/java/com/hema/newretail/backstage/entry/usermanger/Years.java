@@ -1,5 +1,6 @@
 package com.hema.newretail.backstage.entry.usermanger;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -8,7 +9,7 @@ import java.util.List;
  * @Description:  年与 年份标记
  * @Version: 1.0
  */
-public class Years {
+public class Years implements Serializable {
     private String year;
     List<UserYears> list;
 

@@ -1,6 +1,8 @@
 package com.hema.newretail.backstage.entry;
 
-public class BaseIngredientBoxEntry {
+import java.io.Serializable;
+
+public class BaseIngredientBoxEntry implements Serializable {
     private Long id;
 
     private Integer boxCode;

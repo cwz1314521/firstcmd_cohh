@@ -1,5 +1,6 @@
 package com.hema.newretail.backstage.model.grid;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -10,7 +11,7 @@ import java.util.List;
  * @Date 2018/10/13 14:00
  * @Version 1.0
  **/
-public class ServiceBo {
+public class ServiceBo implements Serializable {
 
     private List<ServiceSonBo> list;
 

@@ -1,5 +1,7 @@
 package com.hema.newretail.backstage.model.diy;
 
+import java.io.Serializable;
+
 /**
  * @Department 新零售
  * @ClassName IngredientBo
@@ -8,7 +10,7 @@ package com.hema.newretail.backstage.model.diy;
  * @Date 2018/10/18 10:42
  * @Version 1.0
  **/
-public class IngredientBo {
+public class IngredientBo implements Serializable {
 
     private Long id;
 

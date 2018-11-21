@@ -1,5 +1,7 @@
 package com.hema.newretail.backstage.model.index;
 
+import java.io.Serializable;
+
 /**
  * hema-newetaril-com.hema.newretail.backstage.model.index
  *
@@ -7,7 +9,7 @@ package com.hema.newretail.backstage.model.index;
  * @Author: ZhangHaiSheng
  * @Date: 2018-08-21 17:18
  */
-public class IndexSaveDetailParamBo {
+public class IndexSaveDetailParamBo implements Serializable {
 
     private Integer contentType; // 内容类别 0饮品 1卡券 2活动 3猜你喜欢 4diy
     private Integer gridNo; // 格子号

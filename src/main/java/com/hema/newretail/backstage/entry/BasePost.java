@@ -2,9 +2,10 @@ package com.hema.newretail.backstage.entry;
 
 import org.hibernate.validator.constraints.NotBlank;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class BasePost {
+public class BasePost implements Serializable {
     private Long id;
 
     @NotBlank(message = "参数postName不能为空")

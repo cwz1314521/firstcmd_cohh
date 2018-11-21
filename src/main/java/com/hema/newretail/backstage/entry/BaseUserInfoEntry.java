@@ -1,9 +1,10 @@
 package com.hema.newretail.backstage.entry;
 
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.util.Date;
 
-public class BaseUserInfoEntry {
+public class BaseUserInfoEntry implements Serializable {
     private Long id;
 
     private Date gmtCreate;

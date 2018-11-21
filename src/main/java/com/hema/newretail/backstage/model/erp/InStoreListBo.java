@@ -1,5 +1,6 @@
 package com.hema.newretail.backstage.model.erp;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -10,7 +11,7 @@ import java.util.Date;
  * @Date 2018/11/2 15:07
  * @Version 1.0
  **/
-public class InStoreListBo {
+public class InStoreListBo implements Serializable {
 
     /**id*/
     private Long id;

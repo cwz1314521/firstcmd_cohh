@@ -1,8 +1,9 @@
 package com.hema.newretail.backstage.entry.grid;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class GridUserInfoEntry {
+public class GridUserInfoEntry implements Serializable {
     private Long id;
 
     private Date gmtCreate;

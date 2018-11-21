@@ -1,5 +1,6 @@
 package com.hema.newretail.backstage.model.grid;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -11,7 +12,7 @@ import java.util.Date;
  * @Date 2018/9/26 10:56
  * @Version 1.0
  **/
-public class GridListBo {
+public class GridListBo implements Serializable {
 
     private String companyName;
 

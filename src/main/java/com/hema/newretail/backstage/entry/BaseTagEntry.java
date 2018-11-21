@@ -1,6 +1,8 @@
 package com.hema.newretail.backstage.entry;
 
-public class BaseTagEntry {
+import java.io.Serializable;
+
+public class BaseTagEntry implements Serializable {
     private Long id;
 
     private String tagname;

@@ -1,9 +1,10 @@
 package com.hema.newretail.backstage.entry;
 
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.util.Date;
 
-public class BaseBoxGroupEntry {
+public class BaseBoxGroupEntry implements Serializable {
 
     //主键
     @NotNull(message = "主键不能为空")

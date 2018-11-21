@@ -1,6 +1,8 @@
 package com.hema.newretail.backstage.entry.grid;
 
-public class GridCompanyGeohashEntry {
+import java.io.Serializable;
+
+public class GridCompanyGeohashEntry implements Serializable {
     private Long id;
 
     private Long gridCompanyId;

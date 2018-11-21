@@ -1,9 +1,11 @@
 package com.hema.newretail.backstage.entry.grid;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
-public class GridCompanyAccountEntry {
+public class GridCompanyAccountEntry implements Serializable {
+    private static final long serialVersionUID = -4317991290733533161L;
     private Long id;
 
     private Long gridCompanyId;

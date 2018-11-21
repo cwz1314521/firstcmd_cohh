@@ -1,8 +1,9 @@
 package com.hema.newretail.backstage.entry;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class ZoneBase {
+public class ZoneBase implements Serializable {
     private Long id;
 
     private String zoneName;

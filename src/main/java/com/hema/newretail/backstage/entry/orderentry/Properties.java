@@ -2,12 +2,13 @@ package com.hema.newretail.backstage.entry.orderentry;
 
 import org.bson.types.Decimal128;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 /**
  * Created by jiahao on 2018-08-06
  */
-public class Properties {
+public class Properties implements Serializable {
 
     private String propertiesId;
 

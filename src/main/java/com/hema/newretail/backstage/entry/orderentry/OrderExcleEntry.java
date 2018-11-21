@@ -1,12 +1,14 @@
 package com.hema.newretail.backstage.entry.orderentry;
 
+import java.io.Serializable;
+
 /**
  * @Auther: 程文政
  * @Date: 2018/8/28 16:45
  * @Description:
  * @Version: 1.0
  */
-public class OrderExcleEntry {
+public class OrderExcleEntry implements Serializable {
 
     /**订单Id*/
     private String billId ;

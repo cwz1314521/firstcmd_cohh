@@ -1,5 +1,6 @@
 package com.hema.newretail.backstage.model.index;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -9,7 +10,7 @@ import java.util.List;
  * @Author: ZhangHaiSheng
  * @Date: 2018-08-21 17:18
  */
-public class IndexSaveParamBo {
+public class IndexSaveParamBo implements Serializable {
 
     private Long cssId; // 模板ID
     private Integer order; // 首页中模板的展示序号

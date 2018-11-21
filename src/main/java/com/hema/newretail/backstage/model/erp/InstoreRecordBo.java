@@ -1,5 +1,7 @@
 package com.hema.newretail.backstage.model.erp;
 
+import java.io.Serializable;
+
 /**
  * @Department 新零售
  * @ClassName InstoreRecordBo
@@ -8,7 +10,7 @@ package com.hema.newretail.backstage.model.erp;
  * @Date 2018/11/5 11:58
  * @Version 1.0
  **/
-public class InstoreRecordBo {
+public class InstoreRecordBo implements Serializable {
 
     private Long id;
     /**原料名称*/

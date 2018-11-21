@@ -1,12 +1,14 @@
 package com.hema.newretail.backstage.entry.usermanger;
 
+import java.io.Serializable;
+
 /**
  * @Auther: 程文政
  * @Date: 2018/8/22 09:29
  * @Description:周 与 总金额
  * @Version: 1.0
  */
-public class UserYears {
+public class UserYears implements Serializable {
 
     private Integer week;
 

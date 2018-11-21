@@ -2,7 +2,7 @@
 <configuration scan="true" scanPeriod="60 seconds" debug="false">
     <contextName>cloud_boh</contextName>
     <!--<property name="log.path" value="E:\\logs\\cloud_boh"/>-->
-    <property name="log.path" value="/usr/local/hemalogs/cloud_boh"/>
+    <property name="log.path" value="/usr/Downloads"/>
     <property name="log.name" value="logback"/>
     <!--输出到控制台-->
     <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
@@ -12,14 +12,14 @@
     </appender>
 
     <appender name="logFileInfo" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${log.path}/info.${log.name}.log</file>
+        <file>${log.path}/infolog/info.${log.name}.log</file>
         <filter class="ch.qos.logback.classic.filter.LevelFilter">
             <level>ERROR</level>
             <onMatch>DENY</onMatch>
             <onMismatch>ACCEPT</onMismatch>
         </filter>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <FileNamePattern>${log.path}/info.${log.name}.%d{yyyy-MM-dd}.log</FileNamePattern>
+            <FileNamePattern>${log.path}/infolog/info.${log.name}.%d{yyyy-MM-dd}.log</FileNamePattern>
             <maxHistory>90</maxHistory>
             <totalSizeCap>1GB</totalSizeCap>
         </rollingPolicy>
@@ -33,9 +33,9 @@
         <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
             <level>Error</level>
         </filter>
-        <File>${log.path}/error.${log.name}.log</File>
+        <File>${log.path}/errorlog/error.${log.name}.log</File>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <FileNamePattern>${log.path}/error.${log.name}.%d{yyyy-MM-dd}.log</FileNamePattern>
+            <FileNamePattern>${log.path}/errorlog/error.${log.name}.%d{yyyy-MM-dd}.log</FileNamePattern>
             <maxHistory>90</maxHistory>
             <totalSizeCap>1GB</totalSizeCap>
         </rollingPolicy>

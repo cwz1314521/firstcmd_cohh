@@ -2,9 +2,10 @@ package com.hema.newretail.backstage.model.tag;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.io.Serializable;
 import java.util.List;
 
-public class BaseTagEditBo {
+public class BaseTagEditBo implements Serializable {
 
     private Long tagId;
     @NotNull(message = "标签名不能为空")

@@ -1,5 +1,6 @@
 package com.hema.newretail.backstage.model.zonebase;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -9,7 +10,7 @@ import java.util.Date;
  * @Author: ZhangHaiSheng
  * @Date: 2018-08-25 17:51
  */
-public class BoxGroupBo {
+public class BoxGroupBo implements Serializable {
     private Long groupId;
     private String groupName;
     private String description;

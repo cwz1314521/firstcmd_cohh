@@ -1,9 +1,10 @@
 package com.hema.newretail.backstage.entry;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
-public class RefAgentGridAccount {
+public class RefAgentGridAccount implements Serializable {
     private Long agentId;
 
     private Long gridCompanyId;

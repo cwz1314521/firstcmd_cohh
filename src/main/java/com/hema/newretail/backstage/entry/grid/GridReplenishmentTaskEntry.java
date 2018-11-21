@@ -1,6 +1,8 @@
 package com.hema.newretail.backstage.entry.grid;
 
-public class GridReplenishmentTaskEntry {
+import java.io.Serializable;
+
+public class GridReplenishmentTaskEntry implements Serializable {
     private Long boxId;
 
     private Long taskId;

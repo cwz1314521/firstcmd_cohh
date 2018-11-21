@@ -1,6 +1,8 @@
 package com.hema.newretail.backstage.entry;
 
-public class RefZoneMachine {
+import java.io.Serializable;
+
+public class RefZoneMachine implements Serializable {
     private Long id;
 
     private Long zoneId;

@@ -1,9 +1,10 @@
 package com.hema.newretail.backstage.entry;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
-public class BusiCompanyAccountEntry {
+public class BusiCompanyAccountEntry implements Serializable {
     private Long id;
 
     private Long refId;

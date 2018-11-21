@@ -1,5 +1,7 @@
 package com.hema.newretail.backstage.model.menu;
 
+import java.io.Serializable;
+
 /**
  * hema-newetaril-com.hema.newretail.backstage.model.menu
  *
@@ -7,7 +9,7 @@ package com.hema.newretail.backstage.model.menu;
  * @Author: ZhangHaiSheng
  * @Date: 2018-08-25 9:57
  */
-public class TagMenuBo {
+public class TagMenuBo implements Serializable {
     private Long menuId;
     private Integer num;
     private Boolean ruleType;

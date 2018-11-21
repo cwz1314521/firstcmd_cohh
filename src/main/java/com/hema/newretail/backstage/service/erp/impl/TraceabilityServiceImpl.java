@@ -112,6 +112,7 @@ public class TraceabilityServiceImpl implements TraceabilityService {
         int insert = erpIngredientManufacturerMapper.insert(entry);
         if(insert < 1){
             logger.error("插入数据失败....");
+            return Response.failure("插入数据失败....");
         }
         List<String> str = manufacturerAddCondition.getContractPics();
         logger.info("图片url字符串拆分"+manufacturerAddCondition.getContractPics()+str.size());

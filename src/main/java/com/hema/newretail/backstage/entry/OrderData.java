@@ -4,6 +4,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -11,7 +12,7 @@ import java.util.List;
  * 订单实体类
  */
 @Document(collection = "userManagementEntry")
-public class OrderData {
+public class OrderData implements Serializable {
     private String id;
     private String amt;
     private int num;

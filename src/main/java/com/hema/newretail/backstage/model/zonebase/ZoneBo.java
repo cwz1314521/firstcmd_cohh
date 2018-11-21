@@ -1,5 +1,6 @@
 package com.hema.newretail.backstage.model.zonebase;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -9,7 +10,7 @@ import java.util.Date;
  * @Author: ZhangHaiSheng
  * @Date: 2018-08-25 14:35
  */
-public class ZoneBo {
+public class ZoneBo implements Serializable {
     private Long zoneId;
     private String zoneName;
     private String province;

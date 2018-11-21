@@ -1,5 +1,6 @@
 package com.hema.newretail.backstage.model.menuproperties;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 /**
@@ -9,7 +10,7 @@ import java.math.BigDecimal;
  * @Author: ZhangHaiSheng
  * @Date: 2018-08-23 17:39
  */
-public class MenuPropertisBo {
+public class MenuPropertisBo implements Serializable {
     private Long propertiesId;
     private String proName;
     private Long typeId;

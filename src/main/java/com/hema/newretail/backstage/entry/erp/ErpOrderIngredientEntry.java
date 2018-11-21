@@ -1,6 +1,8 @@
 package com.hema.newretail.backstage.entry.erp;
 
-public class ErpOrderIngredientEntry {
+import java.io.Serializable;
+
+public class ErpOrderIngredientEntry implements Serializable {
     private Long id;
 
     private Long ingredientOrderAddressId;

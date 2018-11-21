@@ -1,8 +1,9 @@
 package com.hema.newretail.backstage.entry;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class BaseMachineTypeEntry {
+public class BaseMachineTypeEntry implements Serializable {
     private Long id;
 
     private Date gmtCreate;

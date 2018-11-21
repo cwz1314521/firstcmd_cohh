@@ -1,5 +1,7 @@
 package com.hema.newretail.backstage.model.menu;
 
+import java.io.Serializable;
+
 /**
  * hema-newRetail-crm-com.hema.newretail.backstage.model.menu
  *
@@ -7,7 +9,7 @@ package com.hema.newretail.backstage.model.menu;
  * @Author: ZhangHaiSheng
  * @Date: 2018-08-29 13:57
  */
-public class RefMenuIngredientBo {
+public class RefMenuIngredientBo implements Serializable {
 
     private Long menuId;
     private Long ingredientId;

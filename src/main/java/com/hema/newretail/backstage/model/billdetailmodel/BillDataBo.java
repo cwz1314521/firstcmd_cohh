@@ -1,5 +1,6 @@
 package com.hema.newretail.backstage.model.billdetailmodel;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
 /**
@@ -8,7 +9,7 @@ import java.util.List;
  * @Description:
  * @Version: 1.0
  */
-public class BillDataBo {
+public class BillDataBo implements Serializable {
 
     private String id;//订单编号
     private BigDecimal totalMoney;//订单总价

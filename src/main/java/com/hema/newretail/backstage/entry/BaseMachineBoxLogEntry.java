@@ -1,6 +1,8 @@
 package com.hema.newretail.backstage.entry;
 
-public class BaseMachineBoxLogEntry {
+import java.io.Serializable;
+
+public class BaseMachineBoxLogEntry implements Serializable {
     private Long id;
 
     private Integer boxCode;

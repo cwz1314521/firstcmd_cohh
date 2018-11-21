@@ -1,8 +1,9 @@
 package com.hema.newretail.backstage.model.tag;
 
 import javax.validation.constraints.Pattern;
+import java.io.Serializable;
 
-public class BaseTagRuleEditBo {
+public class BaseTagRuleEditBo implements Serializable {
     private Boolean ruleType;
 
     private Long menuId;

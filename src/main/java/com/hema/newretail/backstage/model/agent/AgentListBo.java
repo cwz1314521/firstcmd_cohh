@@ -1,5 +1,6 @@
 package com.hema.newretail.backstage.model.agent;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
@@ -12,7 +13,7 @@ import java.util.List;
  * @Date 2018/9/25 10:47
  * @Version 1.0
  **/
-public class AgentListBo {
+public class AgentListBo implements Serializable {
     /**主键*/
     private Long id;
     /**状态*/

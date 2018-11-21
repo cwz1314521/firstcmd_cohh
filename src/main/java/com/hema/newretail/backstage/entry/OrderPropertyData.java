@@ -2,11 +2,13 @@ package com.hema.newretail.backstage.entry;
 
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.io.Serializable;
+
 /**
  * 订单配料实体类
  */
 
-public class OrderPropertyData {
+public class OrderPropertyData implements Serializable {
     private String propertiesId;
     private String proName;
 

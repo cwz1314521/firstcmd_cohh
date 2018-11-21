@@ -1,9 +1,10 @@
 package com.hema.newretail.backstage.entry;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
-public class BusiIngredientMenuEntry {
+public class BusiIngredientMenuEntry implements Serializable {
     private Long id;
 
     private Date gmtCreate;

@@ -3,6 +3,7 @@ package com.hema.newretail.backstage.common.utils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Calendar;
@@ -18,7 +19,7 @@ import static org.junit.Assert.*;
  * @Date 2018/11/16 9:45
  * @Version 1.0
  **/
-@RunWith(SpringRunner.class)
+@RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
 public class NumberUtilsTest {
 
@@ -33,8 +34,11 @@ public class NumberUtilsTest {
 
     @Test
     public void orderCode() throws Exception{
-        Date endTime = TimeUtil.getEndTime(TimeUtil.stringToDate("2018-10-10", "yyyy-MM-dd"));
-        String stringByDateFormart = TimeUtil.getStringByDateFormart(endTime, "yyyy-MM-dd HH:mm:ss");
-        System.out.println(stringByDateFormart);
+//        Date endTime = TimeUtil.getEndTime(TimeUtil.stringToDate("2018-10-10", "yyyy-MM-dd"));
+//        String stringByDateFormart = TimeUtil.getStringByDateFormart(endTime, "yyyy-MM-dd HH:mm:ss");
+//        System.out.println(stringByDateFormart);
+        String data = "sadasdsad.dasdas";
+        String substring = data.substring(data.lastIndexOf("."));
+        System.out.println(substring);
     }
 }

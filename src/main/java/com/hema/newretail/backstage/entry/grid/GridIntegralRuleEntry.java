@@ -1,9 +1,10 @@
 package com.hema.newretail.backstage.entry.grid;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
-public class GridIntegralRuleEntry {
+public class GridIntegralRuleEntry implements Serializable {
     private Long id;
 
     private Long gridCompanyId;

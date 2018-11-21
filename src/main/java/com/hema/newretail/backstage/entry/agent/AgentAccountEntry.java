@@ -1,10 +1,11 @@
 package com.hema.newretail.backstage.entry.agent;
 
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
-public class AgentAccountEntry {
+public class AgentAccountEntry implements Serializable {
     private Long id;
 
     private Long agentUserId;

@@ -1,5 +1,6 @@
 package com.hema.newretail.backstage.model.diy;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 /**
@@ -10,7 +11,7 @@ import java.math.BigDecimal;
  * @Date 2018/10/18 11:12
  * @Version 1.0
  **/
-public class IngredientEventBo {
+public class IngredientEventBo implements Serializable {
 
     private Long id ;
 

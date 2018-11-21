@@ -2,6 +2,7 @@ package com.hema.newretail.backstage.model.billdetailmodel;
 
 import org.bson.types.Decimal128;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -11,7 +12,7 @@ import java.util.Date;
  * @Description:出货订单返回值类 ---------------对应mongoDB
  * @Version: 1.0
  */
-public class OrdersDataBo {
+public class OrdersDataBo implements Serializable {
 
     private String id;
 

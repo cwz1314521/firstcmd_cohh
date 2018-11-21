@@ -1,8 +1,9 @@
 package com.hema.newretail.backstage.model.diy;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class BaseDiyAddIngredientStatusBo {
+public class BaseDiyAddIngredientStatusBo implements Serializable {
     private Long id;
 
     private String scope;

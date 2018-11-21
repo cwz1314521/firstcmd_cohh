@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.hema.newretail.backstage.dao.BaseMachineBoxLogMapper">
+  <cache type="com.hema.newretail.backstage.common.caches.MybatisRedisCache" >
+    <property name="eviction" value="FIFO" />
+    <property name="flushInterval" value="6000000" />
+    <property name="size" value="1024" />
+    <property name="readOnly" value="false" />
+  </cache>
   <resultMap id="BaseResultMap" type="com.hema.newretail.backstage.entry.BaseMachineBoxLogEntry">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="box_code" jdbcType="INTEGER" property="boxCode" />

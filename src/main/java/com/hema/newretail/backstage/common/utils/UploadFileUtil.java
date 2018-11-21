@@ -21,9 +21,12 @@ import static com.hema.newretail.backstage.common.utils.ossutil.AliyunOSSClientU
 import static com.hema.newretail.backstage.common.utils.ossutil.OSSClientConstants.*;
 
 
+/**
+ * @author jiahao
+ */
 public class UploadFileUtil {
 
-    private static final String IMAGE = "jpg, png";
+    private static final String IMAGE = "jpg, png，gif";
 
     private static final int SIZE = 1024000;
 
@@ -38,14 +41,14 @@ public class UploadFileUtil {
         String filePath = null;
 
         if (file.isEmpty()) {
-            return "请上传文件";
+            return "请上传正确比例图片";
         }
         try {
             String fileName = file.getOriginalFilename();
             String extensionName = fileName.substring(fileName.lastIndexOf(".") + 1);
 
             if (IMAGE.indexOf(extensionName) == -1) {
-                return "请上传图片文件";
+                return "请上传正确比例图片";
             }
             BufferedImage read = ImageIO.read(file.getInputStream());
             int width = read.getWidth();
@@ -88,7 +91,7 @@ public class UploadFileUtil {
             int fileSize = (int) file.getSize();
             System.out.println(newFileName + "-->" + fileSize);
             if (fileSize > SIZE) {
-                return "文件大小不能超过10M";
+                return "请上传正确比例图片";
             }
 
             //上传至OSS云存储
@@ -113,7 +116,7 @@ public class UploadFileUtil {
             if (!por.getETag().isEmpty()) {
                 filePath = "https://newretail.hemaapp.com/img/" + newFileName;
             } else {
-                filePath = "上传失败";
+                filePath = "请上传正确比例图片";
             }
             // 关闭OSSClient。
             ossClient.shutdown();

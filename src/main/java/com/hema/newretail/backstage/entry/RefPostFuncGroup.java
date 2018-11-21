@@ -1,6 +1,8 @@
 package com.hema.newretail.backstage.entry;
 
-public class RefPostFuncGroup {
+import java.io.Serializable;
+
+public class RefPostFuncGroup implements Serializable {
     private Long postId;
 
     private String funcGroupCode;

@@ -1,5 +1,7 @@
 package com.hema.newretail.backstage.model.zonebase;
 
+import java.io.Serializable;
+
 /**
  * hema-newRetail-crm-com.hema.newretail.backstage.model.zonebase
  *
@@ -7,7 +9,7 @@ package com.hema.newretail.backstage.model.zonebase;
  * @link
  * @date 2018-10-13 10:02
  */
-public class AllZoneHashcodeBo {
+public class AllZoneHashcodeBo implements Serializable {
     private String lat;
     private String lng;
     private String scope;

@@ -1,5 +1,7 @@
 package com.hema.newretail.backstage.model.grid;
 
+import java.io.Serializable;
+
 /**
  * @Department 新零售
  * @ClassName BoxLogBo
@@ -8,7 +10,7 @@ package com.hema.newretail.backstage.model.grid;
  * @Date 2018/10/15 11:51
  * @Version 1.0
  **/
-public class BoxLogBo {
+public class BoxLogBo implements Serializable {
     private int boxCode;
     private String ingredientName;
 

@@ -6,7 +6,7 @@ spring:
       host: 172.31.81.227
       port: 27019
   redis:
-    database: 15
+    database: 13
     host: 172.31.81.227
     password: 888888
     pool:

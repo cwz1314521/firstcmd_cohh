@@ -3,6 +3,7 @@ package com.hema.newretail.backstage.entry;
 import com.hema.newretail.backstage.entry.usermanger.Count;
 import com.hema.newretail.backstage.entry.usermanger.Years;
 
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -10,7 +11,7 @@ import java.util.List;
 /**
  * 会员信息展示类
  */
-public class UserManagerData {
+public class UserManagerData implements Serializable {
     private String id;//用户主键id
 
     private String openId;

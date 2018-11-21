@@ -2,10 +2,12 @@ package com.hema.newretail.backstage.model.bill;
 
 import org.bson.types.Decimal128;
 
+import java.io.Serializable;
+
 /**
  * Created by jiahao on 2018-08-06
  */
-public class PropertiesModel {
+public class PropertiesModel implements Serializable {
 
     private String propertiesId;
 

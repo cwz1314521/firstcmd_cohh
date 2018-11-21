@@ -1,5 +1,7 @@
 package com.hema.newretail.backstage.model.diy;
 
+import java.io.Serializable;
+
 /**
  * @Department 新零售
  * @ClassName DetailEventSonBo
@@ -8,7 +10,7 @@ package com.hema.newretail.backstage.model.diy;
  * @Date 2018/10/18 12:53
  * @Version 1.0
  **/
-public class DetailEventSonBo {
+public class DetailEventSonBo implements Serializable {
 
 
     private String markedWords;

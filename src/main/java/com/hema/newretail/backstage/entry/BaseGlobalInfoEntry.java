@@ -1,6 +1,8 @@
 package com.hema.newretail.backstage.entry;
 
-public class BaseGlobalInfoEntry {
+import java.io.Serializable;
+
+public class BaseGlobalInfoEntry implements Serializable {
     private Long id;
 
     private String key;

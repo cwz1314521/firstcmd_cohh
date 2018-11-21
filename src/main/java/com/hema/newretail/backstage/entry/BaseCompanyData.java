@@ -7,11 +7,12 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
 @ApiModel(description = "BaseCompanyData")
-public class BaseCompanyData {
+public class BaseCompanyData implements Serializable {
     private Long id;
 
     @NotEmpty(message = "公司名称不可为空")

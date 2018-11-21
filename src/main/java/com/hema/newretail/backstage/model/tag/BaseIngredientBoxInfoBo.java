@@ -1,6 +1,8 @@
 package com.hema.newretail.backstage.model.tag;
 
-public class BaseIngredientBoxInfoBo {
+import java.io.Serializable;
+
+public class BaseIngredientBoxInfoBo implements Serializable {
 
     private String boxCodes;
 

@@ -1,12 +1,14 @@
 package com.hema.newretail.backstage.entry.orderentry;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  * Created by jiahao on 2018-08-21
  */
-public class UserData {
+public class UserData implements Serializable {
 
+    private static final long serialVersionUID = -4756076578414755298L;
     private String id;
 
     private Date gmtCreate;

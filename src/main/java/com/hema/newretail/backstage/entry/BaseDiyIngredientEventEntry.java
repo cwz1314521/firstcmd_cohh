@@ -1,6 +1,8 @@
 package com.hema.newretail.backstage.entry;
 
-public class BaseDiyIngredientEventEntry {
+import java.io.Serializable;
+
+public class BaseDiyIngredientEventEntry implements Serializable {
     private Long id;
 
     private Long diySettingId;

@@ -1,9 +1,10 @@
 package com.hema.newretail.backstage.entry.agent;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
-public class AgentCooperationMode {
+public class AgentCooperationMode implements Serializable {
     private Long id;
 
     private Long agentUserId;

@@ -3,9 +3,10 @@ package com.hema.newretail.backstage.model.authority;
 
 import com.hema.newretail.backstage.entry.BaseFuncGroupIsSelectEntry;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class BaseFuncGroupBo {
+public class BaseFuncGroupBo implements Serializable {
 
     private String funcGroupCode;
 

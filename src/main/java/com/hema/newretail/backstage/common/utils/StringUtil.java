@@ -15,6 +15,9 @@ import java.util.List;
  **/
 public class StringUtil {
 
+    private static final String HTTPS ="https:";
+
+
     /**
      *
      * 功能描述:
@@ -53,7 +56,7 @@ public class StringUtil {
      *
      * @param: 逗号隔开的字符串
      * @return: list
-     * @author: admin
+     * @author: cwz
      * @date: 2018/10/13 11:10
      */
     public static List<Long> StringsToLong(String data){
@@ -65,4 +68,6 @@ public class StringUtil {
         }
         return longs;
     }
+
+
 }

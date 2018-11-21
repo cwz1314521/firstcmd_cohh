@@ -1,5 +1,7 @@
 package com.hema.newretail.backstage.model.menuproperties;
 
+import java.io.Serializable;
+
 /**
  * hema-newetaril-com.hema.newretail.backstage.model.menuproperties
  *
@@ -7,7 +9,7 @@ package com.hema.newretail.backstage.model.menuproperties;
  * @Author: ZhangHaiSheng
  * @Date: 2018-08-23 17:37
  */
-public class PropertyTypeBo {
+public class PropertyTypeBo implements Serializable {
     private Long typeId;
     private String typeName;
     private String propertiesName;

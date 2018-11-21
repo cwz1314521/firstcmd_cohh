@@ -1,8 +1,9 @@
 package com.hema.newretail.backstage.entry.erp;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class ErpIngredientManufacturerEntry {
+public class ErpIngredientManufacturerEntry implements Serializable {
     private Long id;
 
     private String userName;

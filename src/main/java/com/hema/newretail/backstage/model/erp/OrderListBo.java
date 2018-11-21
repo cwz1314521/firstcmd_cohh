@@ -1,5 +1,6 @@
 package com.hema.newretail.backstage.model.erp;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
@@ -12,7 +13,7 @@ import java.util.List;
  * @Date 2018/11/1 15:13
  * @Version 1.0
  **/
-public class OrderListBo {
+public class OrderListBo implements Serializable {
     /**订单ID*/
     private Long id;
 

@@ -3,9 +3,10 @@ package com.hema.newretail.backstage.entry.agent;
  * @author : cwz
  */
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class AgentUserEntry {
+public class AgentUserEntry implements Serializable {
     private Long id;
 
     private String tel;

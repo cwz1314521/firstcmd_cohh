@@ -1,5 +1,7 @@
 package com.hema.newretail.backstage.model.grid;
 
+import java.io.Serializable;
+
 /**
  * hema-newRetail-crm-com.hema.newretail.backstage.model.grid
  *
@@ -7,7 +9,7 @@ package com.hema.newretail.backstage.model.grid;
  * @link
  * @date 2018-10-17 11:20
  */
-public class GridCompanyListBo {
+public class GridCompanyListBo implements Serializable {
     private Long id;
     private String companyName;
     private String address;

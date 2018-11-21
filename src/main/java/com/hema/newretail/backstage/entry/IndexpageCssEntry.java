@@ -1,6 +1,8 @@
 package com.hema.newretail.backstage.entry;
 
-public class IndexpageCssEntry {
+import java.io.Serializable;
+
+public class IndexpageCssEntry implements Serializable {
     private Long id;
 
     private String cssContent;

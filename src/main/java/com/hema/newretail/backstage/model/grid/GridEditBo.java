@@ -2,10 +2,12 @@ package com.hema.newretail.backstage.model.grid;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 @ApiModel(description = "GridEditBo")
-public class GridEditBo {
+public class GridEditBo implements Serializable {
 
 
 

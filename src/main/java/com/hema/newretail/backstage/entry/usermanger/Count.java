@@ -1,12 +1,14 @@
 package com.hema.newretail.backstage.entry.usermanger;
 
+import java.io.Serializable;
+
 /**
  * @Auther: 程文政
  * @Date: 2018/8/22 10:00
  * @Description: 各种计算结果
  * @Version: 1.0
  */
-public class Count {
+public class Count implements Serializable {
 
     private String median;//中位数
 

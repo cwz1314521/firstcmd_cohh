@@ -3,6 +3,7 @@ package com.hema.newretail.backstage.model.agent;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -14,7 +15,7 @@ import java.util.Date;
  * @Version 1.0
  **/
 @ApiModel(value = "推送消息 历史回显")
-public class PushListBo {
+public class PushListBo implements Serializable {
 
     @ApiModelProperty(value = "主键")
     private Long id;

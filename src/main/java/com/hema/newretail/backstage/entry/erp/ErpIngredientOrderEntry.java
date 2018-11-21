@@ -1,9 +1,10 @@
 package com.hema.newretail.backstage.entry.erp;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
-public class ErpIngredientOrderEntry {
+public class ErpIngredientOrderEntry implements Serializable {
     private Long id;
 
     private String orderCode;

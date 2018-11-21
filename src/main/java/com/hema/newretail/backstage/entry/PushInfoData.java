@@ -1,12 +1,13 @@
 package com.hema.newretail.backstage.entry;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
 /**
  * 推送信息实体类
  */
-public class PushInfoData {
+public class PushInfoData implements Serializable {
 
     private String id;//消息Id
     private String title;//标题

@@ -1,8 +1,9 @@
 package com.hema.newretail.backstage.entry.grid;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class GridUserTaskEntry {
+public class GridUserTaskEntry implements Serializable {
     private Long taskId;
 
     private Long userId;

@@ -1,5 +1,6 @@
 package com.hema.newretail.backstage.entry.usermanger;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -9,7 +10,7 @@ import java.util.List;
  * @Description:-----------------------------------------------mongoDB用户表
  * @Version: 1.0
  */
-public class UserManagementData {
+public class UserManagementData implements Serializable {
 
     private String isBinding;//是否已绑定手机号 0未绑定，1已绑定
 

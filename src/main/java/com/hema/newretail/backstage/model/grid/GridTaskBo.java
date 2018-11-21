@@ -3,6 +3,7 @@ package com.hema.newretail.backstage.model.grid;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -14,7 +15,7 @@ import java.util.Date;
  * @Version 1.0
  **/
 @ApiModel(value = "GridTaskBo",description = "网格任务列表------model类----直接从数据库接收数据")
-public class GridTaskBo {
+public class GridTaskBo implements Serializable {
 
     /**主键*/
     @ApiModelProperty(value = "主键")

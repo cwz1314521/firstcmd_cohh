@@ -1,12 +1,13 @@
 package com.hema.newretail.backstage.entry;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
 /**
  * 用户formId实体类
  */
-public class UserFormIdData {
+public class UserFormIdData implements Serializable {
     private String id;
     private String openId;
     private String formId;

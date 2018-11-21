@@ -1,6 +1,8 @@
 package com.hema.newretail.backstage.entry;
 
-public class BaseCompanyGeoHashData {
+import java.io.Serializable;
+
+public class BaseCompanyGeoHashData implements Serializable {
     private Long id;
 
     private Long companyId;

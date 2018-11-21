@@ -1,8 +1,9 @@
 package com.hema.newretail.backstage.entry;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class BaseDiyAddIngredientStatusEntry {
+public class BaseDiyAddIngredientStatusEntry implements Serializable {
     private Long id;
 
     private Integer ingredientsVolumeMin;

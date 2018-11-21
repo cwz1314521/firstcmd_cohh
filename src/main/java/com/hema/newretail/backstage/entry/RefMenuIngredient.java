@@ -1,6 +1,8 @@
 package com.hema.newretail.backstage.entry;
 
-public class RefMenuIngredient {
+import java.io.Serializable;
+
+public class RefMenuIngredient implements Serializable {
     private Long ingredientMenuId;
 
     private Long ingredientId;

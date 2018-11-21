@@ -1,5 +1,7 @@
 package com.hema.newretail.backstage.model.erp;
 
+import java.io.Serializable;
+
 /**
  * @Department 新零售
  * @ClassName InStoreTodayBo
@@ -8,7 +10,7 @@ package com.hema.newretail.backstage.model.erp;
  * @Date 2018/11/3 10:56
  * @Version 1.0
  **/
-public class InStoreTodaySonBo {
+public class InStoreTodaySonBo implements Serializable {
 
     private String ingredientName;
     private Integer num;

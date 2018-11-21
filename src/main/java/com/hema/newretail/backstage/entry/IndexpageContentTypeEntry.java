@@ -1,6 +1,8 @@
 package com.hema.newretail.backstage.entry;
 
-public class IndexpageContentTypeEntry {
+import java.io.Serializable;
+
+public class IndexpageContentTypeEntry implements Serializable {
     private Long id;
 
     private String key;

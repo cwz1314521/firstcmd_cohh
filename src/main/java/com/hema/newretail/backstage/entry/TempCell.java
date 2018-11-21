@@ -2,7 +2,9 @@ package com.hema.newretail.backstage.entry;
 
 import org.apache.poi.ss.usermodel.CellStyle;
 
-public class TempCell {
+import java.io.Serializable;
+
+public class TempCell implements Serializable {
     private int row;
     private int column;
     private CellStyle cellStyle;

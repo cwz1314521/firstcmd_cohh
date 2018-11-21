@@ -1,6 +1,7 @@
 package com.hema.newretail.backstage.model.erp;
 
 
+import java.io.Serializable;
 
 /**
  * @Department 新零售
@@ -10,7 +11,7 @@ package com.hema.newretail.backstage.model.erp;
  * @Date 2018/11/1 15:29
  * @Version 1.0
  **/
-public class OrderListIngredientBo {
+public class OrderListIngredientBo implements Serializable {
 
 
     /**原料ID*/

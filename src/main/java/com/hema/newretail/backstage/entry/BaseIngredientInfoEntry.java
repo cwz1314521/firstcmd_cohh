@@ -1,10 +1,11 @@
 package com.hema.newretail.backstage.entry;
 
 import javax.validation.constraints.Size;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
-public class BaseIngredientInfoEntry {
+public class BaseIngredientInfoEntry implements Serializable {
     private Long id;
 
     private Date gmtCreate;
