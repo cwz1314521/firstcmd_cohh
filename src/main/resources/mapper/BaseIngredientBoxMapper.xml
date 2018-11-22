@@ -180,4 +180,9 @@ select
       status = #{status,jdbcType=INTEGER}
     where id = #{id,jdbcType=BIGINT}
   </update>
+  <select id="selectByBoxGroupIdForTask" resultType="com.hema.newretail.backstage.model.taskkafka.IngredientBoxBo"
+          parameterType="java.lang.Long" useCache="false">
+    select box_code as boxCode, ingredient_id as ingredientId, capacity as capacity, max_copies as maxCopies, warn_percent as warnPercent
+    from base_ingredient_box where box_group_id = #{boxGroupId,jdbcType=BIGINT}
+  </select>
 </mapper>

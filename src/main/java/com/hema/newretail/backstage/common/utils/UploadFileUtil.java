@@ -26,7 +26,7 @@ import static com.hema.newretail.backstage.common.utils.ossutil.OSSClientConstan
  */
 public class UploadFileUtil {
 
-    private static final String IMAGE = "jpg, png，gif";
+    private static final String IMAGE = "jpg, png，gif, jpeg";
 
     private static final int SIZE = 1024000;
 
@@ -125,13 +125,6 @@ public class UploadFileUtil {
             e.printStackTrace();
         }
         return filePath;
-    }
-
-    public static void main(String[] args) {
-        String imgUrl = "http://127.0.0.1:8080.cms.ReadAddress.1479805098158.jpg";
-
-        String image = imgUrl.substring(imgUrl.lastIndexOf("." ) + 1);
-        System.out.println(image);
     }
 
 

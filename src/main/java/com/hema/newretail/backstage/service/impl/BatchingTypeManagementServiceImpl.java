@@ -7,6 +7,7 @@ import com.hema.newretail.backstage.common.queryparam.agent.CountNameCondition;
 import com.hema.newretail.backstage.common.queryparam.ingredientstypemodelorcondition.BaseIngredientBoxCondition;
 import com.hema.newretail.backstage.common.queryparam.ingredientstypemodelorcondition.BoxGroupIngredientCondition;
 import com.hema.newretail.backstage.common.utils.Response;
+import com.hema.newretail.backstage.common.utils.kafka.TaskKafkaHelper;
 import com.hema.newretail.backstage.dao.BaseBoxGroupMapper;
 import com.hema.newretail.backstage.dao.BaseIngredientBoxMapper;
 import com.hema.newretail.backstage.dao.BaseIngredientInfoEntryMapper;
@@ -16,6 +17,7 @@ import com.hema.newretail.backstage.entry.BaseIngredientBoxEntry;
 import com.hema.newretail.backstage.entry.BaseMachineTypeEntry;
 import com.hema.newretail.backstage.common.queryparam.ingredientstypemodelorcondition.IngredientCondition;
 import com.hema.newretail.backstage.model.tag.BaseIngredientBoxInfoBo;
+import com.hema.newretail.backstage.model.taskkafka.IngredientBoxBo;
 import com.hema.newretail.backstage.service.IBatchingTypeManagementService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,7 +37,7 @@ import java.util.List;
  * @Version: 1.0
  */
 @Service
-public class BatchingTypeManagementServiceImpl  implements IBatchingTypeManagementService {
+public class BatchingTypeManagementServiceImpl implements IBatchingTypeManagementService {
 
 
     //注入mapper接口
@@ -52,6 +54,9 @@ public class BatchingTypeManagementServiceImpl  implements IBatchingTypeManageme
     @Autowired
     private BaseMachineTypeMapper baseMachineTypeMapper;
 
+    @Autowired
+    private TaskKafkaHelper taskKafkaHelper;
+
 
     private static final Logger logger = LoggerFactory.getLogger(CloudBohhApplication.class);
 
@@ -59,20 +64,20 @@ public class BatchingTypeManagementServiceImpl  implements IBatchingTypeManageme
     @Override
     public Response mixList(IngredientCondition ingredientCondition) {
         logger.info("开始查询配料组合......");
-        Page<BaseBoxGroupEntry> page =PageHelper.startPage(ingredientCondition.getPageNum(),ingredientCondition.getPageSize());
+        Page<BaseBoxGroupEntry> page = PageHelper.startPage(ingredientCondition.getPageNum(), ingredientCondition.getPageSize());
         baseBoxGroupMapper.selectByMachineTypeId(ingredientCondition);
-        return Response.success(page.getResult(),page.getTotal(),ingredientCondition.getPageSize(),ingredientCondition.getPageNum());
+        return Response.success(page.getResult(), page.getTotal(), ingredientCondition.getPageSize(), ingredientCondition.getPageNum());
     }
 
     //删除配料组合列表接口
     @Override
     public Response mixDelete(Long id) {
         int i = baseBoxGroupMapper.deleteByPrimaryKey(id);
-        if(i>0){
-            logger.info("删除id为"+id+"的数据......");
-            return  Response.success();
+        if (i > 0) {
+            logger.info("删除id为" + id + "的数据......");
+            return Response.success();
         }
-        return  Response.failure("删除失败");
+        return Response.failure("删除失败");
     }
 
 
@@ -82,24 +87,24 @@ public class BatchingTypeManagementServiceImpl  implements IBatchingTypeManageme
     public Response binAllocationEditAdd(BoxGroupIngredientCondition boxGroupIngredientCondition) {
         logger.info("参数处理......");
         List<BaseIngredientBoxEntry> list = new ArrayList<>();
-        for (BaseIngredientBoxCondition b:boxGroupIngredientCondition.getList()
-             ) {
+        for (BaseIngredientBoxCondition b : boxGroupIngredientCondition.getList()
+        ) {
             logger.info("转化字符串为数组......");
             List<String> result = Arrays.asList(b.getBoxCodes().split(","));
-            if(result.size()>=1){
+            if (result.size() >= 1) {
                 logger.info("拼装二级参数......");
-                for (String boxCode:result
-                     ) {
-                    list.add(binAllocationEditAddCondition(boxCode,b));
+                for (String boxCode : result
+                ) {
+                    list.add(binAllocationEditAddCondition(boxCode, b));
                 }
             }
         }
         logger.info("根据id是否存在判断......");
-        if(boxGroupIngredientCondition.getId() == null){
+        if (boxGroupIngredientCondition.getId() == null) {
             logger.info("添加操作......");
             BaseBoxGroupEntry baseBoxGroupEntry = new BaseBoxGroupEntry();
             logger.info("判断配料名是否存在......");
-            if(baseBoxGroupMapper.selectByName(boxGroupIngredientCondition.getName()).size() > 0){
+            if (baseBoxGroupMapper.selectByName(boxGroupIngredientCondition.getName()).size() > 0) {
                 return Response.failure("配料类型名称不可重复");
             }
             baseBoxGroupEntry.setName(boxGroupIngredientCondition.getName());
@@ -111,18 +116,26 @@ public class BatchingTypeManagementServiceImpl  implements IBatchingTypeManageme
             baseBoxGroupMapper.insert(baseBoxGroupEntry);
             baseIngredientBoxMapper.deleteByGroupId(baseBoxGroupEntry.getId());
             logger.info("轮存次表......");
-            for (BaseIngredientBoxEntry baseIngredientBoxEntry:list
-                 ) {
+            // add by zhs at 20181120 for task to kafka start
+//            Long groupId = baseBoxGroupEntry.getId();
+            int num = 0;
+            // add by zhs at 20181120 for task to kafka end
+            for (BaseIngredientBoxEntry baseIngredientBoxEntry : list
+            ) {
                 baseIngredientBoxEntry.setBoxGroupId(baseBoxGroupEntry.getId());
-                baseIngredientBoxMapper.insert(baseIngredientBoxEntry);
+                num += baseIngredientBoxMapper.insert(baseIngredientBoxEntry);
             }
-        }else {
+//            if (num > 0) {
+//                taskKafkaHelper.modifyBoxGroup(groupId, baseIngredientBoxMapper.selectByBoxGroupIdForTask(groupId));
+//            }
+            // add by zhs at 20181120 for task to kafka end
+        } else {
             logger.info("修改操作......");
             BaseBoxGroupEntry baseBoxGroupEntry = new BaseBoxGroupEntry();
             CountNameCondition countNameCondition = new CountNameCondition();
             countNameCondition.setId(boxGroupIngredientCondition.getId());
             countNameCondition.setName(boxGroupIngredientCondition.getName());
-            if(baseBoxGroupMapper.selectCountByNameThisId(countNameCondition) > 0){
+            if (baseBoxGroupMapper.selectCountByNameThisId(countNameCondition) > 0) {
                 return Response.failure("配料类型名称不可重复");
             }
             baseBoxGroupEntry.setId(boxGroupIngredientCondition.getId());
@@ -132,13 +145,23 @@ public class BatchingTypeManagementServiceImpl  implements IBatchingTypeManageme
             baseBoxGroupEntry.setIsDeleted(boxGroupIngredientCondition.getDeleted());
             baseBoxGroupEntry.setMachineTypeId(baseBoxGroupEntry.getMachineTypeId());
             baseBoxGroupMapper.updateByPrimaryKeySelective(baseBoxGroupEntry);
+            // add by zhs at 20181120 for task to kafka start
+            Long groupId = baseBoxGroupEntry.getId();
+            List<IngredientBoxBo> ingredientBoxBos = baseIngredientBoxMapper.selectByBoxGroupIdForTask(groupId);
+            int num = 0;
+            // add by zhs at 20181120 for task to kafka end
             baseIngredientBoxMapper.deleteByGroupId(boxGroupIngredientCondition.getId());
             logger.info("轮存次表......");
-            for (BaseIngredientBoxEntry baseIngredientBoxEntry:list
-                    ) {
+            for (BaseIngredientBoxEntry baseIngredientBoxEntry : list
+            ) {
                 baseIngredientBoxEntry.setBoxGroupId(baseBoxGroupEntry.getId());
-                baseIngredientBoxMapper.insert(baseIngredientBoxEntry);
+                num += baseIngredientBoxMapper.insert(baseIngredientBoxEntry);
             }
+            // add by zhs at 20181120 for task to kafka start
+            if (num > 0) {
+                taskKafkaHelper.modifyBoxGroup(groupId, ingredientBoxBos);
+            }
+            // add by zhs at 20181120 for task to kafka end
         }
         logger.info("操作完成......");
         return Response.success();
@@ -147,17 +170,15 @@ public class BatchingTypeManagementServiceImpl  implements IBatchingTypeManageme
     //查询所有配料信息接口
     @Override
     public Response ingredientInfo(Long boxGroupId) {
-        List<BaseIngredientBoxInfoBo> baseIngredientBoxEntries =baseIngredientBoxMapper.selectBoxOrInfoByBoxGroupId(boxGroupId);
+        List<BaseIngredientBoxInfoBo> baseIngredientBoxEntries = baseIngredientBoxMapper.selectBoxOrInfoByBoxGroupId(boxGroupId);
         return Response.success(baseIngredientBoxEntries);
     }
-
-
 
 
     //查询料盒分配接口
     @Override
     public Response binAllocationList() {
-        List<BaseMachineTypeEntry>  baseMachineTypeEntry = baseMachineTypeMapper.selectAll();
+        List<BaseMachineTypeEntry> baseMachineTypeEntry = baseMachineTypeMapper.selectAll();
         return Response.success(baseMachineTypeEntry);
     }
 
@@ -168,11 +189,12 @@ public class BatchingTypeManagementServiceImpl  implements IBatchingTypeManageme
 
     /**
      * 添加/修改料盒分配接口 ------------二级参数处理
+     *
      * @param
      * @param baseIngredientBoxCondition
      * @return
      */
-    private BaseIngredientBoxEntry binAllocationEditAddCondition(String boxCode , BaseIngredientBoxCondition baseIngredientBoxCondition){
+    private BaseIngredientBoxEntry binAllocationEditAddCondition(String boxCode, BaseIngredientBoxCondition baseIngredientBoxCondition) {
         BaseIngredientBoxEntry entry = new BaseIngredientBoxEntry();
 
         entry.setWarnPercent(baseIngredientBoxCondition.getWarnPercent());

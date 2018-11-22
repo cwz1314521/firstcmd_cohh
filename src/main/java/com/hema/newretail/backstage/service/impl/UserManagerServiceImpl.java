@@ -247,5 +247,21 @@ public class UserManagerServiceImpl  implements IUserManagerService {
         return query;
     }
 
+    @Override
+    public List<UserManagerData> queryAllByIds(List<String> ids) {
+        List<UserManagerData> list = new ArrayList<>();
 
+        try{
+            Criteria criteria = new Criteria();
+
+            criteria.andOperator(Criteria.where("_id").in(ids));
+            Query query = new Query(criteria);
+
+            list = mongoTemplate.find(query, UserManagerData.class,"userManagementData");
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return list;
+    }
 }

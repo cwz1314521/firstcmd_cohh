@@ -9,12 +9,14 @@ import java.util.Map;
 
 public interface IUserManagerService {
 
-    public UserManagerData queryOneById(String id);
+    UserManagerData queryOneById(String id);
 
-    public Response getUserConsumptionsByOpenId(Map<String,Object> paramperters);
+    Response getUserConsumptionsByOpenId(Map<String,Object> paramperters);
 
-    public boolean updateStatusById(String id);
+    boolean updateStatusById(String id);
 
-    public List<UserManagerData> findAll(UserManaCondition userManaCondition);
+    List<UserManagerData> findAll(UserManaCondition userManaCondition);
+
+    List<UserManagerData> queryAllByIds(List<String> ids);
 
 }

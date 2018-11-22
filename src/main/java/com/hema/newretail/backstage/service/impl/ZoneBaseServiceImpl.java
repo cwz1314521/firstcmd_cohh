@@ -1,5 +1,7 @@
 package com.hema.newretail.backstage.service.impl;
 
+import com.alibaba.fastjson.JSON;
+import com.hema.newretail.backstage.common.utils.kafka.TaskKafkaHelper;
 import com.hema.newretail.backstage.dao.BaseIngredientBoxMapper;
 import com.hema.newretail.backstage.dao.BoxGroupMapper;
 import com.hema.newretail.backstage.dao.RefZoneMachineMapper;
@@ -8,11 +10,13 @@ import com.hema.newretail.backstage.entry.BaseMachineInfoEntry;
 import com.hema.newretail.backstage.entry.RefZoneMachine;
 import com.hema.newretail.backstage.entry.ZoneBase;
 import com.hema.newretail.backstage.model.tag.BaseIngredientBoxInfoBo;
+import com.hema.newretail.backstage.model.taskkafka.AddZoneHashBo;
 import com.hema.newretail.backstage.model.zonebase.BoxGroupBo;
 import com.hema.newretail.backstage.model.zonebase.ZoneBo;
 import com.hema.newretail.backstage.model.zonebase.ZoneMapGridBo;
 import com.hema.newretail.backstage.service.IZoneBaseService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,6 +40,8 @@ public class ZoneBaseServiceImpl implements IZoneBaseService {
     private RefZoneMachineMapper refZoneMachineMapper;
     @Autowired
     private BaseIngredientBoxMapper baseIngredientBoxMapper;
+    @Autowired
+    private TaskKafkaHelper taskKafkaHelper;
 
     /**
      * @param paramsMap
@@ -84,7 +90,11 @@ public class ZoneBaseServiceImpl implements IZoneBaseService {
         zoneBaseMapper.insertSelective(zoneBase);
 
         if (null != hashcodes && hashcodes.length > 0) {
-            refZoneMachineMapper.insertBatch(getZoneMachineList(hashcodes, zoneBase.getId()));
+            int num = refZoneMachineMapper.insertBatch(getZoneMachineList(hashcodes, zoneBase.getId()));
+            // add by zhs at 20181120 for task to kafka
+            if (num > 0) {
+                taskKafkaHelper.addZoneHash(zoneBase.getId(), hashcodes);
+            }
         }
     }
 
@@ -105,8 +115,13 @@ public class ZoneBaseServiceImpl implements IZoneBaseService {
                 if (null == zoneBase) {
                     return;
                 }
+                Long oldBoxGroupId = zoneBase.getBoxGroupId();
                 zoneBase.setBoxGroupId(Long.valueOf(boxGroupId));
-                zoneBaseMapper.updateByPrimaryKeySelective(zoneBase);
+                int num = zoneBaseMapper.updateByPrimaryKeySelective(zoneBase);
+                // add by zhs at 20181120 for task to kafka
+                if (num > 0) {
+                    taskKafkaHelper.modifyZoneBoxGroup(zoneBase.getId(), oldBoxGroupId, Long.valueOf(boxGroupId));
+                }
             }
         }
 
@@ -144,11 +159,24 @@ public class ZoneBaseServiceImpl implements IZoneBaseService {
             if (this.isHaveCrossZone(hashcodes, zoneId)) {
                 return -2;
             }
+            // add by zhs at 20181120 for task to kafka
+            List<String> geoHashsOld = refZoneMachineMapper.selectGeoHashByZoneid(zoneId);
+            Collection<String> oldc = new ArrayList<>(geoHashsOld);
+            Collection<String> newc = new ArrayList<>(Arrays.asList(hashcodes));
+            newc.removeAll(oldc);
+            // add by zhs at 20181120 for task to kafka
             refZoneMachineMapper.deleteByZoneid(zoneId);
             machineNum = zoneBaseMapper.selectMachineNumByHashcode(hashcodes);
             List<RefZoneMachine> list = getZoneMachineList(hashcodes, zoneId);
             if (null != list) {
-                refZoneMachineMapper.insertBatch(list);
+                int num = refZoneMachineMapper.insertBatch(list);
+                // add by zhs at 20181120 for task to kafka
+                if (num > 0 && newc.size() > 0) {
+                    String[] hashs = new String[newc.size()];
+                    newc.toArray(hashs);
+                    taskKafkaHelper.addZoneHash(zoneId, hashs);
+                }
+                // add by zhs at 20181120 for task to kafka
             }
         } else {
             refZoneMachineMapper.deleteByZoneid(zoneId);
@@ -200,7 +228,7 @@ public class ZoneBaseServiceImpl implements IZoneBaseService {
      * @return true 有 false 没有
      */
     private Boolean isHaveCrossZone(String[] hashcodes, Long zoneId) {
-        List<String> hashCodeList = zoneBaseMapper.getHashCodeCross(hashcodes,zoneId);
+        List<String> hashCodeList = zoneBaseMapper.getHashCodeCross(hashcodes, zoneId);
         return null != hashCodeList && hashCodeList.size() > 0;
     }
 

@@ -1,5 +1,7 @@
 package com.hema.newretail.backstage.model.diy;
 
+import lombok.Data;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
@@ -12,13 +14,14 @@ import java.util.List;
  * @Date 2018/10/18 12:52
  * @Version 1.0
  **/
+@Data
 public class DetailEventBo implements Serializable {
 
     private Long id ;
 
     private String ingredientName;
 
-    private String ingredientId;
+    private Long ingredientId;
 
     private BigDecimal maxIngredient;
 
@@ -29,59 +32,5 @@ public class DetailEventBo implements Serializable {
 
     private String markedWords;
 
-    public String getIngredientId() {
-        return ingredientId;
-    }
 
-    public void setIngredientId(String ingredientId) {
-        this.ingredientId = ingredientId;
-    }
-
-    public String getMarkedWords() {
-        return markedWords;
-    }
-
-    public void setMarkedWords(String markedWords) {
-        this.markedWords = markedWords;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getIngredientName() {
-        return ingredientName;
-    }
-
-    public void setIngredientName(String ingredientName) {
-        this.ingredientName = ingredientName;
-    }
-
-    public BigDecimal getMaxIngredient() {
-        return maxIngredient;
-    }
-
-    public void setMaxIngredient(BigDecimal maxIngredient) {
-        this.maxIngredient = maxIngredient;
-    }
-
-    public Integer getMaxTime() {
-        return maxTime;
-    }
-
-    public void setMaxTime(Integer maxTime) {
-        this.maxTime = maxTime;
-    }
-
-    public List<DetailEventSonBo> getList() {
-        return list;
-    }
-
-    public void setList(List<DetailEventSonBo> list) {
-        this.list = list;
-    }
 }

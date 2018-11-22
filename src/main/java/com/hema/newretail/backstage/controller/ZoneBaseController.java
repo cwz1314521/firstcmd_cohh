@@ -87,7 +87,7 @@ public class ZoneBaseController {
     public Response zoneAdd(@RequestParam(required = false) @NotBlank(message = "参数machineTypeId不能为空") String machineTypeId,
                             @RequestParam(required = false)
                             @NotBlank(message = "参数zoneName不能为空")
-                            @Size(min = 2,max = 18,message = "2~18个字符")
+                            @Size(min = 2, max = 18, message = "2~18个字符")
                                     String zoneName,
                             String province, String city, String area, String[] hashcodes) {
         if (StringUtils.isEmpty(province)) {
@@ -149,14 +149,14 @@ public class ZoneBaseController {
     @ApiOperation("检测未划分片区的设备")
     @RequestMapping(value = "/checkZone", method = RequestMethod.POST)
     public Response checkZone(@RequestBody List<AllZoneHashcodeBo> hashcodeBoList) {
-        if(null == hashcodeBoList) {
+        if (null == hashcodeBoList) {
             return Response.failure();
         }
         try {
             Map<String, Object> map = new HashMap<>(1);
             List<String> hashList = new ArrayList<>(hashcodeBoList.size());
-            for(AllZoneHashcodeBo hashcodeBo : hashcodeBoList) {
-                if(null != hashcodeBo && null != hashcodeBo.getCode()) {
+            for (AllZoneHashcodeBo hashcodeBo : hashcodeBoList) {
+                if (null != hashcodeBo && null != hashcodeBo.getCode()) {
                     hashList.add(hashcodeBo.getCode());
                 }
             }
@@ -266,7 +266,7 @@ public class ZoneBaseController {
     public Response zoneUpdate(@RequestParam(required = false) @NotBlank(message = "参数zoneId不能为空") String zoneId,
                                @RequestParam(required = false)
                                @NotBlank(message = "参数zoneName不能为空")
-                               @Size(min = 2,max = 18,message = "2~18个字符")
+                               @Size(min = 2, max = 18, message = "2~18个字符")
                                        String zoneName,
                                String province, String city, String area, String[] hashcodes) {
         if (StringUtils.isEmpty(province)) {
@@ -280,7 +280,7 @@ public class ZoneBaseController {
         }
         try {
             Integer num = zoneBaseService.updateZoneData(Long.valueOf(zoneId), zoneName, province, city, area, hashcodes);
-            if(-2 == num ) {
+            if (-2 == num) {
                 return Response.failure("检测到有交叉片区，更新失败。");
             }
             return Response.success();

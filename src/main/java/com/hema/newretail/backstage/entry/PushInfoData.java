@@ -13,6 +13,7 @@ public class PushInfoData implements Serializable {
     private String title;//标题
     private String content;//内容
     private String operator;//发送者
+    private String isWeiXin;//是否发送服务通知
     private List<String> userIsRead;//是否已读 如果用户已读，就将该用户添加到集合中
     private Date pushTime;
     private List<String> userIsDel;
@@ -108,5 +109,13 @@ public class PushInfoData implements Serializable {
 
     public void setUserIsDel(List<String> userIsDel) {
         this.userIsDel = userIsDel;
+    }
+
+    public String getIsWeiXin() {
+        return isWeiXin;
+    }
+
+    public void setIsWeiXin(String isWeiXin) {
+        this.isWeiXin = isWeiXin;
     }
 }

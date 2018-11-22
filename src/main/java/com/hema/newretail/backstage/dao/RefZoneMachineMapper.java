@@ -33,6 +33,14 @@ public interface RefZoneMachineMapper {
     List<RefZoneMachine> selectByZoneid(Long zoneId);
 
     /**
+     * 根据zoneId查询所有hashcode
+     *
+     * @param zoneId
+     * @return
+     */
+    List<String> selectGeoHashByZoneid(Long zoneId);
+
+    /**
      * 删除指定片区的所有网格
      *
      * @param zoneId

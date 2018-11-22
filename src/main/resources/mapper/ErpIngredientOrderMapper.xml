@@ -144,7 +144,7 @@ GROUP BY i.ingredient_id
       and o.ingredient_manufacturer_id = #{manufacturerId,jdbcType=BIGINT}
     </if>
     <if test="orderCode != null" >
-      and o.order_code = #{orderCode,jdbcType=VARCHAR}
+      and o.order_code like  "%"#{orderCode,jdbcType=VARCHAR}"%"
     </if>
     <if test="companyId != null" >
       and a.company_id = #{companyId,jdbcType=BIGINT}

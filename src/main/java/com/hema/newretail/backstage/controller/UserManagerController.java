@@ -10,6 +10,8 @@ import com.hema.newretail.backstage.entry.UserFormIdData;
 import com.hema.newretail.backstage.service.IUserManagerService;
 import com.hema.newretail.backstage.service.IUserPushInfoService;
 import io.swagger.annotations.ApiOperation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
@@ -24,6 +26,8 @@ import java.util.*;
 @RestController
 @RequestMapping(value = "/userManager")
 public class UserManagerController {
+
+    private Logger logger = LoggerFactory.getLogger(UserManagerController.class);
 
     @Autowired
     private IUserManagerService userManagerService;
@@ -178,11 +182,28 @@ public class UserManagerController {
             String users = reqMap.get("users");
             String title = reqMap.get("title");
             String content = reqMap.get("content");
+            String isWeiXin = reqMap.get("isWeiXin");
+
+            String[] fillData = {TimeUtil.getStringByDateFormart(new Date(),"MM月dd日 HH:mm"),content};
+
             String[] idArr;
             if (users.indexOf(COMMA)>0){
                 idArr = users.split(",");
             }else{
                 idArr = new String[]{users};
+            }
+            if(Integer.parseInt(isWeiXin)==1){
+                List<UserManagerData> userList = userManagerService.queryAllByIds(Arrays.asList(idArr));
+
+                for (UserManagerData user:userList){
+                    String openId = user.getOpenId();
+                    if(openId!=null && !"".equals(openId)){
+                        String result = userPushInfoService.sendTemplate(openId,userPushInfoService.findOneByOpenId(openId).getFormId(),fillData);
+                        logger.info("消息发送结果："+result);
+                    }else {
+                        logger.info("此用户没有openID，用户ID："+user.getId());
+                    }
+                }
             }
 
             //Todo 获取当前登录的用户
@@ -193,6 +214,7 @@ public class UserManagerController {
             pushInfoData.setContent(content);
             pushInfoData.setTitle(title);
             pushInfoData.setOperator(operator);
+            pushInfoData.setIsWeiXin(isWeiXin);
             pushInfoData.setUsers(Arrays.asList(idArr));
             pushInfoData.setPushTime(new Date());
             userPushInfoService.save(pushInfoData);

@@ -132,8 +132,14 @@ WHERE q.`status` not in (-1,0)
       and o.order_code like "%"#{orderCode,jdbcType=VARCHAR}"%"
     </if>
     <if test="qualityGuaranteePeriod != null" >
-      <![CDATA[   and DATE_FORMAT(q.quality_guarantee_period , '%Y-%m-%d')<
-       DATE_FORMAT( #{qualityGuaranteePeriod,jdbcType=TIMESTAMP}, '%Y-%m-%d')   ]]>
+      and date_format(
+      q.quality_guarantee_period,
+      '%Y-%m-%d'
+      ) = date_format(
+      #{qualityGuaranteePeriod,jdbcType=TIMESTAMP},
+      '%Y-%m-%d'
+      )
+
     </if>
     <if test="isPeriod != null" >
       <if test="isPeriod == 1" >

@@ -88,6 +88,11 @@
     from ref_zone_machine
     where zone_id = #{zoneId,jdbcType=BIGINT}
   </select>
+  <select id="selectGeoHashByZoneid" resultType="java.lang.String" parameterType="java.lang.Long" >
+    select geo_hash
+    from ref_zone_machine
+    where zone_id = #{zoneId,jdbcType=BIGINT}
+  </select>
   <delete id="deleteByZoneid" parameterType="java.lang.Long" >
     delete from ref_zone_machine
     where zone_id = #{zoneId,jdbcType=BIGINT}

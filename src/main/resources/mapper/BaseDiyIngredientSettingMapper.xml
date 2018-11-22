@@ -85,6 +85,7 @@ WHERE 1=1
     <if test="message != null and message != ''" >
       and i.ingredient_name like  "%"#{message,jdbcType=VARCHAR}"%"
     </if>
+    order by s.gmt_create desc
   </select>
 
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >

@@ -52,7 +52,7 @@ public class FileOSSController {
      * @date: 2018/11/16 10:22
      */
     @ApiOperation("≡(▔﹏▔)≡根据原料id查询原料名字")
-    @PostMapping("/save")
+    @PostMapping("/ingredientNameById")
     @ResponseBody
     public Response IngredientNameById(@RequestBody @Validated IngredientNameByIdCondition ingredientNameByIdCondition , BindingResult bindingResult){
 
@@ -80,6 +80,6 @@ public class FileOSSController {
                         return Response.failure("上传失败");
                     }
                     logger.info("上传完毕,访问地址:"+url);
-                    return Response.success("上传成功");
+                    return Response.success(url);
     }
 }
