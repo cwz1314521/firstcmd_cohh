@@ -33,10 +33,16 @@ public class BaseIngredientInfoDataServiceImpl implements IBaseIngredientInfoDat
      */
     @Override
     public boolean save(BaseIngredientInfoEntry data) {
+
         int n=0;
         if (mapper.selectByPrimaryKey(data.getId())==null){
             data.setGmtCreate(new Date());
-            n = mapper.insertSelective(data);
+            int i = mapper.selectCountByCode(data.getIngredientCode());
+            if(i<1){
+                n = mapper.insertSelective(data);
+            }else {
+                return false;
+            }
         }else{
             data.setGmtModified(new Date());
             n = mapper.updateByPrimaryKey(data);

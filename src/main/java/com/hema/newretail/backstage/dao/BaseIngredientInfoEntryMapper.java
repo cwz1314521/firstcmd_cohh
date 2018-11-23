@@ -14,6 +14,9 @@ import java.util.Map;
 public interface BaseIngredientInfoEntryMapper {
 
 
+
+    int selectCountByCode(String ingredientCode);
+
     List<ListManufacturerBo> selectBySelect(ListManufacturerCondition listManufacturerCondition);
 
     List<BaseIngredientInfoEntry> selectAll();

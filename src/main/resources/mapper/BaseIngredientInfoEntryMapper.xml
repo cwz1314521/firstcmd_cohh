@@ -26,6 +26,15 @@
     id, gmt_create, gmt_modified, ingredient_name, ingredient_description,
     ingredient_pic, ingredient_price, ingredient_code, ingredient_unit_price
   </sql>
+
+  <select id="selectCountByCode" resultType="java.lang.Integer" parameterType="java.lang.String" >
+    select
+    count(*)
+    from base_ingredient_info
+    where ingredient_code = #{ingredientCode,jdbcType=VARCHAR}
+  </select>
+
+
   <select id="selectBySelect" resultMap="BaseSelectListMap" parameterType="com.hema.newretail.backstage.common.queryparam.erp.ListManufacturerCondition" >
     select
     id,ingredient_name

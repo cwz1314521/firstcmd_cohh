@@ -14,7 +14,7 @@ public class BaseIngredientInfoEntry implements Serializable {
 
     private String ingredientName;
 
-    @Size(message = "最大长度10",max = 10)
+    @Size(message = "最大长度1",max = 1)
     private String ingredientCode;
 
     private String ingredientDescription;

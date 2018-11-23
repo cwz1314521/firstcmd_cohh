@@ -26,7 +26,7 @@ import static com.hema.newretail.backstage.common.utils.ossutil.OSSClientConstan
  */
 public class UploadFileUtil {
 
-    private static final String IMAGE = "jpg, png，gif, jpeg";
+    private static final String IMAGE = "jpg, png，gif, jpeg, pdf";
 
     private static final int SIZE = 1024000;
 

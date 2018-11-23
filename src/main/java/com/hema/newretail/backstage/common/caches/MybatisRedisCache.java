@@ -4,6 +4,7 @@ package com.hema.newretail.backstage.common.caches;
 import org.apache.ibatis.cache.Cache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.redis.connection.RedisServerCommands;
 import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
@@ -99,7 +100,8 @@ public class MybatisRedisCache implements Cache {
 
     @Override
     public int getSize() {
-        return 0;
+        Long size = (Long) getRedisTemplate().execute((RedisCallback<Long>) RedisServerCommands::dbSize);
+        return size.intValue();
     }
 
     @Override
