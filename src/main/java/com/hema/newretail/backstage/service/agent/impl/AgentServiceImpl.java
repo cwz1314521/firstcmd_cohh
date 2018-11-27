@@ -100,6 +100,11 @@ public class AgentServiceImpl implements AgentService {
     @Transactional
     public Response add(AddAgentCondition AddAgentCondition) {
 
+        int i = agentUserMapper.selectCountByName(AddAgentCondition.getCompanyName());
+        if(i>=1){
+            logger.error("代理公司名称重复");
+            return  Response.failure("代理公司名称重复");
+        }
         logger.info("参数处理......");
         AgentUserEntry agentUserEntry = addAssembly(AddAgentCondition);
         logger.info("代理主表存入......");

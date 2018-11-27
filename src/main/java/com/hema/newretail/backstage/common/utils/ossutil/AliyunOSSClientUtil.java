@@ -1,10 +1,4 @@
 package com.hema.newretail.backstage.common.utils.ossutil;
-/**
- * @Author:
- * @Date: 2018/9/11 09:12
- * @Description:
- * @Version: 1.0
- */
 
 import com.aliyun.oss.ClientException;
 import com.aliyun.oss.OSSClient;
@@ -19,6 +13,9 @@ import org.springframework.stereotype.Component;
 
 import java.io.*;
 
+/**
+ * @author admin
+ */
 @Component
 public class AliyunOSSClientUtil {
 
@@ -203,6 +200,7 @@ public class AliyunOSSClientUtil {
      *
      * @param objectName 要下载的OSS上的文件
      * @return 读取的文件内容
+     * @author ZhangHaiSheng
      */
     public String readStreamFileOfJson(String objectName) {
         try {
@@ -216,10 +214,7 @@ public class AliyunOSSClientUtil {
             }
             return readTextFromInputStream(instream);
         } catch (Exception e) {
-//            e.printStackTrace();
             return null;
-        } finally {
-//            getOSSClient().shutdown();
         }
     }
 
@@ -229,13 +224,13 @@ public class AliyunOSSClientUtil {
      * @param instream 流对象
      * @return 文件内容
      * @throws IOException IO操作异常
+     * @author ZhangHaiSheng
      */
     private String readTextFromInputStream(InputStream instream) throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(instream, "UTF-8"));
         StringBuilder message = new StringBuilder("");
         String line = "";
         while (null != (line = reader.readLine())) {
-//            System.out.println("\t" + line);
             message.append(line);
         }
         reader.close();
@@ -249,6 +244,7 @@ public class AliyunOSSClientUtil {
      * @param fileName 上传到OSS的文件名
      * @param content  上传的文件内容
      * @return OSS返回的上传结果
+     * @author ZhangHaiSheng
      */
     public String writeStreamFile(String fileName, String content) {
         try {
@@ -256,8 +252,6 @@ public class AliyunOSSClientUtil {
             return result.getETag();
         } catch (Exception e) {
             return null;
-        } finally {
-//            getOSSClient().shutdown();
         }
     }
 

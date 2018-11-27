@@ -192,19 +192,29 @@ public class UserManagerController {
             }else{
                 idArr = new String[]{users};
             }
-            if(Integer.parseInt(isWeiXin)==1){
-                List<UserManagerData> userList = userManagerService.queryAllByIds(Arrays.asList(idArr));
+            if(isWeiXin != null && !"".equals(isWeiXin)){
+                if(Integer.parseInt(isWeiXin)==1){
+                    List<UserManagerData> userList = userManagerService.queryAllByIds(Arrays.asList(idArr));
 
-                for (UserManagerData user:userList){
-                    String openId = user.getOpenId();
-                    if(openId!=null && !"".equals(openId)){
-                        String result = userPushInfoService.sendTemplate(openId,userPushInfoService.findOneByOpenId(openId).getFormId(),fillData);
-                        logger.info("消息发送结果："+result);
-                    }else {
-                        logger.info("此用户没有openID，用户ID："+user.getId());
+                    for (UserManagerData user:userList){
+                        String openId = user.getOpenId();
+                        if(openId!=null && !"".equals(openId)){
+                            UserFormIdData formIdData = userPushInfoService.findOneByOpenId(openId);
+                            if(formIdData!=null && formIdData.getFormId() != null){
+                                String result = userPushInfoService.sendTemplate(openId,formIdData.getFormId(),fillData);
+                                logger.info("消息发送结果："+result);
+                            }else {
+                                logger.info("该用户的formId是空，openId:"+openId);
+                            }
+                        }else {
+                            logger.info("此用户没有openID，用户ID："+user.getId());
+                        }
                     }
                 }
+            }else {
+                logger.info("是否发送微信服务参数错误");
             }
+
 
             //Todo 获取当前登录的用户
             String operator = "admin";

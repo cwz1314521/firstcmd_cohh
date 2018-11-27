@@ -39,6 +39,20 @@
   <sql id="Blob_Column_List" >
     machine_desc
   </sql>
+
+  <select id="selectByUUId" resultType="java.lang.String" parameterType="java.lang.String" >
+     select
+   CONCAT(
+		b.province,
+		b.city,
+		b.area,
+		b.street,
+		b.machine_name
+	) AS machine
+    from base_machine_info b
+    where machine_uuid = #{machineUuid,jdbcType=VARCHAR}
+  </select>
+
   <select id="selectByUId" resultMap="ResultMapWithBLOBs" parameterType="java.lang.String" >
     select
     <include refid="Base_Column_List" />

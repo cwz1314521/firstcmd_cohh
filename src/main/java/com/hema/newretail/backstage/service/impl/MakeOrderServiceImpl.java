@@ -100,7 +100,7 @@ public class MakeOrderServiceImpl implements IMakeOrderService {
         pm.setPagenumber(makeOrderCondition.getPageNum());
         pm.setPagesize(makeOrderCondition.getPageSize());
         List<Order> orders = new ArrayList<>();  //排序
-        orders.add(new Order(Direction.DESC, "age"));
+        orders.add(new Order(Direction.DESC, "orderTime"));
         Sort sort = new Sort(orders);
         pm.setSort(sort);
         pageable.setPage(pm);
@@ -177,6 +177,9 @@ public class MakeOrderServiceImpl implements IMakeOrderService {
         //查询bill表
         Query query = new Query(Criteria.where("id").is(id));
         BillData billData = mongoTemplate.findOne(query,BillData.class);
+        if(null == billData) {
+            return Response.failure("订单不存在");
+        }
         //查询user表
         //返回---对象创建
         BillDataBo bo  = new BillDataBo();

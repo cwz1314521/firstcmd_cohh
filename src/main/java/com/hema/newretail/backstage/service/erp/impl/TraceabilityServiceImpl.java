@@ -56,6 +56,7 @@ public class TraceabilityServiceImpl implements TraceabilityService {
 
 
 
+
     private static final Logger logger = LoggerFactory.getLogger(CloudBohhApplication.class);
     private static final String SDFEIGHT = "yyyy-MM-dd";
     private static final String EMPTY = "";
@@ -151,11 +152,12 @@ public class TraceabilityServiceImpl implements TraceabilityService {
         entry.setGmtModified(new Date());
         entry.setRemark(manufacturerEditCondition.getRemark());
         entry.setId(manufacturerEditCondition.getId());
-        int i = erpIngredientManufacturerMapper.selectCountByUserNameEdit(entry.getUserName(),entry.getId());
+        entry.setPassword(manufacturerEditCondition.getPassword());
+/*        int i = erpIngredientManufacturerMapper.selectCountByUserNameEdit(entry.getUserName(),entry.getId());
         if(i > 0){
             logger.error("用户名重复....."+entry.getUserName());
             return Response.failure("用户名重复.....");
-        }
+        }*/
         logger.info("拼装参数类" + ", userName='" + entry.getUserName() + '\''  + ", companyName='" + entry.getCompanyName()
                 + '\'' + ", remark='" + entry.getRemark() + '\'' +
                 ", gmtModified=" + entry.getGmtModified());
@@ -350,12 +352,17 @@ public class TraceabilityServiceImpl implements TraceabilityService {
     public Response inStorePreAll(InStorePreAllCondition inStoreListCondition) {
         logger.info("第一步更新扫码枪扫到的数据......");
         if(inStoreListCondition.getQrcodeCode() != null  && !EMPTY.equals(inStoreListCondition.getQrcodeCode())){
+            int num = 0;
             for (String qrcodeCode:inStoreListCondition.getQrcodeCode()
                     ) {
                 logger.info("循环更新待入库状态......"+qrcodeCode);
-                erpOrderQrcodeMapper.updateByQrcodeCode(qrcodeCode);
+                num += erpOrderQrcodeMapper.updateByQrcodeCode(qrcodeCode);
             }
-            return Response.success();
+            if(num > 0) {
+                return Response.success();
+            } else {
+                return Response.failure("未检测到有效的溯源码");
+            }
         }else{
             return Response.failure("未检测到数据");
         }
@@ -461,6 +468,8 @@ public class TraceabilityServiceImpl implements TraceabilityService {
         erpOrderQrcodeMapper.updateDelete(inStoreDeleteCondition.getId());
         return Response.success();
     }
+
+
 
     /**
      *

@@ -48,6 +48,16 @@
     id, tel, is_deleted, status, gmt_modified, gmt_create, email, company_name,
     company_code, contact_way, contact, province, city, area, addr,remark
   </sql>
+
+  <select id="selectCountByName" parameterType="java.lang.String" resultType="java.lang.Integer">
+    select
+    count(*)
+    from agent_user
+    where company_name = #{companyName,jdbcType=VARCHAR}
+  </select>
+
+
+
   <update id="deleteById" parameterType="java.lang.Long">
     UPDATE agent_user SET is_deleted = 1 WHERE id = #{id,jdbcType=BIGINT}
   </update>

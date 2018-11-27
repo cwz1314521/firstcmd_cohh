@@ -27,6 +27,7 @@ public class ManufacturerEditCondition {
     @ApiModelProperty(value = "备注")
     private String remark;
 
+    private String password;
 
     public Long getId() {
         return id;
@@ -66,5 +67,13 @@ public class ManufacturerEditCondition {
 
     public void setRemark(String remark) {
         this.remark = remark;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

@@ -120,7 +120,7 @@ LEFT JOIN erp_order_ingredient i ON q.order_ingredient_id = i.id
 LEFT JOIN erp_ingredient_order_address a ON a.id = i.ingredient_order_address_id
 LEFT JOIN erp_ingredient_order o ON o.id = a.ingredient_order_id
 LEFT JOIN base_ingredient_info f ON f.id = i.ingredient_id
-LEFT JOIN base_user_info u ON q.company_instore_user_id = f.id
+LEFT JOIN base_user_info u ON q.company_instore_user_id = u.id
 WHERE q.`status` not in (-1,0)
     <if test="qrcodeCode != null" >
       and q.qrcode_code like "%"#{qrcodeCode,jdbcType=VARCHAR}"%"
@@ -180,6 +180,28 @@ AND eoi.ingredient_id = bii.id
 AND eoi.ingredient_order_address_id = ioa.id
 AND ioa.ingredient_order_id = eio.id
 AND to_days(eoq.company_instore_time) = to_days(now())
+order by eoq.gmt_create desc
+
+  </select>
+  <select id="selectOutStoreTodayMap" resultMap="InStoreTodayMap">
+        SELECT DISTINCT
+	ioa.ingredient_order_id id,
+	eio.order_code orderCode,
+	eoq.status status
+FROM
+	erp_order_qrcode AS eoq,
+	erp_order_ingredient AS eoi,
+	base_ingredient_info AS bii,
+	erp_ingredient_order_address AS ioa,
+	erp_ingredient_order AS eio
+WHERE
+	eoq.`status` = 2
+AND eoq.order_ingredient_id = eoi.id
+AND eoi.ingredient_id = bii.id
+AND eoi.ingredient_order_address_id = ioa.id
+AND ioa.ingredient_order_id = eio.id
+AND to_days(eoq.company_outstore_time) = to_days(now())
+order by eoq.gmt_create desc
 
   </select>
   <select id="selectInStoreNowMap" resultMap="InStoreTodayMap">
@@ -199,6 +221,26 @@ AND eoq.order_ingredient_id = eoi.id
 AND eoi.ingredient_id = bii.id
 AND eoi.ingredient_order_address_id = ioa.id
 AND ioa.ingredient_order_id = eio.id
+order by eoq.gmt_create desc
+  </select>
+  <select id="selectOutStoreNowMap" resultMap="InStoreTodayMap">
+    SELECT DISTINCT
+	ioa.ingredient_order_id id,
+	eio.order_code orderCode,
+	eoq.status status
+FROM
+	erp_order_qrcode AS eoq,
+	erp_order_ingredient AS eoi,
+	base_ingredient_info AS bii,
+	erp_ingredient_order_address AS ioa,
+	erp_ingredient_order AS eio
+WHERE
+	eoq.`status` = -4
+AND eoq.order_ingredient_id = eoi.id
+AND eoi.ingredient_id = bii.id
+AND eoi.ingredient_order_address_id = ioa.id
+AND ioa.ingredient_order_id = eio.id
+order by eoq.gmt_create desc
   </select>
   <select id="selectInStoreTodaySonMap" resultMap="InStoreTodaySonMap" parameterType="java.util.Map" >
    SELECT distinct
@@ -215,6 +257,13 @@ AND eoq.order_ingredient_id = eoi.id
 AND eoi.ingredient_id = bii.id
 AND eoi.ingredient_order_address_id = ioa.id
 and ioa.ingredient_order_id= #{id,jdbcType=BIGINT}
+    <if test="status == 1 " >
+      and  to_days(eoq.company_instore_time) = to_days(now())
+    </if>
+
+    <if test="status == 2 " >
+      and  to_days(eoq.company_outstore_time) = to_days(now())
+    </if>
 GROUP BY
 	eoi.ingredient_id
 
@@ -238,15 +287,45 @@ LEFT JOIN base_ingredient_info f ON i.ingredient_id = f.id
 WHERE
 	e.`status` = -1
   </select>
+  <select id="selectBaseOutStoreListMap" resultMap="BaseInStoreListMap" >
+SELECT DISTINCT
+	e.id,
+	e.quality_guarantee_period,
+
+IF (
+	NOW() > e.quality_guarantee_period,
+	'过期',
+	'未过期'
+) `status`,
+ f.ingredient_name ingredientName,
+ qrcode_code
+FROM
+	erp_order_qrcode e
+LEFT JOIN erp_order_ingredient i ON e.order_ingredient_id = i.id
+LEFT JOIN base_ingredient_info f ON i.ingredient_id = f.id
+WHERE
+	e.`status` = -4
+  </select>
   <update id="updateByQrcodeCode" parameterType="java.lang.String" >
     update erp_order_qrcode
     set status = -1
     where qrcode_code = #{qrcodeCode,jdbcType=VARCHAR}
     and  status in  (0,8)
   </update>
+  <update id="updateByQrcodeCodeOut" parameterType="java.lang.String" >
+    update erp_order_qrcode
+    set status = -4
+    where qrcode_code = #{qrcodeCode,jdbcType=VARCHAR}
+    and  status in  (1,8)
+  </update>
   <select id="selectByQrcodeCode" resultMap="BaseResultMap" parameterType="java.lang.String" >
    select * from erp_order_qrcode
     where qrcode_code = #{qrcodeCode,jdbcType=VARCHAR}
+  </select>
+  <select id="selectByQrcodeCodeOut" resultMap="BaseResultMap" parameterType="java.lang.String" >
+   select * from erp_order_qrcode
+    where qrcode_code = #{qrcodeCode,jdbcType=VARCHAR}
+    and status = 1
   </select>
   <update id="updateByInStoreDBCondition" parameterType="com.hema.newretail.backstage.common.queryparam.erp.InStoreDBCondition" >
     update erp_order_qrcode
@@ -257,15 +336,20 @@ WHERE
     company_instore_time = #{time,jdbcType=TIMESTAMP}
     where status = -1
   </update>
+  <update id="updateByOutStoreDBCondition" parameterType="com.hema.newretail.backstage.common.queryparam.erp.InStoreDBCondition" >
+    update erp_order_qrcode
+    set
+    status = 2,
+    company_outstore_user_id = #{userId,jdbcType=BIGINT},
+    company_outstore_time = #{time,jdbcType=TIMESTAMP}
+    where status = -4
+  </update>
   <update id="updateDelete" parameterType="java.lang.Long" >
     update erp_order_qrcode
     set
     status = 8
     where id = #{id,jdbcType=BIGINT}
   </update>
-
-
-
 
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
@@ -562,4 +646,71 @@ WHERE
       out_factory_time = #{outFactoryTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}
   </update>
+
+  <select id="selectCompanyStockList" resultType="com.hema.newretail.backstage.model.erp.StockManageBo">
+      SELECT DISTINCT eoq.id, eoq.qrcode_code AS qrcodeCode, eio.order_code AS orderCode,
+      CONCAT(bii.ingredient_name, bii.ingredient_code) AS ingredientName, eoq.quality_guarantee_period AS qualityGuaranteePeriod,
+      IF (eoq.quality_guarantee_period > now(), '未过期', '已过期') AS isPeriod,
+      CASE eoq.`status`
+      WHEN 1 THEN
+      '在库'
+      WHEN - 4 THEN
+      '在库'
+      WHEN 2 THEN
+      '出库'
+      ELSE
+      '其他状态'
+      END AS `status`,
+      (SELECT user_name FROM base_user_info WHERE id = eoq.company_instore_user_id) AS companyInstoreUser,
+      (SELECT user_name FROM base_user_info WHERE id = eoq.company_outstore_user_id) AS companyOutstoreUser,
+      eoq.company_instore_time AS companyInstoreTime,
+      eoq.company_outstore_time AS companyOutstoreTime
+      FROM erp_order_qrcode AS eoq, erp_order_ingredient AS eoi, erp_ingredient_order_address AS eioa, erp_ingredient_order AS eio, base_ingredient_info AS bii
+      <where>
+          eoq.order_ingredient_id = eoi.id AND eoi.ingredient_order_address_id = eioa.id AND eioa.ingredient_order_id = eio.id AND bii.id = eoi.ingredient_id
+          AND (eoq.`status` = 1 OR eoq.`status` = 2 OR eoq.`status` =- 4)
+          <if test="data.qrcodeCode != null and data.qrcodeCode != ''">
+              AND eoq.qrcode_code like CONCAT('%',#{data.qrcodeCode}, '%')
+          </if>
+          <if test="data.ingredientName != null and data.ingredientName !=''">
+              AND CONCAT(bii.ingredient_name, bii.ingredient_code) like CONCAT('%',#{data.ingredientName}, '%')
+          </if>
+          <if test="data.orderCode != null and data.orderCode !=''">
+              AND eio.order_code like CONCAT('%',#{data.orderCode}, '%')
+          </if>
+          <if test="data.qualityGuaranteePeriod != null and data.qualityGuaranteePeriod !=''">
+              AND DATE_FORMAT(eoq.quality_guarantee_period,'%Y-%m-%d') = DATE_FORMAT(#{data.qualityGuaranteePeriod}, '%Y-%m-%d')
+          </if>
+          <choose>
+              <when test="data.isPeriod != null and data.isPeriod == 1">
+                  <![CDATA[
+                  AND eoq.quality_guarantee_period > now()
+                  ]]>
+              </when>
+              <when test="data.isPeriod != null and data.isPeriod == 2">
+                  <![CDATA[
+                  AND eoq.quality_guarantee_period <= now()
+                  ]]>
+              </when>
+              <otherwise></otherwise>
+          </choose>
+          <if test="data.startDate != null and data.startDate !='' and data.endDate != null and data.endDate != ''">
+              AND eoq.company_instore_time BETWEEN #{data.startDate} and #{data.endDate}
+          </if>
+          <if test="data.companyInstoreUser != null and data.companyInstoreUser != ''">
+              AND eoq.company_instore_user_id IN (
+                SELECT id FROM base_user_info WHERE user_name LIKE CONCAT('%', #{data.companyInstoreUser}, '%')
+              )
+          </if>
+          <if test="data.companyOutstoreUser != null and data.companyOutstoreUser != ''">
+              AND eoq.company_outstore_user_id IN (
+              SELECT id FROM base_user_info WHERE user_name LIKE CONCAT('%', #{data.companyOutstoreUser}, '%')
+              )
+          </if>
+          <if test="data.state != null and (data.state ==1 or data.state == 2)">
+              AND eoq.`status` = #{data.state}
+          </if>
+      </where>
+      order by eoq.company_instore_time desc
+  </select>
 </mapper>

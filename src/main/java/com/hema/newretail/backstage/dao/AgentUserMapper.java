@@ -8,6 +8,9 @@ import java.util.List;
 
 public interface AgentUserMapper {
 
+
+    int selectCountByName(String companyName);
+
     /**逻辑删除*/
     int deleteById(Long id);
 

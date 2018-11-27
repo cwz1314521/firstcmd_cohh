@@ -2,6 +2,7 @@ package com.hema.newretail.backstage.common.queryparam.erp;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
 
 import java.util.List;
 
@@ -14,32 +15,10 @@ import java.util.List;
  * @Version 1.0
  **/
 @ApiModel(value = "分后台 -列表参数类",description = "分后台 -列表参数类")
+@Data
 public class InStoreListCondition {
-
-
-
-
         @ApiModelProperty(value = "页码")
         private Integer pageNum;
-
         @ApiModelProperty(value = "每页最大数")
-        private Integer pageSize;
+        private Integer pageSize;}
 
-
-
-    public Integer getPageNum() {
-        return pageNum;
-    }
-
-    public void setPageNum(Integer pageNum) {
-        this.pageNum = pageNum;
-    }
-
-    public Integer getPageSize() {
-        return pageSize;
-    }
-
-    public void setPageSize(Integer pageSize) {
-        this.pageSize = pageSize;
-    }
-}

@@ -1,6 +1,5 @@
 package com.hema.newretail.backstage.service.mobile;
 
-import com.hema.newretail.backstage.common.queryparam.mobile.IngredientNameByIdCondition;
 import com.hema.newretail.backstage.common.utils.Response;
 
 /**
@@ -21,5 +20,18 @@ public interface FileOSSService {
      * @author: cwz
      * @date: 2018/11/16 10:22
      */
-    Response IngredientNameById(IngredientNameByIdCondition ingredientNameByIdCondition);
+    Response IngredientNameById(Long  id);
+
+    /**
+     *
+     * 功能描述: 机器信息
+     *
+     * @param:
+     * @return:
+     * @author: cwz
+     * @date: 2018/11/27 10:06
+     */
+    Response machine(String uuid);
+
+
 }

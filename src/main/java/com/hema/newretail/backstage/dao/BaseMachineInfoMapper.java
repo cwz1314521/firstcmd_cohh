@@ -4,6 +4,8 @@ import com.hema.newretail.backstage.entry.BaseMachineInfoEntry;
 
 public interface BaseMachineInfoMapper {
 
+    String selectByUUId(String uuid);
+
     BaseMachineInfoEntry selectByUId(String machineUuid);
 
     int deleteByPrimaryKey(Long id);

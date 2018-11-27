@@ -58,11 +58,19 @@ public class Response {
         return response;
     }
 
+    public static Response failure(Object object) {
+        Response response = new Response();
+        response.setSuccess(false);
+        response.setMsg("操作失败与详情信息");
+        response.setInfo(object);
+        return response;
+    }
+
     public static Response failureValid(Object msgObj) {
         Response response = new Response();
         response.setSuccess(false);
         response.setInfo(msgObj);
-        response.setMsg(ResultCode.FAIL_VALIDATOR.getMessage());
+        response.setMsg(msgObj);
         response.setErrorCode(ResultCode.FAIL_VALIDATOR.getCode());
         return response;
     }

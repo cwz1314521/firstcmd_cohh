@@ -16,6 +16,8 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static com.hema.newretail.backstage.common.utils.ossutil.AliyunOSSClientUtil.getContentType;
 import static com.hema.newretail.backstage.common.utils.ossutil.OSSClientConstants.*;
@@ -24,9 +26,9 @@ import static com.hema.newretail.backstage.common.utils.ossutil.OSSClientConstan
 /**
  * @author jiahao
  */
-public class UploadFileUtil {
+public class UploadFileUtil<psvm> {
 
-    private static final String IMAGE = "jpg, png，gif, jpeg, pdf";
+    private static final String IMAGE = "jpg, png，gif, jpeg";
 
     private static final int SIZE = 1024000;
 
@@ -41,14 +43,14 @@ public class UploadFileUtil {
         String filePath = null;
 
         if (file.isEmpty()) {
-            return "请上传正确比例图片";
+            return "请上传图片";
         }
         try {
             String fileName = file.getOriginalFilename();
             String extensionName = fileName.substring(fileName.lastIndexOf(".") + 1);
 
             if (IMAGE.indexOf(extensionName) == -1) {
-                return "请上传正确比例图片";
+                return "请上传图片文件";
             }
             BufferedImage read = ImageIO.read(file.getInputStream());
             int width = read.getWidth();
@@ -67,12 +69,12 @@ public class UploadFileUtil {
                     }
                     break;
                 case 2:
-                    if (width != height * 2 && height != width * 2) {
+                    if (height != width * 2) {
                         return PROPORTION_IMAGE;
                     }
                     break;
                 case 3:
-                    if (width != height * 3 && height != width * 3) {
+                    if (height != width * 3) {
                         return PROPORTION_IMAGE;
                     }
                     break;
@@ -91,7 +93,7 @@ public class UploadFileUtil {
             int fileSize = (int) file.getSize();
             System.out.println(newFileName + "-->" + fileSize);
             if (fileSize > SIZE) {
-                return "请上传正确比例图片";
+                return "文件大小不能超过10M";
             }
 
             //上传至OSS云存储
@@ -116,7 +118,7 @@ public class UploadFileUtil {
             if (!por.getETag().isEmpty()) {
                 filePath = "https://newretail.hemaapp.com/img/" + newFileName;
             } else {
-                filePath = "请上传正确比例图片";
+                filePath = "上传失败";
             }
             // 关闭OSSClient。
             ossClient.shutdown();
@@ -126,7 +128,6 @@ public class UploadFileUtil {
         }
         return filePath;
     }
-
 
     /**
      * 上传文件到bucket

@@ -12,6 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
  * Created by jiahao on 2018-08-25
  */
@@ -53,15 +57,16 @@ public class StandardDrinkController {
         if (uploadImageOss == null) {
             return Response.failure();
         }
-        if (ERROE_IMAGE_INFO.equals(uploadImageOss)) {
-            return Response.failure(ResultCode.FAIL_VALIDATOR);
+        boolean httpUrl = isHttpUrl(uploadImageOss);
+        if (!httpUrl) {
+            return Response.failure(uploadImageOss);
         }
         return Response.success(uploadImageOss);
     }
 
     @ApiOperation("添加与编辑标准饮品")
     @PostMapping("/addAndUpdateStandardDrink")
-    public Response addStandardDrink(@RequestBody MenuParam menuParam) {
+    public Response addStandardDrink(@RequestBody @Valid MenuParam menuParam) {
         if (menuParam == null) {
             return Response.failure(ResultCode.VALIDATION_ERROR_PARAM_CODE_EMPTY);
         }
@@ -70,7 +75,19 @@ public class StandardDrinkController {
         return Response.success();
     }
 
+    private static boolean isHttpUrl(String urls) {
+        boolean isurl;
+        String regex = "(((https|http)?://)?([a-z0-9]+[.])|(www.))"
+                + "\\w+[.|\\/]([a-z0-9]{0,})?[[.]([a-z0-9]{0,})]+((/[\\S&&[^,;\u4E00-\u9FA5]]+)+)?([.][a-z0-9]{0,}+|/?)";
 
+        Pattern pat = Pattern.compile(regex.trim());
+        Matcher mat = pat.matcher(urls.trim());
+        isurl = mat.matches();
+        if (isurl) {
+            isurl = true;
+        }
+        return isurl;
+    }
 
     /* @ApiOperation("编辑标准饮品")
     @PutMapping("/updateStandardDrink")
