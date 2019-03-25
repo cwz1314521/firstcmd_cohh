@@ -12,6 +12,7 @@
     <result column="gmt_create" property="gmtCreate" jdbcType="TIMESTAMP" />
     <result column="gmt_modified" property="gmtModified" jdbcType="TIMESTAMP" />
     <result column="color_type_id" property="colorTypeId" jdbcType="BIGINT" />
+    <result column="agentId" property="agentId" jdbcType="BIGINT" />
     <result column="machine_name" property="machineName" jdbcType="VARCHAR" />
     <result column="machine_uuid" property="machineUuid" jdbcType="VARCHAR" />
     <result column="machine_code" property="machineCode" jdbcType="VARCHAR" />
@@ -26,32 +27,253 @@
     <result column="area" property="area" jdbcType="VARCHAR" />
     <result column="street" property="street" jdbcType="VARCHAR" />
     <result column="adcode" property="adcode" jdbcType="VARCHAR" />
+    <result column="rule_remark" property="ruleRemark" jdbcType="VARCHAR" />
     <result column="fromType" property="fromtype" jdbcType="VARCHAR" />
+    <result column="machine_desc" property="machineDesc" jdbcType="VARCHAR" />
+    <result column="penal_sum" property="penalSum" jdbcType="DECIMAL" />
+    <result column="cash_pledge" property="cashPledge" jdbcType="DECIMAL" />
+    <result column="machine_sequence" property="machineSequence" jdbcType="VARCHAR" />
   </resultMap>
   <resultMap id="ResultMapWithBLOBs" type="com.hema.newretail.backstage.entry.BaseMachineInfoEntry" extends="BaseResultMap" >
     <result column="machine_desc" property="machineDesc" jdbcType="LONGVARCHAR" />
   </resultMap>
+  <resultMap id="BaseCommonMap" type="com.hema.newretail.backstage.model.common.GridCompanyBo" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="machine_name" property="companyName" jdbcType="VARCHAR" />
+    <result column="machine_uuid" property="machineUuid" jdbcType="VARCHAR" />
+  </resultMap>
+
+
+  <resultMap id="CashListMap" type="com.hema.newretail.backstage.model.financial.CashListBo" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="machineSequence" property="machineSequence" jdbcType="VARCHAR" />
+    <result column="machineName" property="machineName" jdbcType="VARCHAR" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+    <result column="agentName" property="agentName" jdbcType="VARCHAR" />
+    <result column="operator" property="operator" jdbcType="VARCHAR" />
+    <result column="gmtModified" property="gmtModified" jdbcType="VARCHAR" />
+    <result column="cashPledge" property="cashPledge" jdbcType="DECIMAL" />
+    <result column="minCashPledge" property="minCashPledge" jdbcType="DECIMAL" />
+    <result column="retiredCashPledge" property="retiredCashPledge" jdbcType="DECIMAL" />
+    <result column="penalSum" property="penalSum" jdbcType="DECIMAL" />
+    <result column="ruleCupMoney" property="ruleCupMoney" jdbcType="DECIMAL" />
+    <result column="cup" property="cup" jdbcType="INTEGER" />
+    <result column="isCash" property="isCash" jdbcType="INTEGER" />
+    <result column="isFeeSplitting" property="isFeeSplitting" jdbcType="INTEGER" />
+  </resultMap>
   <sql id="Base_Column_List" >
     id, gmt_create, gmt_modified, color_type_id, machine_name, machine_uuid, machine_code, 
-    machine_type_id, longitude, latitude, is_deleted, service_num, hashcode, province, 
-    city, area, street, adcode, fromType
+    machine_type_id, longitude, latitude, is_deleted, service_num, hashcode, province, machine_sequence,
+    city, area, street, adcode, fromType, machine_desc,penal_sum,rule_remark,agentId,cash_pledge
   </sql>
+
+  <update id="updateEditAddress" parameterType="com.hema.newretail.backstage.common.queryparam.device.sold.AddressEditCondition">
+    UPDATE base_machine_info b
+SET b.machine_name = #{machineName,jdbcType=VARCHAR},
+ b.province = #{province,jdbcType=VARCHAR},
+ b.city = #{city,jdbcType=VARCHAR},
+ b.area = #{area,jdbcType=VARCHAR},
+ b.longitude = #{longitude,jdbcType=DOUBLE},
+ b.latitude =  #{latitude,jdbcType=DOUBLE},
+ b.hashcode = #{geoHash,jdbcType=VARCHAR}
+WHERE
+	b.id = #{bmiId,jdbcType=BIGINT}
+  </update>
+
   <sql id="Blob_Column_List" >
     machine_desc
   </sql>
+  <!--设备押金管理list-->
+  <select id="selectCashList" resultMap="CashListMap" parameterType="com.hema.newretail.backstage.common.queryparam.financial.MachineCashListCondition">
+    SELECT
+	b.id AS id,
+	b.machine_sequence AS machineSequence,
+	b.machine_name AS machineName,
+	a.company_name AS agentName,
+    IFNULL((b.cash_pledge - b.retired_cash_pledge),0) AS cashPledge,
+    IFNULL(b.min_cash_pledge,0) AS minCashPledge,
+    IFNULL(b.retired_cash_pledge,0) AS retiredCashPledge,
+    IFNULL(b.penal_sum,0) AS penalSum,
+    IFNULL(b.rule_cup,0) AS cup,
+	b.rule_remark AS remark,
+    IFNULL(b.rule_cup_money,0) AS ruleCupMoney,
+	DATE_FORMAT(
+    b.gmt_modified,
+    '%Y-%m-%d %H:%i:%s'
+    )AS gmtModified,
+    IFNULL(u.user_name,'测试') AS operator,
+    b.is_cash as isCash,
+    b.is_feeSplitting as isFeeSplitting
+FROM
+	base_machine_info b
+INNER JOIN agent_user a ON b.agentId = a.id
+LEFT JOIN base_user_info u ON b.operator = u.id
+where 1=1 and b.is_deleted = 0
+    <if test="machineId != null " >
+      and  b.id = #{machineId,jdbcType=BIGINT}
+    </if>
+    <if test="agentId != null " >
+      and  a.id = #{agentId,jdbcType=BIGINT}
+    </if>
+    <if test="machineSequence != null and machineSequence != ''" >
+      and  b.machine_sequence like  "%"#{machineSequence,jdbcType=VARCHAR}"%"
+    </if>
+    <if test="StartMoney != null " >
+      <if test="endMoney != null " >
+        and  (b.cash_pledge - b.retired_cash_pledge) between #{StartMoney,jdbcType=DECIMAL} and #{endMoney,jdbcType=DECIMAL}
+      </if>
+    </if>
+    <if test="StartGmts != null" >
+      and  b.gmt_modified between #{StartGmts,jdbcType=TIMESTAMP} and #{endGmts,jdbcType=TIMESTAMP}
+    </if>
+    order  by b.gmt_modified desc
+  </select>
+  <select id="selectCashAllList" resultType="java.util.Map">
+    SELECT
+	IFNULL(COUNT(b.id),0) AS num,
+	IFNULL(SUM(b.cash_pledge),0) AS cashPledge,
+	IFNULL(SUM(b.retired_cash_pledge),0) AS retiredCashPledge,
+	IFNULL(SUM(b.penal_sum),0) AS penalSum
+FROM
+	base_machine_info b
+INNER JOIN agent_user a ON b.agentId = a.id
+LEFT JOIN base_user_info u ON b.operator = u.id
+WHERE
+	1 = 1
+AND b.is_deleted = 0
+  </select>
+  <!--设置补贴规则-->
+<update id="updateRule" parameterType="com.hema.newretail.backstage.common.queryparam.financial.RetiredCashCondition">
+  <if test="id != null" >
+    <if test="minCashPledge != null" >
+      UPDATE base_machine_info b , busi_company_account a
+      SET b.rule_cup = #{cup,jdbcType=INTEGER},
+      b.rule_cup_money = #{ruleCupMoney,jdbcType=DECIMAL},
+      b.min_cash_pledge = #{minCashPledge,jdbcType=DECIMAL},
+      <if test="cashPledge != null" >
+        b.cash_pledge = #{cashPledge,jdbcType=DECIMAL},
+      </if>
+      b.operator = #{operator,jdbcType=BIGINT},
+      b.rule_remark = #{remark,jdbcType=VARCHAR},
+      b.gmt_modified = NOW(),
+      a.amount = a.amount - (
+      SELECT
+      cash_pledge
+      FROM
+      (
+      SELECT
+      cash_pledge
+      FROM
+      base_machine_info
+      WHERE
+      id =  #{id,jdbcType=BIGINT}
+      ) t
+      ) + #{cashPledge,jdbcType=DECIMAL}
+      where b.id = #{id,jdbcType=BIGINT}
+      and a.type = '4' and a.ref_id =
+      (
+      SELECT
+      agentId
+      FROM
+      (
+      SELECT
+      agentId
+      FROM
+      base_machine_info
+      WHERE
+      id = #{id,jdbcType=BIGINT}
+      ) n
+      )
+    </if>
+  </if>
+  <if test="idList != null" >
+    UPDATE base_machine_info b
+    SET b.rule_cup = #{cup,jdbcType=INTEGER},
+    b.rule_cup_money = #{ruleCupMoney,jdbcType=DECIMAL},
+    b.min_cash_pledge = #{minCashPledge,jdbcType=DECIMAL},
+    b.operator = #{operator,jdbcType=BIGINT},
+    b.rule_remark = #{remark,jdbcType=VARCHAR},
+    b.gmt_modified = NOW()
+    where id in
+    <foreach collection="idList" item="id" index="index" open="(" close=")" separator=",">
+      #{id,jdbcType=BIGINT}
+    </foreach>
+  </if>
+  <if test="penalSum != null" >
+  UPDATE base_machine_info b
+  SET b.penal_sum = #{penalSum,jdbcType=DECIMAL},
+  b.operator = #{operator,jdbcType=BIGINT},
+  b.rule_remark = #{remark,jdbcType=VARCHAR},
+  b.gmt_modified = NOW()
+  where id = #{id,jdbcType=BIGINT}
+</if>
+  <if test="isCash != null" >
+    UPDATE base_machine_info b
+    SET b.is_cash = #{isCash,jdbcType=INTEGER},
+    b.operator = #{operator,jdbcType=BIGINT},
+    b.rule_remark = #{remark,jdbcType=VARCHAR},
+    b.gmt_modified = NOW()
+    where id = #{id,jdbcType=BIGINT}
+  </if>
+  <if test="isFeeSplitting != null" >
+    UPDATE base_machine_info b
+    SET b.is_feeSplitting = #{isFeeSplitting,jdbcType=INTEGER},
+    b.operator = #{operator,jdbcType=BIGINT},
+    b.rule_remark = #{remark,jdbcType=VARCHAR},
+    b.gmt_modified = NOW()
+    where id = #{id,jdbcType=BIGINT}
+  </if>
+</update>
 
+
+
+
+  <select id="selectCommon" resultMap="BaseCommonMap" parameterType="com.hema.newretail.backstage.common.queryparam.common.CompanyNameCondition" >
+    select
+    id,machine_name,machine_uuid
+    from base_machine_info
+    where 1 = 1
+    <if test="companyName != null and companyName !=''" >
+      and machine_name like "%"#{companyName,jdbcType=VARCHAR}"%"
+    </if>
+  </select>
   <select id="selectByUUId" resultType="java.lang.String" parameterType="java.lang.String" >
      select
    CONCAT(
-		b.province,
-		b.city,
-		b.area,
-		b.street,
-		b.machine_name
+		IFNULL(b.province,''),
+		IFNULL(b.city,''),
+		IFNULL(b.area,''),
+		IFNULL(b.street,''),
+		IFNULL(b.machine_name,'')
 	) AS machine
     from base_machine_info b
     where machine_uuid = #{machineUuid,jdbcType=VARCHAR}
   </select>
+  <select id="selectOrderByUuid" resultType="java.util.Map" parameterType="java.lang.String">
+    SELECT
+	IFNULL(m.machine_name, '') AS machineName,
+	IFNULL(m.machine_desc, '') AS machineLocation,
+	IFNULL(g.company_name, '') AS gridCompanyName,
+	IFNULL(a.company_name, '') AS agentName,
+	IFNULL(c.company_name, '') AS companyName
+FROM
+	base_machine_info m
+LEFT JOIN grid_company_geohash gh ON m.hashcode = gh.geo_hash_code
+LEFT JOIN grid_company g ON g.id = gh.grid_company_id
+LEFT JOIN base_company_geohash cg ON m.hashcode = cg.geo_hash_code
+LEFT JOIN base_company c ON c.id = cg.company_id
+LEFT JOIN agent_user a ON a.id = m.agentId
+WHERE
+	m.machine_uuid = #{machineUuid,jdbcType=VARCHAR}
+  </select>
+
+
+
+
+
+
+
+
 
   <select id="selectByUId" resultMap="ResultMapWithBLOBs" parameterType="java.lang.String" >
     select
@@ -60,6 +282,13 @@
     <include refid="Blob_Column_List" />
     from base_machine_info
     where machine_uuid = #{machineUuid,jdbcType=VARCHAR}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from base_machine_info where is_deleted = 0
   </select>
   <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Long" >
     select 
@@ -324,4 +553,31 @@
       fromType = #{fromtype,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
+
+  <select id="selectById" resultType="java.util.Map">
+    select id, machine_uuid as uuid, IFNULL(cash_pledge,0) as cashPledge, IFNULL(min_cash_pledge, 0) as minCashPledge,
+      IFNULL(rule_cup, 0) as ruleCup, IFNULL(rule_cup_money, 0) as ruleCupMoney
+    from base_machine_info as m
+    <where>
+      1=1
+      <if test="idList != null">
+        and m.id in
+        <foreach collection="idList" item="id" index="index" open="(" close=")" separator=",">
+        #{id,jdbcType=BIGINT}
+      </foreach>
+      </if>
+    </where>
+  </select>
+  <select id="queryAllTag" parameterType="java.util.List" resultType="com.hema.newretail.backstage.model.common.MapGeohashTagBo">
+    SELECT
+        m.hashcode,
+        m.longitude,
+        m.latitude
+    FROM
+        base_machine_info AS m
+    where m.hashcode in
+    <foreach collection="mapGeoHash" index="index" item="item" open="(" separator="," close=")">
+      #{item,jdbcType=VARCHAR}
+    </foreach>
+  </select>
 </mapper>

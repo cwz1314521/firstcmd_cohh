@@ -1,0 +1,375 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hema.newretail.backstage.dao.BusiCouponMapper" >
+  <resultMap id="BaseResultMap" type="com.hema.newretail.backstage.entry.discounts.BusiCouponEntry" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="gmt_create" property="gmtCreate" jdbcType="TIMESTAMP" />
+    <result column="gmt_modified" property="gmtModified" jdbcType="TIMESTAMP" />
+    <result column="coupon_auth_id" property="couponAuthId" jdbcType="BIGINT" />
+    <result column="coupon_name" property="couponName" jdbcType="VARCHAR" />
+    <result column="coupon_title" property="couponTitle" jdbcType="VARCHAR" />
+    <result column="coupon_no" property="couponNo" jdbcType="VARCHAR" />
+    <result column="coupon_description" property="couponDescription" jdbcType="VARCHAR" />
+    <result column="coupon_pic" property="couponPic" jdbcType="VARCHAR" />
+    <result column="coupon_type" property="couponType" jdbcType="INTEGER" />
+    <result column="period" property="period" jdbcType="INTEGER" />
+    <result column="period_unit" property="periodUnit" jdbcType="INTEGER" />
+    <result column="limitNum" property="limitnum" jdbcType="INTEGER" />
+    <result column="due_time" property="dueTime" jdbcType="TIMESTAMP" />
+    <result column="receive_status" property="receiveStatus" jdbcType="INTEGER" />
+    <result column="receive_person" property="receivePerson" jdbcType="VARCHAR" />
+    <result column="receive_time" property="receiveTime" jdbcType="TIMESTAMP" />
+    <result column="use_person" property="usePerson" jdbcType="VARCHAR" />
+    <result column="use_status" property="useStatus" jdbcType="INTEGER" />
+    <result column="use_time" property="useTime" jdbcType="TIMESTAMP" />
+    <result column="denomination" property="denomination" jdbcType="DECIMAL" />
+    <result column="denomination_unit" property="denominationUnit" jdbcType="VARCHAR" />
+    <result column="menu_id" property="menuId" jdbcType="BIGINT" />
+    <result column="compensation_no" property="compensationNo" jdbcType="VARCHAR" />
+    <result column="coupon_source" property="couponSource" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, gmt_create, gmt_modified, coupon_auth_id, coupon_name, coupon_title, coupon_no, 
+    coupon_description, coupon_pic, coupon_type, period, period_unit, limitNum, due_time, 
+    receive_status, receive_person, receive_time, use_person, use_status, use_time, denomination, 
+    denomination_unit, menu_id, compensation_no, coupon_source
+  </sql>
+
+<!---->
+  <select id="selectByBillDetail" resultType="java.util.Map" parameterType="java.lang.Long">
+    SELECT DISTINCT
+	IFNULL(c.coupon_name, '') AS cName,
+	IFNULL(
+		CASE c.coupon_type
+		WHEN 0 THEN
+			'免费券'
+		WHEN 1 THEN
+			'代金券'
+		WHEN 2 THEN
+			'折扣券'
+		WHEN 3 THEN
+			'补偿券'
+		ELSE
+			'其他'
+		END,
+		''
+	) AS cType,
+	IFNULL(c.coupon_no, '') AS cCode
+FROM
+	busi_coupon c where c.id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="getBusiCouponByOederId" resultType="com.hema.newretail.backstage.entry.discounts.BusiCouponEntry" parameterType="java.lang.String" >
+        select
+        a.coupon_name  as couponName ,a.coupon_type  couponType, a.coupon_no couponNo,a.period ,a.period_unit periodUnit ,b.menu_name menuName
+        from busi_coupon a INNER JOIN   busi_ingredient_menu b on a.menu_id =b.id
+        where a.compensation_no = #{id}
+    </select>
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from busi_coupon
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from busi_coupon
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.hema.newretail.backstage.entry.discounts.BusiCouponEntry" >
+    insert into busi_coupon (id, gmt_create, gmt_modified, 
+      coupon_auth_id, coupon_name, coupon_title, 
+      coupon_no, coupon_description, coupon_pic, 
+      coupon_type, period, period_unit, 
+      limitNum, due_time, receive_status, 
+      receive_person, receive_time, use_person, 
+      use_status, use_time, denomination, 
+      denomination_unit, menu_id, compensation_no, 
+      coupon_source)
+    values (#{id,jdbcType=BIGINT}, #{gmtCreate,jdbcType=TIMESTAMP}, #{gmtModified,jdbcType=TIMESTAMP}, 
+      #{couponAuthId,jdbcType=BIGINT}, #{couponName,jdbcType=VARCHAR}, #{couponTitle,jdbcType=VARCHAR}, 
+      #{couponNo,jdbcType=VARCHAR}, #{couponDescription,jdbcType=VARCHAR}, #{couponPic,jdbcType=VARCHAR}, 
+      #{couponType,jdbcType=INTEGER}, #{period,jdbcType=INTEGER}, #{periodUnit,jdbcType=INTEGER}, 
+      #{limitnum,jdbcType=INTEGER}, #{dueTime,jdbcType=TIMESTAMP}, #{receiveStatus,jdbcType=INTEGER}, 
+      #{receivePerson,jdbcType=VARCHAR}, #{receiveTime,jdbcType=TIMESTAMP}, #{usePerson,jdbcType=VARCHAR}, 
+      #{useStatus,jdbcType=INTEGER}, #{useTime,jdbcType=TIMESTAMP}, #{denomination,jdbcType=DECIMAL}, 
+      #{denominationUnit,jdbcType=VARCHAR}, #{menuId,jdbcType=BIGINT}, #{compensationNo,jdbcType=VARCHAR}, 
+      #{couponSource,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.hema.newretail.backstage.entry.discounts.BusiCouponEntry" >
+    insert into busi_coupon
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="gmtCreate != null" >
+        gmt_create,
+      </if>
+      <if test="gmtModified != null" >
+        gmt_modified,
+      </if>
+      <if test="couponAuthId != null" >
+        coupon_auth_id,
+      </if>
+      <if test="couponName != null" >
+        coupon_name,
+      </if>
+      <if test="couponTitle != null" >
+        coupon_title,
+      </if>
+      <if test="couponNo != null" >
+        coupon_no,
+      </if>
+      <if test="couponDescription != null" >
+        coupon_description,
+      </if>
+      <if test="couponPic != null" >
+        coupon_pic,
+      </if>
+      <if test="couponType != null" >
+        coupon_type,
+      </if>
+      <if test="period != null" >
+        period,
+      </if>
+      <if test="periodUnit != null" >
+        period_unit,
+      </if>
+      <if test="limitnum != null" >
+        limitNum,
+      </if>
+      <if test="dueTime != null" >
+        due_time,
+      </if>
+      <if test="receiveStatus != null" >
+        receive_status,
+      </if>
+      <if test="receivePerson != null" >
+        receive_person,
+      </if>
+      <if test="receiveTime != null" >
+        receive_time,
+      </if>
+      <if test="usePerson != null" >
+        use_person,
+      </if>
+      <if test="useStatus != null" >
+        use_status,
+      </if>
+      <if test="useTime != null" >
+        use_time,
+      </if>
+      <if test="denomination != null" >
+        denomination,
+      </if>
+      <if test="denominationUnit != null" >
+        denomination_unit,
+      </if>
+      <if test="menuId != null" >
+        menu_id,
+      </if>
+      <if test="compensationNo != null" >
+        compensation_no,
+      </if>
+      <if test="couponSource != null" >
+        coupon_source,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="gmtCreate != null" >
+        #{gmtCreate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gmtModified != null" >
+        #{gmtModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="couponAuthId != null" >
+        #{couponAuthId,jdbcType=BIGINT},
+      </if>
+      <if test="couponName != null" >
+        #{couponName,jdbcType=VARCHAR},
+      </if>
+      <if test="couponTitle != null" >
+        #{couponTitle,jdbcType=VARCHAR},
+      </if>
+      <if test="couponNo != null" >
+        #{couponNo,jdbcType=VARCHAR},
+      </if>
+      <if test="couponDescription != null" >
+        #{couponDescription,jdbcType=VARCHAR},
+      </if>
+      <if test="couponPic != null" >
+        #{couponPic,jdbcType=VARCHAR},
+      </if>
+      <if test="couponType != null" >
+        #{couponType,jdbcType=INTEGER},
+      </if>
+      <if test="period != null" >
+        #{period,jdbcType=INTEGER},
+      </if>
+      <if test="periodUnit != null" >
+        #{periodUnit,jdbcType=INTEGER},
+      </if>
+      <if test="limitnum != null" >
+        #{limitnum,jdbcType=INTEGER},
+      </if>
+      <if test="dueTime != null" >
+        #{dueTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="receiveStatus != null" >
+        #{receiveStatus,jdbcType=INTEGER},
+      </if>
+      <if test="receivePerson != null" >
+        #{receivePerson,jdbcType=VARCHAR},
+      </if>
+      <if test="receiveTime != null" >
+        #{receiveTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="usePerson != null" >
+        #{usePerson,jdbcType=VARCHAR},
+      </if>
+      <if test="useStatus != null" >
+        #{useStatus,jdbcType=INTEGER},
+      </if>
+      <if test="useTime != null" >
+        #{useTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="denomination != null" >
+        #{denomination,jdbcType=DECIMAL},
+      </if>
+      <if test="denominationUnit != null" >
+        #{denominationUnit,jdbcType=VARCHAR},
+      </if>
+      <if test="menuId != null" >
+        #{menuId,jdbcType=BIGINT},
+      </if>
+      <if test="compensationNo != null" >
+        #{compensationNo,jdbcType=VARCHAR},
+      </if>
+      <if test="couponSource != null" >
+        #{couponSource,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hema.newretail.backstage.entry.discounts.BusiCouponEntry" >
+    update busi_coupon
+    <set >
+      <if test="gmtCreate != null" >
+        gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gmtModified != null" >
+        gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="couponAuthId != null" >
+        coupon_auth_id = #{couponAuthId,jdbcType=BIGINT},
+      </if>
+      <if test="couponName != null" >
+        coupon_name = #{couponName,jdbcType=VARCHAR},
+      </if>
+      <if test="couponTitle != null" >
+        coupon_title = #{couponTitle,jdbcType=VARCHAR},
+      </if>
+      <if test="couponNo != null" >
+        coupon_no = #{couponNo,jdbcType=VARCHAR},
+      </if>
+      <if test="couponDescription != null" >
+        coupon_description = #{couponDescription,jdbcType=VARCHAR},
+      </if>
+      <if test="couponPic != null" >
+        coupon_pic = #{couponPic,jdbcType=VARCHAR},
+      </if>
+      <if test="couponType != null" >
+        coupon_type = #{couponType,jdbcType=INTEGER},
+      </if>
+      <if test="period != null" >
+        period = #{period,jdbcType=INTEGER},
+      </if>
+      <if test="periodUnit != null" >
+        period_unit = #{periodUnit,jdbcType=INTEGER},
+      </if>
+      <if test="limitnum != null" >
+        limitNum = #{limitnum,jdbcType=INTEGER},
+      </if>
+      <if test="dueTime != null" >
+        due_time = #{dueTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="receiveStatus != null" >
+        receive_status = #{receiveStatus,jdbcType=INTEGER},
+      </if>
+      <if test="receivePerson != null" >
+        receive_person = #{receivePerson,jdbcType=VARCHAR},
+      </if>
+      <if test="receiveTime != null" >
+        receive_time = #{receiveTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="usePerson != null" >
+        use_person = #{usePerson,jdbcType=VARCHAR},
+      </if>
+      <if test="useStatus != null" >
+        use_status = #{useStatus,jdbcType=INTEGER},
+      </if>
+      <if test="useTime != null" >
+        use_time = #{useTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="denomination != null" >
+        denomination = #{denomination,jdbcType=DECIMAL},
+      </if>
+      <if test="denominationUnit != null" >
+        denomination_unit = #{denominationUnit,jdbcType=VARCHAR},
+      </if>
+      <if test="menuId != null" >
+        menu_id = #{menuId,jdbcType=BIGINT},
+      </if>
+      <if test="compensationNo != null" >
+        compensation_no = #{compensationNo,jdbcType=VARCHAR},
+      </if>
+      <if test="couponSource != null" >
+        coupon_source = #{couponSource,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hema.newretail.backstage.entry.discounts.BusiCouponEntry" >
+    update busi_coupon
+    set gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
+      coupon_auth_id = #{couponAuthId,jdbcType=BIGINT},
+      coupon_name = #{couponName,jdbcType=VARCHAR},
+      coupon_title = #{couponTitle,jdbcType=VARCHAR},
+      coupon_no = #{couponNo,jdbcType=VARCHAR},
+      coupon_description = #{couponDescription,jdbcType=VARCHAR},
+      coupon_pic = #{couponPic,jdbcType=VARCHAR},
+      coupon_type = #{couponType,jdbcType=INTEGER},
+      period = #{period,jdbcType=INTEGER},
+      period_unit = #{periodUnit,jdbcType=INTEGER},
+      limitNum = #{limitnum,jdbcType=INTEGER},
+      due_time = #{dueTime,jdbcType=TIMESTAMP},
+      receive_status = #{receiveStatus,jdbcType=INTEGER},
+      receive_person = #{receivePerson,jdbcType=VARCHAR},
+      receive_time = #{receiveTime,jdbcType=TIMESTAMP},
+      use_person = #{usePerson,jdbcType=VARCHAR},
+      use_status = #{useStatus,jdbcType=INTEGER},
+      use_time = #{useTime,jdbcType=TIMESTAMP},
+      denomination = #{denomination,jdbcType=DECIMAL},
+      denomination_unit = #{denominationUnit,jdbcType=VARCHAR},
+      menu_id = #{menuId,jdbcType=BIGINT},
+      compensation_no = #{compensationNo,jdbcType=VARCHAR},
+      coupon_source = #{couponSource,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+  <select id="selectCouponNumByUserId" parameterType="java.lang.String" resultType="java.lang.Long">
+    select count(c.id) as num
+    from busi_coupon as c, busi_coupon_auditing as a
+    where c.coupon_auth_id=a.id
+    and c.receive_person=#{receivePerson,jdbcType=VARCHAR}
+  </select>
+  <select id="selectCouponDataByUserId" parameterType="java.lang.String" resultType="com.hema.newretail.backstage.model.memberManager.UserCouponListBo">
+    select c.coupon_name as couponName, a.coupon_type as couponType, a.denomination, a.denomination_unit as denominationUnit, c.coupon_no as couponNo, c.receive_time as receiveTime, c.due_time as dueTime,
+    (select GROUP_CONCAT(menu.menu_name) from ref_menu_coupon as mc, busi_ingredient_menu as menu where mc.menu_id=menu.id and mc.coupon_id=c.id) as menus
+    from busi_coupon as c, busi_coupon_auditing as a
+    where c.coupon_auth_id=a.id
+    and c.receive_person=#{receivePerson,jdbcType=VARCHAR}
+  </select>
+</mapper>

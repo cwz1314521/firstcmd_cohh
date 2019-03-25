@@ -1,6 +1,7 @@
 package com.hema.newretail.backstage.controller.drinkmanagement;
 
 import com.github.pagehelper.PageInfo;
+import com.hema.newretail.backstage.annotation.AutoLog;
 import com.hema.newretail.backstage.common.utils.Response;
 import com.hema.newretail.backstage.entry.BaseIngredientInfoEntry;
 import com.hema.newretail.backstage.entry.BasePropertiesTypeEntry;
@@ -19,9 +20,10 @@ import java.util.List;
 /**
  * Created by jiahao on 2018-08-22
  */
-@Api(description = "选项管理接口")
+@Api(description = "选项管理")
 @RestController
 @RequestMapping("/optionManagement")
+@AutoLog
 public class OptionManagementController {
 
     @Autowired

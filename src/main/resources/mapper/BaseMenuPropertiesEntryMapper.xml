@@ -252,6 +252,5 @@
             mp.pro_name as proName, mp.price as price, mp.num as num, mp.`status` as status, mp.menu_id as menuId, mp.is_front_show as isFrontShow
         from base_menu_properties as mp left join base_properties_type as pt on mp.pro_type=pt.id
         where mp.menu_id = #{menuId}
-        order by mp.gmt_create, mp.pro_type
     </select>
 </mapper>

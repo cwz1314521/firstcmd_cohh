@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hema.newretail.backstage.dao.SetupUserMapper" >
+  <resultMap id="BaseResultMap" type="com.hema.newretail.backstage.entry.SetupUserEntry" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="username" property="username" jdbcType="VARCHAR" />
+    <result column="password" property="password" jdbcType="VARCHAR" />
+    <result column="compony_id" property="componyId" jdbcType="BIGINT" />
+    <result column="mobile" property="mobile" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="gmt_create" property="gmtCreate" jdbcType="TIMESTAMP" />
+    <result column="gmt_modified" property="gmtModified" jdbcType="TIMESTAMP" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    id, username, password, compony_id, mobile, status, gmt_create, gmt_modified
+  </sql>
+
+<!--安装人员列表检索sql-->
+  <select id="list" resultMap="BaseResultMap" parameterType="com.hema.newretail.backstage.common.queryparam.basecpmpany.InstallPersonListDBCondition">
+
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM
+    setup_user
+    WHERE
+    1 = 1
+    and status = 0
+    <if test="username != null and username != ''" >
+      and username like CONCAT('%',#{username,jdbcType=VARCHAR},'%')
+    </if>
+    <if test="mobile != null and mobile != ''" >
+      and mobile = #{mobile,jdbcType=VARCHAR}
+    </if>
+  </select>
+  <!--检索账号是否重复sql-->
+  <select id="countMobile" parameterType="com.hema.newretail.backstage.common.queryparam.basecpmpany.UsernameCondition" resultType="java.lang.Integer">
+    SELECT
+    count(id)
+     FROM
+    setup_user
+    where
+    mobile = #{mobile,jdbcType=VARCHAR}
+    <if test="id != null and id != ''" >
+      and id not in (#{id,jdbcType=BIGINT})
+    </if>
+
+  </select>
+  <!--修改安装人员sql-->
+  <update id="update" parameterType="com.hema.newretail.backstage.entry.SetupUserEntry" >
+UPDATE setup_user
+SET username = #{username,jdbcType=VARCHAR},
+ mobile = #{mobile,jdbcType=VARCHAR},
+ gmt_modified = #{gmtModified,jdbcType=TIMESTAMP}
+WHERE
+	id = #{id,jdbcType=BIGINT}
+  </update>
+  <!--删除安装人员sql-->
+  <update id="delete" parameterType="com.hema.newretail.backstage.entry.SetupUserEntry" >
+UPDATE setup_user
+SET status = -1,
+ gmt_modified = #{gmtModified,jdbcType=TIMESTAMP}
+WHERE
+	id = #{id,jdbcType=BIGINT}
+  </update>
+  <!--重置安装人员密码sql-->
+  <update id="reset" parameterType="com.hema.newretail.backstage.entry.SetupUserEntry" >
+UPDATE setup_user
+SET password = #{password,jdbcType=VARCHAR},
+ gmt_modified = #{gmtModified,jdbcType=TIMESTAMP}
+WHERE
+	id = #{id,jdbcType=BIGINT}
+  </update>
+
+
+
+
+
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from setup_user
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from setup_user
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.hema.newretail.backstage.entry.SetupUserEntry" >
+    insert into setup_user (id, username, password, 
+      compony_id, mobile, status, 
+      gmt_create, gmt_modified)
+    values (#{id,jdbcType=BIGINT}, #{username,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, 
+      #{componyId,jdbcType=BIGINT}, #{mobile,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, 
+      #{gmtCreate,jdbcType=TIMESTAMP}, #{gmtModified,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.hema.newretail.backstage.entry.SetupUserEntry" >
+    insert into setup_user
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="username != null" >
+        username,
+      </if>
+      <if test="password != null" >
+        password,
+      </if>
+      <if test="componyId != null" >
+        compony_id,
+      </if>
+      <if test="mobile != null" >
+        mobile,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="gmtCreate != null" >
+        gmt_create,
+      </if>
+      <if test="gmtModified != null" >
+        gmt_modified,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="username != null" >
+        #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null" >
+        #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="componyId != null" >
+        #{componyId,jdbcType=BIGINT},
+      </if>
+      <if test="mobile != null" >
+        #{mobile,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="gmtCreate != null" >
+        #{gmtCreate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gmtModified != null" >
+        #{gmtModified,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+
+</mapper>

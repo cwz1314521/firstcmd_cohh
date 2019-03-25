@@ -20,6 +20,7 @@
     <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified" />
     <result column="status" jdbcType="INTEGER" property="status" />
     <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="org_code" jdbcType="VARCHAR" property="orgCode" />
   </resultMap>
   <resultMap id="SelectResultMap" type="com.hema.newretail.backstage.entry.BaseCompanyData">
     <id column="id" jdbcType="BIGINT" property="id" />
@@ -40,12 +41,25 @@
   <id column="id" property="id" jdbcType="BIGINT" />
   <result column="company_name" property="companyName" jdbcType="VARCHAR" />
   </resultMap>
+  <resultMap id="BaseCommonMap" type="com.hema.newretail.backstage.model.common.GridCompanyBo" >
+  <id column="id" property="id" jdbcType="BIGINT" />
+  <result column="company_name" property="companyName" jdbcType="VARCHAR" />
+  </resultMap>
   <sql id="Base_Column_List">
     id, company_name, contact_way, contact, province, city, area, addr,
     gmt_create, gmt_modified, status, remark
   </sql>
 
   <select id="selectBySelect" resultMap="BaseSelectListMap" parameterType="com.hema.newretail.backstage.common.queryparam.erp.ListManufacturerCondition" >
+    select
+    id,company_name
+    from base_company
+    where 1 = 1
+    <if test="companyName != null and companyName !=''" >
+      and company_name like "%"#{companyName,jdbcType=VARCHAR}"%"
+    </if>
+  </select>
+  <select id="selectCommon" resultMap="BaseCommonMap" parameterType="com.hema.newretail.backstage.common.queryparam.common.CompanyNameCondition" >
     select
     id,company_name
     from base_company
@@ -118,6 +132,9 @@
       <if test="remark != null">
         remark,
       </if>
+      <if test="orgCode != null">
+        org_code,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -155,6 +172,9 @@
       </if>
       <if test="remark != null">
         #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="orgCode != null">
+        #{orgCode,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -194,6 +214,9 @@
       <if test="remark != null">
         remark = #{remark,jdbcType=VARCHAR},
       </if>
+      <if test="orgCode != null">
+        org_code = #{orgCode,jdbcType=VARCHAR},
+      </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
@@ -221,32 +244,30 @@
     update base_company set status = #{status,jdbcType=INTEGER} where id = #{id,jdbcType=BIGINT}
   </update>
   <select id="findAll" parameterType="com.hema.newretail.backstage.common.queryparam.BaseCompanyQueryParameter" resultMap="BaseResultMap">
-    select
-    <include refid="Base_Column_List" />
-    from base_company
-    where 1=1
+    select *, (select o.org_name from base_organization as o where o.org_code=c.org_code) as orgName from base_company as c
+    where c.org_code like CONCAT(#{orgCode,jdbcType=VARCHAR}, '%')
     <if test="companyName != null and id != null">
-     and ( company_name like CONCAT('%',#{companyName,jdbcType=VARCHAR},'%') or id = #{id,jdbcType=BIGINT} )
+     and ( c.company_name like CONCAT('%',#{companyName,jdbcType=VARCHAR},'%') or c.id = #{id,jdbcType=BIGINT} )
     </if>
     <if test="companyName != null and id == null">
-      and company_name like CONCAT('%',#{companyName,jdbcType=VARCHAR},'%')
+      and c.company_name like CONCAT('%',#{companyName,jdbcType=VARCHAR},'%')
     </if>
     <if test="province != null and province != ''">
-     and province = #{province,jdbcType=VARCHAR}
+     and c.province = #{province,jdbcType=VARCHAR}
     </if>
     <if test="city != null and city != ''">
-     and city = #{city,jdbcType=VARCHAR}
+     and c.city = #{city,jdbcType=VARCHAR}
     </if>
     <if test="area != null and area.size() != 0">
-      and area in
+      and c.area in
       <foreach collection="area" item="item" index="index" open="(" separator="," close=")">
         #{item}
       </foreach>
     </if>
     <if test="status != null and status != ''">
-     and status = #{status,jdbcType=INTEGER}
+     and c.status = #{status,jdbcType=INTEGER}
     </if>
-     order by gmt_create desc
+     order by c.gmt_create desc
   </select>
   <select id="findBaseCompanyByArea" parameterType="com.hema.newretail.backstage.common.queryparam.BaseCompanyNameQueryParameter" resultMap="SelectResultMap">
     select

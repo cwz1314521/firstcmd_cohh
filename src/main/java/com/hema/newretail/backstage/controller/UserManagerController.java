@@ -1,7 +1,8 @@
 package com.hema.newretail.backstage.controller;
 
+import com.hema.newretail.backstage.annotation.AutoLog;
 import com.hema.newretail.backstage.common.queryparam.usermanagementparameter.UserManaCondition;
-import com.hema.newretail.backstage.common.utils.ExcelUtils;
+import com.hema.newretail.backstage.common.utils.excel.ExcelUtils;
 import com.hema.newretail.backstage.common.utils.Response;
 import com.hema.newretail.backstage.common.utils.TimeUtil;
 import com.hema.newretail.backstage.entry.UserManagerData;
@@ -9,6 +10,7 @@ import com.hema.newretail.backstage.entry.PushInfoData;
 import com.hema.newretail.backstage.entry.UserFormIdData;
 import com.hema.newretail.backstage.service.IUserManagerService;
 import com.hema.newretail.backstage.service.IUserPushInfoService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,8 +25,10 @@ import java.util.*;
 /**
  * 用户管理Controller
  */
+@Api(description = "用户管理")
 @RestController
 @RequestMapping(value = "/userManager")
+@AutoLog
 public class UserManagerController {
 
     private Logger logger = LoggerFactory.getLogger(UserManagerController.class);
@@ -45,7 +49,7 @@ public class UserManagerController {
      * @param id
      * @return
      */
-    @ApiOperation(value = "会员详情接口")
+    @ApiOperation(value = "查看会员详情")
     @RequestMapping(value = "/userComsumptionDetail",method = RequestMethod.POST)
     @ResponseBody
     public Response queryUserConsumptionDetail(String id){
@@ -59,7 +63,7 @@ public class UserManagerController {
      * @param id
      * @return
      */
-    @ApiOperation(value = "根据id更新会员账号状态")
+    @ApiOperation(value = "更新会员账号状态")
     @RequestMapping(value = "/updateUserStatusById",method = RequestMethod.POST)
     @ResponseBody
     public Response updateUserStatusById(String id){
@@ -75,7 +79,7 @@ public class UserManagerController {
      * @param id
      * @return
      */
-    @ApiOperation(value = "会员注销接口")
+    @ApiOperation(value = "会员注销")
     @RequestMapping(value = "/logoutUser",method = RequestMethod.POST)
     @ResponseBody
     public Response logoutUser(String id){
@@ -87,7 +91,7 @@ public class UserManagerController {
      * @param params{openId:String,pageNum:int,pageSize:int}都是必填项
      * @return
      */
-    @ApiOperation(value = "会员消费记录接口")
+    @ApiOperation(value = "查看会员消费记录")
     @RequestMapping(value = "/userConsumptions",method = RequestMethod.POST)
     @ResponseBody
     public Response userConsumptionsByOpenId(@RequestBody Map<String,Object> params){
@@ -100,7 +104,7 @@ public class UserManagerController {
      * @param params{pageNum:int,pageSize:int}都是必填项
      * @return
      */
-    @ApiOperation(value = "推送信息列表接口")
+    @ApiOperation(value = "推送信息")
     @PostMapping(value = "/pushInfoAll")
     @ResponseBody
     public Response getUserPushInfoAll(@RequestBody Map<String,Object> params){
@@ -112,7 +116,7 @@ public class UserManagerController {
      * @param id
      * @return
      */
-    @ApiOperation(value = "推送信息详情接口")
+    @ApiOperation(value = "推送信息详情")
     @PostMapping(value = "/pushInfoById")
     @ResponseBody
     public Response getUserPushInfoById(@RequestBody String id){
@@ -123,7 +127,7 @@ public class UserManagerController {
      * 推送信息保存接口
      * @param data
      */
-    @ApiOperation(value = "推送信息保存接口")
+    @ApiOperation(value = "保存推送信息")
     @PostMapping(value = "/pushInfoToUser")
     @ResponseBody
     public void pushInfoToUser(@RequestBody PushInfoData data){
@@ -134,7 +138,7 @@ public class UserManagerController {
      * 保存formId测试接口
      * @param data
      */
-    @ApiOperation(value = "保存前端formId接口")
+    @ApiOperation(value = "保存前端formId")
     @PostMapping(value = "/saveUserFormId")
     @ResponseBody
     public void saveUserFormId(@RequestBody UserFormIdData data){
@@ -151,14 +155,13 @@ public class UserManagerController {
      * @param response
      * @throws Exception
      */
-    @ApiOperation(value = "导出会员信息Excel接口",produces="application/octet-stream")
+    @ApiOperation(value = "导出会员信息Excel",produces="application/octet-stream")
     @GetMapping(value = "/exportUserInfoExcel")
     @ResponseBody
     public Response downUserManagerExcel(UserManaCondition userManaCondition, HttpServletResponse response) throws Exception {
 
         List<UserManagerData> userData = userManagerService.findAll(userManaCondition);
 
-//        response.setContentType("application/octet-stream");
         response.setContentType("application/vnd.ms-excel;charset=UTF-8");
 
         String fileName = "用户数据导出"+ TimeUtil.getStringByDateFormart(new Date(),"yyyyMMddHHmmss")+".xlsx";

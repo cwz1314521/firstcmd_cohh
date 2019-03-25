@@ -40,4 +40,11 @@ public interface GridCompanyGeohashMapper {
     List<String> findGridCompanyGeoHashByCompanyId(Long baseCompanyId);
 
     Long selectCountByIdAndHashcode(Map<String,Object> paramsMap);
+
+    /**
+     *
+     * @param geoHash
+     * @return
+     */
+    Long selectGridCompanyIdByHashcode(@Param("geoHash") String geoHash);
 }

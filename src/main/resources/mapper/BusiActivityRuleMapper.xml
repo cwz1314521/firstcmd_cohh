@@ -1,0 +1,311 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hema.newretail.backstage.dao.BusiActivityRuleMapper" >
+  <resultMap id="BaseResultMap" type="com.hema.newretail.backstage.entry.BusiActivityRuleEntry" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="rule_name" property="ruleName" jdbcType="VARCHAR" />
+    <result column="per_day_count" property="perDayCount" jdbcType="INTEGER" />
+    <result column="per_day_singal_count" property="perDaySingalCount" jdbcType="INTEGER" />
+    <result column="singal_total_count" property="singalTotalCount" jdbcType="INTEGER" />
+    <result column="active_object" property="activeObject" jdbcType="INTEGER" />
+    <result column="createName" property="createname" jdbcType="VARCHAR" />
+    <result column="create_id" property="createId" jdbcType="BIGINT" />
+    <result column="gmt_create" property="gmtCreate" jdbcType="TIMESTAMP" />
+    <result column="gmt_modified" property="gmtModified" jdbcType="TIMESTAMP" />
+    <result column="is_deleted" property="isDeleted" jdbcType="INTEGER" />
+    <result column="rule_condition" property="ruleCondition" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, rule_name, per_day_count, per_day_singal_count, singal_total_count, active_object, 
+    createName, create_id, gmt_create, gmt_modified, is_deleted, rule_condition
+  </sql>
+  <!--列表查询-->
+  <select id="list" parameterType="com.hema.newretail.backstage.common.queryparam.discounts.EventRuleListCondition" resultMap="BaseResultMap">
+    SELECT
+    id,
+    rule_name,
+    per_day_count,
+    per_day_singal_count,
+    singal_total_count,
+    active_object,
+    createName,
+    create_id,
+    gmt_create,
+    gmt_modified,
+    is_deleted,
+    rule_condition
+    FROM
+    busi_activity_rule
+    where is_deleted = 0
+    <if test="startDates != null" >
+      and gmt_create between  #{startDates,jdbcType=TIMESTAMP}  and  #{endDates,jdbcType=TIMESTAMP}
+    </if>
+    <if test="ruleName != null and ruleName != ''" >
+      and rule_name like  "%"#{ruleName,jdbcType=VARCHAR}"%"
+    </if>
+    order by gmt_create desc
+  </select>
+  <!--检查是否重名-->
+  <select id="selectResetName" parameterType="java.util.Map" resultType="java.lang.Integer">
+    select count(1) from busi_activity_rule where rule_name = #{ruleName,jdbcType=VARCHAR}
+    <if test="id != null" >
+      and id not in (#{id,jdbcType=BIGINT})
+    </if>
+  </select>
+  <update id="deleteByRuleId" parameterType="java.lang.Long">
+  update busi_activity_rule set is_deleted = 1
+  where id = #{id,jdbcType=BIGINT}
+  </update>
+  <!--查询活动是否关联规则-->
+  <select id="selectWithActive" parameterType="java.lang.Long" resultType="java.lang.Integer">
+    select count(1) from busi_activity where activity_rule_id = #{id,jdbcType=BIGINT} and is_deleted = 0
+  </select>
+  <!--查询饮品-->
+  <select id="selectMenuName" resultType="java.util.Map" parameterType="com.hema.newretail.backstage.common.queryparam.discounts.MenuOrMachineCondition">
+    (SELECT
+	id,
+	IFNULL(menu_name,'') as menuName,
+    0 as isTrue
+FROM
+	busi_ingredient_menu
+WHERE
+	is_deleted = 0
+    <if test="name != null and name != ''" >
+      and menu_name like  "%"#{name,jdbcType=VARCHAR}"%"
+    </if>
+    <if test="ids != null and ids.size() > 0" >
+      and id in
+      <foreach collection="ids" item="id" index="index" open="(" close=")" separator=",">
+        #{id}
+      </foreach>
+    </if> )
+    union
+    (SELECT
+    id,
+    IFNULL(menu_name,'') as menuName,
+    1 as isTrue
+    FROM
+    busi_ingredient_menu
+    WHERE
+    is_deleted = 0
+    <if test="name != null and name != ''">
+      and menu_name like "%"#{name,jdbcType=VARCHAR}"%"
+    </if>
+    <if test="ids != null and ids.size() > 0">
+      and id not in
+      <foreach collection="ids" item="id" index="index" open="(" close=")" separator=",">
+        #{id}
+      </foreach>
+    </if>)
+      </select>
+
+  <!--查询机器-->
+  <select id="selectMachineName" resultType="java.util.Map" parameterType="com.hema.newretail.backstage.common.queryparam.discounts.MenuOrMachineCondition">
+SELECT
+	id,
+	IFNULL(machine_name,'') as machineName,
+    0 as isTrue
+    FROM
+	base_machine_info
+WHERE
+	is_deleted = 0
+    <if test="name != null and name != ''" >
+      and machine_name like  "%"#{name,jdbcType=VARCHAR}"%"
+    </if>
+    <if test="ids != null and ids.size() > 0" >
+      and id in
+      <foreach collection="ids" item="id" index="index" open="(" close=")" separator=",">
+        #{id}
+      </foreach>
+    </if>
+    union
+    SELECT
+    id,
+    IFNULL(machine_name,'') as machineName,
+    1 as isTrue
+    FROM
+    base_machine_info
+    WHERE
+    is_deleted = 0
+    <if test="name != null and name != ''" >
+      and machine_name like  "%"#{name,jdbcType=VARCHAR}"%"
+    </if>
+    <if test="ids != null and ids.size() > 0" >
+      and id not in
+      <foreach collection="ids" item="id" index="index" open="(" close=")" separator=",">
+        #{id}
+      </foreach>
+    </if>
+
+  </select>
+
+
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from busi_activity_rule
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from busi_activity_rule
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.hema.newretail.backstage.entry.BusiActivityRuleEntry" >
+    insert into busi_activity_rule (id, rule_name, per_day_count, 
+      per_day_singal_count, singal_total_count, active_object, 
+      createName, create_id, gmt_create, 
+      gmt_modified, is_deleted, rule_condition
+      )
+    values (#{id,jdbcType=BIGINT}, #{ruleName,jdbcType=VARCHAR}, #{perDayCount,jdbcType=INTEGER}, 
+      #{perDaySingalCount,jdbcType=INTEGER}, #{singalTotalCount,jdbcType=INTEGER}, #{activeObject,jdbcType=INTEGER}, 
+      #{createname,jdbcType=VARCHAR}, #{createId,jdbcType=BIGINT}, #{gmtCreate,jdbcType=TIMESTAMP}, 
+      #{gmtModified,jdbcType=TIMESTAMP}, #{isDeleted,jdbcType=INTEGER}, #{ruleCondition,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.hema.newretail.backstage.entry.BusiActivityRuleEntry" >
+    insert into busi_activity_rule
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="ruleName != null" >
+        rule_name,
+      </if>
+      <if test="perDayCount != null" >
+        per_day_count,
+      </if>
+      <if test="perDaySingalCount != null" >
+        per_day_singal_count,
+      </if>
+      <if test="singalTotalCount != null" >
+        singal_total_count,
+      </if>
+      <if test="activeObject != null" >
+        active_object,
+      </if>
+      <if test="createname != null" >
+        createName,
+      </if>
+      <if test="createId != null" >
+        create_id,
+      </if>
+      <if test="gmtCreate != null" >
+        gmt_create,
+      </if>
+      <if test="gmtModified != null" >
+        gmt_modified,
+      </if>
+      <if test="isDeleted != null" >
+        is_deleted,
+      </if>
+      <if test="ruleCondition != null" >
+        rule_condition,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="ruleName != null" >
+        #{ruleName,jdbcType=VARCHAR},
+      </if>
+      <if test="perDayCount != null" >
+        #{perDayCount,jdbcType=INTEGER},
+      </if>
+      <if test="perDaySingalCount != null" >
+        #{perDaySingalCount,jdbcType=INTEGER},
+      </if>
+      <if test="singalTotalCount != null" >
+        #{singalTotalCount,jdbcType=INTEGER},
+      </if>
+      <if test="activeObject != null" >
+        #{activeObject,jdbcType=INTEGER},
+      </if>
+      <if test="createname != null" >
+        #{createname,jdbcType=VARCHAR},
+      </if>
+      <if test="createId != null" >
+        #{createId,jdbcType=BIGINT},
+      </if>
+      <if test="gmtCreate != null" >
+        #{gmtCreate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gmtModified != null" >
+        #{gmtModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isDeleted != null" >
+        #{isDeleted,jdbcType=INTEGER},
+      </if>
+      <if test="ruleCondition != null" >
+        #{ruleCondition,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hema.newretail.backstage.entry.BusiActivityRuleEntry" >
+    update busi_activity_rule
+    <set >
+      <if test="ruleName != null" >
+        rule_name = #{ruleName,jdbcType=VARCHAR},
+      </if>
+      <if test="perDayCount != null" >
+        per_day_count = #{perDayCount,jdbcType=INTEGER},
+      </if>
+      <if test="perDaySingalCount != null" >
+        per_day_singal_count = #{perDaySingalCount,jdbcType=INTEGER},
+      </if>
+      <if test="singalTotalCount != null" >
+        singal_total_count = #{singalTotalCount,jdbcType=INTEGER},
+      </if>
+      <if test="activeObject != null" >
+        active_object = #{activeObject,jdbcType=INTEGER},
+      </if>
+      <if test="createname != null" >
+        createName = #{createname,jdbcType=VARCHAR},
+      </if>
+      <if test="createId != null" >
+        create_id = #{createId,jdbcType=BIGINT},
+      </if>
+      <if test="gmtCreate != null" >
+        gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gmtModified != null" >
+        gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isDeleted != null" >
+        is_deleted = #{isDeleted,jdbcType=INTEGER},
+      </if>
+      <if test="ruleCondition != null" >
+        rule_condition = #{ruleCondition,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hema.newretail.backstage.entry.BusiActivityRuleEntry" >
+    update busi_activity_rule
+    set rule_name = #{ruleName,jdbcType=VARCHAR},
+      per_day_count = #{perDayCount,jdbcType=INTEGER},
+      per_day_singal_count = #{perDaySingalCount,jdbcType=INTEGER},
+      singal_total_count = #{singalTotalCount,jdbcType=INTEGER},
+      active_object = #{activeObject,jdbcType=INTEGER},
+      createName = #{createname,jdbcType=VARCHAR},
+      create_id = #{createId,jdbcType=BIGINT},
+      gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
+      is_deleted = #{isDeleted,jdbcType=INTEGER},
+      rule_condition = #{ruleCondition,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+  <select id="selectAllActivityRule" resultType="java.util.Map">
+    SELECT
+        r.id,
+        r.rule_name as ruleName
+    FROM
+        busi_activity_rule AS r
+    WHERE
+        r.is_deleted = 0
+    ORDER BY
+        r.gmt_create
+</select>
+</mapper>

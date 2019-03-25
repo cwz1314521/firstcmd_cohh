@@ -1,11 +1,13 @@
 package com.hema.newretail.backstage.dao;
 
 import com.hema.newretail.backstage.entry.BusiIngredientMenuEntry;
+import com.hema.newretail.backstage.model.common.AgentCompanyBo;
 
 import java.util.List;
+import java.util.Map;
 
 public interface BusiIngredientMenuMapper {
-    List<BusiIngredientMenuEntry> selectAll();
+    List<AgentCompanyBo> selectAll();
 
     List<BusiIngredientMenuEntry> selectAllNoDiy();
 

@@ -1,15 +1,20 @@
+server:
+  port: 8081
+  context-path: /crm
 
 spring:
   data:
     mongodb:
-      authentication-database: false
-      database: local
-      host: 172.31.81.226
-      port: 27019
+      primary:
+        uri: mongodb://root:Hema718!@dds-2ze1921b5c75d1341.mongodb.rds.aliyuncs.com:3717,dds-2ze1921b5c75d1342.mongodb.rds.aliyuncs.com:3717/newretail?replicaSet=mgset-10506875
+        authentication-database: true
+      secondary:
+        uri: mongodb://root:Hema718!@dds-2ze1921b5c75d1341.mongodb.rds.aliyuncs.com:3717,dds-2ze1921b5c75d1342.mongodb.rds.aliyuncs.com:3717/newretail_statics?replicaSet=mgset-10506875
+        authentication-database: true
   redis:
     database: 13
-    host: 172.31.81.226
-    password: 888888
+    host: r-2ze053da35340c84.redis.rds.aliyuncs.com
+    password: Hemaqwe123
     pool:
       max-active: 200
       max-idle: 10
@@ -19,9 +24,9 @@ spring:
     timeout: 1000
   datasource:
     name: test
-    url: jdbc:mysql://172.31.81.226:3307/newretail?useUnicode=true&characterEncoding=utf-8
-    username: root
-    password: 888888
+    url: jdbc:mysql://rm-2zeec326878w0j5w3.mysql.rds.aliyuncs.com:3306/newretail?useUnicode=true&characterEncoding=utf-8
+    username: newretail_user
+    password: Hema718!
     # 使用druid数据源
     type: com.alibaba.druid.pool.DruidDataSource
     driver-class-name: com.mysql.jdbc.Driver
@@ -53,9 +58,9 @@ pagehelper:
   reasonable: true
   supportMethodsArguments: true
   params: Count=countSql
-#logging:
-#  level:
-#    com.hema.newretail.backstage.dao: debug
+logging:
+  level:
+    com.hema.newretail.backstage.dao: debug
 weixin:
   appId: wx5cca670556d1acdd
   appSecret: 646acc89222268d55cb259812d62594a
@@ -65,20 +70,39 @@ excelModel:
   orderSrcFileName: 订单数据导出.xlsx
   agentFileName: 代理公司导出.xlsx
   orderFileName: Order订单数据导出.xlsx
+  deviceOutStoreName: 设备出库单.xlsx
+  cupExcelName: 杯数统计.xlsx
+  dataExcelName: 动态.xlsx
 
 custom:
   initUserPassWord: 123456
   #debug: true
   #auth
 auth:
-  requestCodeUrl: http://47.105.117.193:8082/auth/codeAuth
-  requestAccessCodeUrl: http://47.105.117.193:8082/auth/authorization/token
+  requestCodeUrl: http://auth.hemaapp.com/auth/codeAuth
+  requestAccessCodeUrl: http://auth.hemaapp.com/auth/authorization/token
+  ueditorActionUrl: /sys/ueditor/exec
 
 oss:
   endpoint : oss-cn-qingdao.aliyuncs.com
   access_key_id : LTAIsmLY9xXmN5B1
   access_key_secret : wTfmgSyXFhZCHQD7vdQTKgs3mXTrwj
   backet_name : shandong-hema-oss
-  folder_json : developjson/
-  folder_img : developimg/
+  folder_json : projson/
+  folder_img : proimg/
+  folder_file: profile/
   web_url: http://newretail.hemaapp.com/
+
+#============== kafka ===================
+kafka:
+  producer:
+    servers: 192.168.0.240:9092,192.168.0.241:9092,192.168.0.242:9092
+    retries: 0
+    batch:
+      size: 4096
+    linger: 1
+    buffer:
+      memory: 40960
+  topic:
+    reload: reloadTopic
+    cycle: cycleTopic

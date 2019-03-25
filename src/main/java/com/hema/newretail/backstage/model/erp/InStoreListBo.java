@@ -1,5 +1,7 @@
 package com.hema.newretail.backstage.model.erp;
 
+import lombok.Data;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -11,6 +13,7 @@ import java.util.Date;
  * @Date 2018/11/2 15:07
  * @Version 1.0
  **/
+@Data
 public class InStoreListBo implements Serializable {
 
     /**id*/
@@ -27,43 +30,5 @@ public class InStoreListBo implements Serializable {
 
     private String qrcodeCode;
 
-    public String getQrcodeCode() {
-        return qrcodeCode;
-    }
 
-    public void setQrcodeCode(String qrcodeCode) {
-        this.qrcodeCode = qrcodeCode;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getIngredientName() {
-        return ingredientName;
-    }
-
-    public void setIngredientName(String ingredientName) {
-        this.ingredientName = ingredientName;
-    }
-
-    public Date getQualityGuaranteePeriod() {
-        return qualityGuaranteePeriod;
-    }
-
-    public void setQualityGuaranteePeriod(Date qualityGuaranteePeriod) {
-        this.qualityGuaranteePeriod = qualityGuaranteePeriod;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
 }

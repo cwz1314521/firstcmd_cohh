@@ -31,7 +31,7 @@ public class SwaggerConf {
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("springboot利用swagger构建api文档")
+                .title("运营后台自动生成接口文档")
                 .description("简单优雅的restfun风格，http://blog.csdn.net/saytime")
                 .termsOfServiceUrl("http://blog.csdn.net/saytime")
                 .version("1.0")

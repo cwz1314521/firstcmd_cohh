@@ -16,23 +16,31 @@
     <result column="is_deleted" property="isDeleted" jdbcType="BIGINT" />
     <result column="price" property="price" jdbcType="DECIMAL" />
     <result column="diy_keywords" property="diyKeywords" jdbcType="VARCHAR" />
-    <result column="is_recommend" property="isRecommend" jdbcType="BIGINT" />
     <result column="small_pic" property="smallPic" jdbcType="VARCHAR" />
     <result column="big_pic" property="bigPic" jdbcType="VARCHAR" />
-    <result column="middle_pic" property="middlePic" jdbcType="VARCHAR" />
     <result column="any_pic" property="anyPic" jdbcType="VARCHAR" />
-    <result column="recommend_order" property="recommendOrder" jdbcType="INTEGER" />
+    <result column="middle_pic" property="middlePic" jdbcType="VARCHAR" />
+    <result column="is_recommend" property="isRecommend" jdbcType="BIGINT" />
+    <result column="recommend_order" property="recommendOrder" jdbcType="DECIMAL" />
     <result column="status" property="status" jdbcType="BIT" />
+    <result column="menu_classify_id" property="menuClassifyId" jdbcType="BIGINT" />
+    <result column="sub_title" property="subTitle" jdbcType="VARCHAR" />
+    <result column="menu_desc" property="menuDesc" jdbcType="VARCHAR" />
+    <result column="show_order" property="showOrder" jdbcType="DECIMAL" />
   </resultMap>
-  <sql id="Base_Column_List">
+  <resultMap id="AllMap" type="com.hema.newretail.backstage.model.common.AgentCompanyBo" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="menu_name" property="companyName" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
     id, gmt_create, gmt_modified, menu_name, is_diy, is_deleted, price, diy_keywords,
-    is_recommend, small_pic, big_pic, any_pic, middle_pic, recommend_order, status
+    small_pic, big_pic, any_pic, middle_pic, is_recommend, recommend_order, status, menu_classify_id,
+    sub_title, menu_desc, show_order
   </sql>
-
-
-  <select id="selectAll" resultMap="BaseResultMap">
+  <select id="selectAll" resultMap="AllMap">
     select
-    <include refid="Base_Column_List" />
+    id,menu_name
     from busi_ingredient_menu
   </select>
   <select id="selectAllNoDiy" resultMap="BaseResultMap">
@@ -47,7 +55,6 @@
     from busi_ingredient_menu
     where menu_name = #{menuName,jdbcType=VARCHAR}
   </select>
-
   <insert id="saveStandardDrink" parameterType="com.hema.newretail.backstage.entry.BusiIngredientMenuEntry" useGeneratedKeys="true" keyProperty="id">
     insert into busi_ingredient_menu
     <trim prefix="(" suffix=")" suffixOverrides="," >
@@ -75,26 +82,38 @@
       <if test="diyKeywords != null" >
         diy_keywords,
       </if>
-      <if test="isRecommend != null" >
-        is_recommend,
-      </if>
       <if test="smallPic != null" >
         small_pic,
       </if>
       <if test="bigPic != null" >
         big_pic,
       </if>
+      <if test="anyPic != null" >
+        any_pic,
+      </if>
       <if test="middlePic != null" >
         middle_pic,
       </if>
-      <if test="anyPic != null" >
-        any_pic,
+      <if test="isRecommend != null" >
+        is_recommend,
       </if>
       <if test="recommendOrder != null" >
         recommend_order,
       </if>
       <if test="status != null" >
         status,
+      </if>
+      <if test="menuClassifyId != null" >
+        menu_classify_id,
+      </if>
+      <if test="subTitle != null" >
+        sub_title,
+      </if>
+      <if test="menuDesc != null" >
+        menu_desc,
+      </if>
+      <if test="showOrder != null" >
+        show_order,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
@@ -122,8 +141,154 @@
       <if test="diyKeywords != null" >
         #{diyKeywords,jdbcType=VARCHAR},
       </if>
+      <if test="smallPic != null" >
+        #{smallPic,jdbcType=VARCHAR},
+      </if>
+      <if test="bigPic != null" >
+        #{bigPic,jdbcType=VARCHAR},
+      </if>
+      <if test="anyPic != null" >
+        #{anyPic,jdbcType=VARCHAR},
+      </if>
+      <if test="middlePic != null" >
+        #{middlePic,jdbcType=VARCHAR},
+      </if>
       <if test="isRecommend != null" >
         #{isRecommend,jdbcType=BIGINT},
+      </if>
+      <if test="recommendOrder != null" >
+        #{recommendOrder,jdbcType=DECIMAL},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=BIT},
+      </if>
+      <if test="menuClassifyId != null" >
+        #{menuClassifyId,jdbcType=BIGINT},
+      </if>
+      <if test="subTitle != null" >
+        #{subTitle,jdbcType=VARCHAR},
+      </if>
+      <if test="menuDesc != null" >
+        #{menuDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="showOrder != null" >
+        #{showOrder,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select
+    <include refid="Base_Column_List" />
+    from busi_ingredient_menu
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from busi_ingredient_menu
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.hema.newretail.backstage.entry.BusiIngredientMenuEntry" >
+    insert into busi_ingredient_menu (id, gmt_create, gmt_modified,
+      menu_name, is_diy, is_deleted,
+      price, diy_keywords, small_pic,
+      big_pic, any_pic, middle_pic,
+      is_recommend, recommend_order, status,
+      menu_classify_id, sub_title, menu_desc,
+      show_order)
+    values (#{id,jdbcType=BIGINT}, #{gmtCreate,jdbcType=TIMESTAMP}, #{gmtModified,jdbcType=TIMESTAMP},
+      #{menuName,jdbcType=VARCHAR}, #{isDiy,jdbcType=BIGINT}, #{isDeleted,jdbcType=BIGINT},
+      #{price,jdbcType=DECIMAL}, #{diyKeywords,jdbcType=VARCHAR}, #{smallPic,jdbcType=VARCHAR},
+      #{bigPic,jdbcType=VARCHAR}, #{anyPic,jdbcType=VARCHAR}, #{middlePic,jdbcType=VARCHAR},
+      #{isRecommend,jdbcType=BIGINT}, #{recommendOrder,jdbcType=DECIMAL}, #{status,jdbcType=BIT},
+      #{menuClassifyId,jdbcType=BIGINT}, #{subTitle,jdbcType=VARCHAR}, #{menuDesc,jdbcType=VARCHAR},
+      #{showOrder,jdbcType=DECIMAL})
+  </insert>
+  <insert id="insertSelective" parameterType="com.hema.newretail.backstage.entry.BusiIngredientMenuEntry" >
+    insert into busi_ingredient_menu
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="gmtCreate != null" >
+        gmt_create,
+      </if>
+      <if test="gmtModified != null" >
+        gmt_modified,
+      </if>
+      <if test="menuName != null" >
+        menu_name,
+      </if>
+      <if test="isDiy != null" >
+        is_diy,
+      </if>
+      <if test="isDeleted != null" >
+        is_deleted,
+      </if>
+      <if test="price != null" >
+        price,
+      </if>
+      <if test="diyKeywords != null" >
+        diy_keywords,
+      </if>
+      <if test="smallPic != null" >
+        small_pic,
+      </if>
+      <if test="bigPic != null" >
+        big_pic,
+      </if>
+      <if test="anyPic != null" >
+        any_pic,
+      </if>
+      <if test="middlePic != null" >
+        middle_pic,
+      </if>
+      <if test="isRecommend != null" >
+        is_recommend,
+      </if>
+      <if test="recommendOrder != null" >
+        recommend_order,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="menuClassifyId != null" >
+        menu_classify_id,
+      </if>
+      <if test="subTitle != null" >
+        sub_title,
+      </if>
+      <if test="menuDesc != null" >
+        menu_desc,
+      </if>
+      <if test="showOrder != null" >
+        show_order,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="gmtCreate != null" >
+        #{gmtCreate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gmtModified != null" >
+        #{gmtModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="menuName != null" >
+        #{menuName,jdbcType=VARCHAR},
+      </if>
+      <if test="isDiy != null" >
+        #{isDiy,jdbcType=BIGINT},
+      </if>
+      <if test="isDeleted != null" >
+        #{isDeleted,jdbcType=BIGINT},
+      </if>
+      <if test="price != null" >
+        #{price,jdbcType=DECIMAL},
+      </if>
+      <if test="diyKeywords != null" >
+        #{diyKeywords,jdbcType=VARCHAR},
       </if>
       <if test="smallPic != null" >
         #{smallPic,jdbcType=VARCHAR},
@@ -131,193 +296,96 @@
       <if test="bigPic != null" >
         #{bigPic,jdbcType=VARCHAR},
       </if>
-      <if test="middlePic != null" >
-        #{middlePic,jdbcType=VARCHAR},
-      </if>
       <if test="anyPic != null" >
         #{anyPic,jdbcType=VARCHAR},
       </if>
+      <if test="middlePic != null" >
+        #{middlePic,jdbcType=VARCHAR},
+      </if>
+      <if test="isRecommend != null" >
+        #{isRecommend,jdbcType=BIGINT},
+      </if>
       <if test="recommendOrder != null" >
-        #{recommendOrder,jdbcType=INTEGER},
+        #{recommendOrder,jdbcType=DECIMAL},
       </if>
       <if test="status != null" >
         #{status,jdbcType=BIT},
       </if>
-    </trim>
-  </insert>
-
-
-
-  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
-    select 
-    <include refid="Base_Column_List" />
-    from busi_ingredient_menu
-    where id = #{id,jdbcType=BIGINT}
-  </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from busi_ingredient_menu
-    where id = #{id,jdbcType=BIGINT}
-  </delete>
-  <insert id="insert" parameterType="com.hema.newretail.backstage.entry.BusiIngredientMenuEntry">
-    insert into busi_ingredient_menu (id, gmt_create, gmt_modified, 
-      menu_name, is_diy, is_deleted, 
-      price, diy_keywords, is_recommend, 
-      small_pic, big_pic, any_pic,
-      middle_pic, recommend_order, status
-      )
-    values (#{id,jdbcType=BIGINT}, #{gmtCreate,jdbcType=TIMESTAMP}, #{gmtModified,jdbcType=TIMESTAMP}, 
-      #{menuName,jdbcType=VARCHAR}, #{isDiy,jdbcType=BIGINT}, #{isDeleted,jdbcType=BIGINT}, 
-      #{price,jdbcType=DECIMAL}, #{diyKeywords,jdbcType=VARCHAR}, #{isRecommend,jdbcType=BIGINT}, 
-      #{smallPic,jdbcType=VARCHAR}, #{bigPic,jdbcType=VARCHAR}, #{anyPic,jdbcType=VARCHAR},
-      #{middlePic,jdbcType=VARCHAR}, #{recommendOrder,jdbcType=INTEGER}, #{status,jdbcType=BIT}
-      )
-  </insert>
-  <insert id="insertSelective" parameterType="com.hema.newretail.backstage.entry.BusiIngredientMenuEntry">
-    insert into busi_ingredient_menu
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        id,
+      <if test="menuClassifyId != null" >
+        #{menuClassifyId,jdbcType=BIGINT},
       </if>
-      <if test="gmtCreate != null">
-        gmt_create,
+      <if test="subTitle != null" >
+        #{subTitle,jdbcType=VARCHAR},
       </if>
-      <if test="gmtModified != null">
-        gmt_modified,
+      <if test="menuDesc != null" >
+        #{menuDesc,jdbcType=VARCHAR},
       </if>
-      <if test="menuName != null">
-        menu_name,
-      </if>
-      <if test="isDiy != null">
-        is_diy,
-      </if>
-      <if test="isDeleted != null">
-        is_deleted,
-      </if>
-      <if test="price != null">
-        price,
-      </if>
-      <if test="diyKeywords != null">
-        diy_keywords,
-      </if>
-      <if test="isRecommend != null">
-        is_recommend,
-      </if>
-      <if test="smallPic != null">
-        small_pic,
-      </if>
-      <if test="bigPic != null">
-        big_pic,
-      </if>
-      <if test="anyPic != null">
-        any_pic,
-      </if>
-      <if test="middlePic != null">
-        middle_pic,
-      </if>
-      <if test="recommendOrder != null">
-        recommend_order,
-      </if>
-      <if test="status != null">
-        status,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        #{id,jdbcType=BIGINT},
-      </if>
-      <if test="gmtCreate != null">
-        #{gmtCreate,jdbcType=TIMESTAMP},
-      </if>
-      <if test="gmtModified != null">
-        #{gmtModified,jdbcType=TIMESTAMP},
-      </if>
-      <if test="menuName != null">
-        #{menuName,jdbcType=VARCHAR},
-      </if>
-      <if test="isDiy != null">
-        #{isDiy,jdbcType=BIGINT},
-      </if>
-      <if test="isDeleted != null">
-        #{isDeleted,jdbcType=BIGINT},
-      </if>
-      <if test="price != null">
-        #{price,jdbcType=DECIMAL},
-      </if>
-      <if test="diyKeywords != null">
-        #{diyKeywords,jdbcType=VARCHAR},
-      </if>
-      <if test="isRecommend != null">
-        #{isRecommend,jdbcType=BIGINT},
-      </if>
-      <if test="smallPic != null">
-        #{smallPic,jdbcType=VARCHAR},
-      </if>
-      <if test="bigPic != null">
-        #{bigPic,jdbcType=VARCHAR},
-      </if>
-      <if test="anyPic != null">
-        #{anyPic,jdbcType=VARCHAR},
-      </if>
-      <if test="middlePic != null">
-        #{middlePic,jdbcType=VARCHAR},
-      </if>
-      <if test="recommendOrder != null">
-        #{recommendOrder,jdbcType=INTEGER},
-      </if>
-      <if test="status != null">
-        #{status,jdbcType=BIT},
+      <if test="showOrder != null" >
+        #{showOrder,jdbcType=DECIMAL},
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.hema.newretail.backstage.entry.BusiIngredientMenuEntry">
+  <update id="updateByPrimaryKeySelective" parameterType="com.hema.newretail.backstage.entry.BusiIngredientMenuEntry" >
     update busi_ingredient_menu
-    <set>
-      <if test="gmtCreate != null">
+    <set >
+      <if test="gmtCreate != null" >
         gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
       </if>
-      <if test="gmtModified != null">
+      <if test="gmtModified != null" >
         gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
       </if>
-      <if test="menuName != null">
+      <if test="menuName != null" >
         menu_name = #{menuName,jdbcType=VARCHAR},
       </if>
-      <if test="isDiy != null">
+      <if test="isDiy != null" >
         is_diy = #{isDiy,jdbcType=BIGINT},
       </if>
-      <if test="isDeleted != null">
+      <if test="isDeleted != null" >
         is_deleted = #{isDeleted,jdbcType=BIGINT},
       </if>
-      <if test="price != null">
+      <if test="price != null" >
         price = #{price,jdbcType=DECIMAL},
       </if>
-      <if test="diyKeywords != null">
+      <if test="diyKeywords != null" >
         diy_keywords = #{diyKeywords,jdbcType=VARCHAR},
       </if>
-      <if test="isRecommend != null">
-        is_recommend = #{isRecommend,jdbcType=BIGINT},
-      </if>
-      <if test="smallPic != null">
+      <if test="smallPic != null" >
         small_pic = #{smallPic,jdbcType=VARCHAR},
       </if>
-      <if test="bigPic != null">
+      <if test="bigPic != null" >
         big_pic = #{bigPic,jdbcType=VARCHAR},
       </if>
-      <if test="anyPic != null">
+      <if test="anyPic != null" >
         any_pic = #{anyPic,jdbcType=VARCHAR},
       </if>
-      <if test="middlePic != null">
+      <if test="middlePic != null" >
         middle_pic = #{middlePic,jdbcType=VARCHAR},
       </if>
-      <if test="recommendOrder != null">
-        recommend_order = #{recommendOrder,jdbcType=INTEGER},
+      <if test="isRecommend != null" >
+        is_recommend = #{isRecommend,jdbcType=BIGINT},
       </if>
-      <if test="status != null">
+      <if test="recommendOrder != null" >
+        recommend_order = #{recommendOrder,jdbcType=DECIMAL},
+      </if>
+      <if test="status != null" >
         status = #{status,jdbcType=BIT},
+      </if>
+      <if test="menuClassifyId != null" >
+        menu_classify_id = #{menuClassifyId,jdbcType=BIGINT},
+      </if>
+      <if test="subTitle != null" >
+        sub_title = #{subTitle,jdbcType=VARCHAR},
+      </if>
+      <if test="menuDesc != null" >
+        menu_desc = #{menuDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="showOrder != null" >
+        show_order = #{showOrder,jdbcType=DECIMAL},
       </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.hema.newretail.backstage.entry.BusiIngredientMenuEntry">
+  <update id="updateByPrimaryKey" parameterType="com.hema.newretail.backstage.entry.BusiIngredientMenuEntry" >
     update busi_ingredient_menu
     set gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
       gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
@@ -326,13 +394,17 @@
       is_deleted = #{isDeleted,jdbcType=BIGINT},
       price = #{price,jdbcType=DECIMAL},
       diy_keywords = #{diyKeywords,jdbcType=VARCHAR},
-      is_recommend = #{isRecommend,jdbcType=BIGINT},
       small_pic = #{smallPic,jdbcType=VARCHAR},
       big_pic = #{bigPic,jdbcType=VARCHAR},
       any_pic = #{anyPic,jdbcType=VARCHAR},
       middle_pic = #{middlePic,jdbcType=VARCHAR},
-      recommend_order = #{recommendOrder,jdbcType=INTEGER},
-      status = #{status,jdbcType=BIT}
+      is_recommend = #{isRecommend,jdbcType=BIGINT},
+      recommend_order = #{recommendOrder,jdbcType=DECIMAL},
+      status = #{status,jdbcType=BIT},
+      menu_classify_id = #{menuClassifyId,jdbcType=BIGINT},
+      sub_title = #{subTitle,jdbcType=VARCHAR},
+      menu_desc = #{menuDesc,jdbcType=VARCHAR},
+      show_order = #{showOrder,jdbcType=DECIMAL}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

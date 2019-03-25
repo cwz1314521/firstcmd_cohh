@@ -2,6 +2,7 @@ package com.hema.newretail.backstage.common.queryparam.diy;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
 import org.hibernate.validator.constraints.NotBlank;
 
 import javax.validation.constraints.NotNull;
@@ -14,6 +15,7 @@ import javax.validation.constraints.NotNull;
  * @Date 2018/10/18 10:58
  * @Version 1.0
  **/
+@Data
 @ApiModel(description = "PriceCondition")
 public class PriceCondition {
 
@@ -21,11 +23,6 @@ public class PriceCondition {
     @NotBlank(message = "新价格不可为空")
     private String price;
 
-    public String getPrice() {
-        return price;
-    }
+    private String preferentialRatio;
 
-    public void setPrice(String price) {
-        this.price = price;
-    }
 }

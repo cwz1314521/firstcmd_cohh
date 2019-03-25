@@ -4,7 +4,12 @@ import com.hema.newretail.backstage.common.queryparam.tag.TagCountTagNameConditi
 import com.hema.newretail.backstage.entry.BaseTagEntry;
 
 import java.util.List;
-
+/**
+ * @Department 新零售
+ * @Author ---CWZ
+ * @Date 2018/12/12 20:57
+ * @Version 1.0
+ **/
 public interface BaseTagEntryMapper {
 
 

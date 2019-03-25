@@ -1,11 +1,21 @@
 package com.hema.newretail.backstage.entry;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.validator.constraints.NotBlank;
 
 import java.io.Serializable;
 import java.util.Date;
 
+/**
+ * @author admin
+ **/
+@NoArgsConstructor
+@Getter
+@Setter
 public class BasePost implements Serializable {
+    private static final long serialVersionUID = -277316640754844193L;
     private Long id;
 
     @NotBlank(message = "参数postName不能为空")
@@ -19,51 +29,6 @@ public class BasePost implements Serializable {
 
     private Boolean isDeleted;
 
-    public Long getId() {
-        return id;
-    }
+    private Integer status;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getPostName() {
-        return postName;
-    }
-
-    public void setPostName(String postName) {
-        this.postName = postName == null ? null : postName.trim();
-    }
-
-    public String getPostDesc() {
-        return postDesc;
-    }
-
-    public void setPostDesc(String postDesc) {
-        this.postDesc = postDesc == null ? null : postDesc.trim();
-    }
-
-    public Date getGmtCreate() {
-        return gmtCreate;
-    }
-
-    public void setGmtCreate(Date gmtCreate) {
-        this.gmtCreate = gmtCreate;
-    }
-
-    public Date getGmtModified() {
-        return gmtModified;
-    }
-
-    public void setGmtModified(Date gmtModified) {
-        this.gmtModified = gmtModified;
-    }
-
-    public Boolean getIsDeleted() {
-        return isDeleted;
-    }
-
-    public void setIsDeleted(Boolean isDeleted) {
-        this.isDeleted = isDeleted;
-    }
 }

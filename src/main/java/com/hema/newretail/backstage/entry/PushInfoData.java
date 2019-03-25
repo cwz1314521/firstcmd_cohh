@@ -1,5 +1,7 @@
 package com.hema.newretail.backstage.entry;
 
+import lombok.Data;
+
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -7,6 +9,7 @@ import java.util.List;
 /**
  * 推送信息实体类
  */
+@Data
 public class PushInfoData implements Serializable {
 
     private String id;//消息Id
@@ -22,100 +25,5 @@ public class PushInfoData implements Serializable {
     private String city="";
     private String district="";
 
-    public String getId() {
-        return id;
-    }
 
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public String getOperator() {
-        return operator;
-    }
-
-    public void setOperator(String operator) {
-        this.operator = operator;
-    }
-
-    public List<String> getUserIsRead() {
-        return userIsRead;
-    }
-
-    public void setUserIsRead(List<String> userIsRead) {
-        this.userIsRead = userIsRead;
-    }
-
-    public Date getPushTime() {
-        return pushTime;
-    }
-
-    public void setPushTime(Date pushTime) {
-        this.pushTime = pushTime;
-    }
-
-
-    public List<String> getUsers() {
-        return users;
-    }
-
-    public void setUsers(List<String> users) {
-        this.users = users;
-    }
-
-    public String getProvince() {
-        return province;
-    }
-
-    public void setProvince(String province) {
-        this.province = province;
-    }
-
-    public String getCity() {
-        return city;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
-    }
-
-    public String getDistrict() {
-        return district;
-    }
-
-    public void setDistrict(String district) {
-        this.district = district;
-    }
-
-    public List<String> getUserIsDel() {
-        return userIsDel;
-    }
-
-    public void setUserIsDel(List<String> userIsDel) {
-        this.userIsDel = userIsDel;
-    }
-
-    public String getIsWeiXin() {
-        return isWeiXin;
-    }
-
-    public void setIsWeiXin(String isWeiXin) {
-        this.isWeiXin = isWeiXin;
-    }
 }

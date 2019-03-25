@@ -1,0 +1,407 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hema.newretail.backstage.dao.BusiActivityMapper" >
+    <cache type="com.hema.newretail.backstage.common.caches.MybatisRedisCache" >
+        <property name="eviction" value="FIFO" />
+        <property name="flushInterval" value="6000000" />
+        <property name="size" value="1024" />
+        <property name="readOnly" value="false" />
+    </cache>
+  <resultMap id="BaseResultMap" type="com.hema.newretail.backstage.entry.discounts.BusiActivityEntry" >
+      <id column="id" property="id" jdbcType="BIGINT" />
+      <result column="activity_name" property="activityName" jdbcType="VARCHAR" />
+      <result column="sub_title" property="subTitle" jdbcType="VARCHAR" />
+      <result column="effective_time" property="effectiveTime" jdbcType="TIMESTAMP" />
+      <result column="Invalid_time" property="invalidTime" jdbcType="TIMESTAMP" />
+      <result column="activity_desc" property="activityDesc" jdbcType="VARCHAR" />
+      <result column="activity_status" property="activityStatus" jdbcType="INTEGER" />
+      <result column="gmt_create" property="gmtCreate" jdbcType="TIMESTAMP" />
+      <result column="gmt_modified" property="gmtModified" jdbcType="TIMESTAMP" />
+      <result column="is_deleted" property="isDeleted" jdbcType="INTEGER" />
+      <result column="time" property="time" jdbcType="INTEGER" />
+      <result column="activity_rule_id" property="activityRuleId" jdbcType="BIGINT" />
+      <result column="people_number" property="peopleNumber" jdbcType="INTEGER" />
+      <result column="subsidy" property="subsidy" jdbcType="DECIMAL" />
+      <result column="activity_subsidy_limit" property="activitySubsidyLimit" jdbcType="DECIMAL" />
+      <result column="activity_remark" property="activityRemark" jdbcType="VARCHAR" />
+      <result column="apply_time" property="applyTime" jdbcType="TIMESTAMP" />
+      <result column="applicant_id" property="applicantId" jdbcType="BIGINT" />
+      <result column="applicant" property="applicant" jdbcType="VARCHAR" />
+      <result column="audit_time" property="auditTime" jdbcType="TIMESTAMP" />
+      <result column="auditor_id" property="auditorId" jdbcType="BIGINT" />
+      <result column="auditor" property="auditor" jdbcType="VARCHAR" />
+      <result column="audit_status" property="auditStatus" jdbcType="INTEGER" />
+      <result column="audit_desc" property="auditDesc" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, activity_name, sub_title, effective_time, Invalid_time, activity_desc, activity_status,
+    gmt_create, gmt_modified, is_deleted, time, activity_rule_id, people_number, subsidy,
+    activity_subsidy_limit, activity_remark, apply_time, applicant_id, applicant, audit_time,
+    auditor_id, auditor, audit_status, audit_desc
+  </sql>
+<!---->
+    <select id="selectAll" resultType="java.util.Map">
+        SELECT id,activity_name as name from busi_activity
+    </select>
+  <!--list-->
+  <select id="selectList" parameterType="com.hema.newretail.backstage.common.queryparam.discounts.EventListCondition" resultType="com.hema.newretail.backstage.model.discounts.ActivityListBo">
+      SELECT
+          b.id AS id, b.activity_name AS activityName, b.activity_rule_id AS activityRuleId, r.rule_name AS activityRuleName,
+          DATE_FORMAT(b.effective_time, '%Y-%m-%d %H:%i:%S') AS effectiveTime,
+          DATE_FORMAT(b.Invalid_time, '%Y-%m-%d %H:%i:%S') AS invalidTime,
+          b.audit_status AS authStatus,
+          CASE b.activity_status
+          WHEN 1 THEN '未开始'
+          WHEN 0 THEN IF (now() &lt; b.effective_time, '未开始', IF (now() &lt;= b.Invalid_time, '进行中', '已结束'))
+          END AS activityStatus,
+          DATE_FORMAT(b.apply_time, '%Y-%m-%d %H:%i:%S') AS applyTime,
+          b.audit_desc AS auditDesc, b.activity_desc AS activityDesc
+      FROM busi_activity b
+      LEFT JOIN busi_activity_rule AS r ON b.activity_rule_id = r.id
+      where b.is_deleted = 0
+      <if test="activityName != null and activityName != ''" >
+          and b.activity_name like  "%"#{activityName,jdbcType=VARCHAR}"%"
+      </if>
+      <if test="authStatus != null" >
+          and b.audit_status = #{authStatus,jdbcType=INTEGER}
+      </if>
+      <if test="startDates != null" >
+          and b.gmt_create between  #{startDates,jdbcType=TIMESTAMP}  and  #{endDates,jdbcType=TIMESTAMP}
+      </if>
+      <choose>
+          <when test="activityStatus != null and activityStatus == 0">
+              and now() &lt; b.effective_time
+          </when>
+          <when test="activityStatus != null and activityStatus == 1">
+              and (now() &gt;= b.effective_time and now() &lt;= b.Invalid_time)
+          </when>
+          <when test="activityStatus != null and activityStatus == 2">
+              and now() &gt; b.Invalid_time
+          </when>
+      </choose>
+      order by b.gmt_create desc
+  </select>
+  <!--info-->
+  <select id="selectInfo" parameterType="java.lang.Long" resultType="com.hema.newretail.backstage.model.discounts.ActivityInfoBo">
+    SELECT
+        a.id,
+        a.activity_name AS activityName,
+        a.activity_rule_id AS activityRuleId,
+        DATE_FORMAT(a.effective_time, '%Y-%m-%d %H:%i:%S') AS effectiveTime,
+        a.activity_desc AS activityDesc,
+        a.sub_title AS subTitle,
+        DATE_FORMAT(a.Invalid_time, '%Y-%m-%d %H:%i:%S') AS invalidTime,
+        a.people_number AS peopleNumber,
+        a.subsidy,
+        a.activity_subsidy_limit AS activitySubsidyLimit,
+        a.activity_remark AS activityRemark,
+        DATE_FORMAT(a.apply_time, '%Y-%m-%d %H:%i:%S') AS applyTime,
+        a.applicant
+    FROM
+        busi_activity AS a
+    WHERE
+        a.id = #{id,jdbcType=BIGINT}
+  </select>
+  <!--stop-->
+  <update id="stop" parameterType="java.lang.Long">
+    update busi_activity set activity_status = 1
+    where id = #{id,jdbcType=BIGINT}
+    and  audit_status = 2
+  </update>
+
+  <update id="updateDelete" parameterType="java.lang.Long">
+    update busi_activity set is_deleted = 1
+    where id = #{id,jdbcType=BIGINT}
+    and  (audit_status=0 or audit_status=1 or audit_status=3))
+  </update>
+
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select
+    <include refid="Base_Column_List" />
+    from busi_activity
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from busi_activity
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+    <insert id="insert" parameterType="com.hema.newretail.backstage.entry.discounts.BusiActivityEntry" >
+    insert into busi_activity (id, activity_name, sub_title,
+      effective_time, Invalid_time, activity_desc,
+      activity_status, gmt_create, gmt_modified,
+      is_deleted, time, activity_rule_id,
+      people_number, subsidy, activity_subsidy_limit,
+      activity_remark, apply_time, applicant_id,
+      applicant, audit_time, auditor_id,
+      auditor, audit_status, audit_desc
+      )
+    values (#{id,jdbcType=BIGINT}, #{activityName,jdbcType=VARCHAR}, #{subTitle,jdbcType=VARCHAR},
+      #{effectiveTime,jdbcType=TIMESTAMP}, #{invalidTime,jdbcType=TIMESTAMP}, #{activityDesc,jdbcType=VARCHAR},
+      #{activityStatus,jdbcType=INTEGER}, #{gmtCreate,jdbcType=TIMESTAMP}, #{gmtModified,jdbcType=TIMESTAMP},
+      #{isDeleted,jdbcType=INTEGER}, #{time,jdbcType=INTEGER}, #{activityRuleId,jdbcType=BIGINT},
+      #{peopleNumber,jdbcType=INTEGER}, #{subsidy,jdbcType=DECIMAL}, #{activitySubsidyLimit,jdbcType=DECIMAL},
+      #{activityRemark,jdbcType=VARCHAR}, #{applyTime,jdbcType=TIMESTAMP}, #{applicantId,jdbcType=BIGINT},
+      #{applicant,jdbcType=VARCHAR}, #{auditTime,jdbcType=TIMESTAMP}, #{auditorId,jdbcType=BIGINT},
+      #{auditor,jdbcType=VARCHAR}, #{auditStatus,jdbcType=INTEGER}, #{auditDesc,jdbcType=VARCHAR}
+      )
+  </insert>
+    <insert id="insertSelective" parameterType="com.hema.newretail.backstage.entry.discounts.BusiActivityEntry" >
+        insert into busi_activity
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="id != null" >
+                id,
+            </if>
+            <if test="activityName != null" >
+                activity_name,
+            </if>
+            <if test="subTitle != null" >
+                sub_title,
+            </if>
+            <if test="effectiveTime != null" >
+                effective_time,
+            </if>
+            <if test="invalidTime != null" >
+                Invalid_time,
+            </if>
+            <if test="activityDesc != null" >
+                activity_desc,
+            </if>
+            <if test="activityStatus != null" >
+                activity_status,
+            </if>
+            <if test="gmtCreate != null" >
+                gmt_create,
+            </if>
+            <if test="gmtModified != null" >
+                gmt_modified,
+            </if>
+            <if test="isDeleted != null" >
+                is_deleted,
+            </if>
+            <if test="time != null" >
+                time,
+            </if>
+            <if test="activityRuleId != null" >
+                activity_rule_id,
+            </if>
+            <if test="peopleNumber != null" >
+                people_number,
+            </if>
+            <if test="subsidy != null" >
+                subsidy,
+            </if>
+            <if test="activitySubsidyLimit != null" >
+                activity_subsidy_limit,
+            </if>
+            <if test="activityRemark != null" >
+                activity_remark,
+            </if>
+            <if test="applyTime != null" >
+                apply_time,
+            </if>
+            <if test="applicantId != null" >
+                applicant_id,
+            </if>
+            <if test="applicant != null" >
+                applicant,
+            </if>
+            <if test="auditTime != null" >
+                audit_time,
+            </if>
+            <if test="auditorId != null" >
+                auditor_id,
+            </if>
+            <if test="auditor != null" >
+                auditor,
+            </if>
+            <if test="auditStatus != null" >
+                audit_status,
+            </if>
+            <if test="auditDesc != null" >
+                audit_desc,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="id != null" >
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="activityName != null" >
+                #{activityName,jdbcType=VARCHAR},
+            </if>
+            <if test="subTitle != null" >
+                #{subTitle,jdbcType=VARCHAR},
+            </if>
+            <if test="effectiveTime != null" >
+                #{effectiveTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="invalidTime != null" >
+                #{invalidTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="activityDesc != null" >
+                #{activityDesc,jdbcType=VARCHAR},
+            </if>
+            <if test="activityStatus != null" >
+                #{activityStatus,jdbcType=INTEGER},
+            </if>
+            <if test="gmtCreate != null" >
+                #{gmtCreate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="gmtModified != null" >
+                #{gmtModified,jdbcType=TIMESTAMP},
+            </if>
+            <if test="isDeleted != null" >
+                #{isDeleted,jdbcType=INTEGER},
+            </if>
+            <if test="time != null" >
+                #{time,jdbcType=INTEGER},
+            </if>
+            <if test="activityRuleId != null" >
+                #{activityRuleId,jdbcType=BIGINT},
+            </if>
+            <if test="peopleNumber != null" >
+                #{peopleNumber,jdbcType=INTEGER},
+            </if>
+            <if test="subsidy != null" >
+                #{subsidy,jdbcType=DECIMAL},
+            </if>
+            <if test="activitySubsidyLimit != null" >
+                #{activitySubsidyLimit,jdbcType=DECIMAL},
+            </if>
+            <if test="activityRemark != null" >
+                #{activityRemark,jdbcType=VARCHAR},
+            </if>
+            <if test="applyTime != null" >
+                #{applyTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="applicantId != null" >
+                #{applicantId,jdbcType=BIGINT},
+            </if>
+            <if test="applicant != null" >
+                #{applicant,jdbcType=VARCHAR},
+            </if>
+            <if test="auditTime != null" >
+                #{auditTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="auditorId != null" >
+                #{auditorId,jdbcType=BIGINT},
+            </if>
+            <if test="auditor != null" >
+                #{auditor,jdbcType=VARCHAR},
+            </if>
+            <if test="auditStatus != null" >
+                #{auditStatus,jdbcType=INTEGER},
+            </if>
+            <if test="auditDesc != null" >
+                #{auditDesc,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.hema.newretail.backstage.entry.discounts.BusiActivityEntry" >
+        update busi_activity
+        <set >
+            <if test="activityName != null" >
+                activity_name = #{activityName,jdbcType=VARCHAR},
+            </if>
+            <if test="subTitle != null" >
+                sub_title = #{subTitle,jdbcType=VARCHAR},
+            </if>
+            <if test="effectiveTime != null" >
+                effective_time = #{effectiveTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="invalidTime != null" >
+                Invalid_time = #{invalidTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="activityDesc != null" >
+                activity_desc = #{activityDesc,jdbcType=VARCHAR},
+            </if>
+            <if test="activityStatus != null" >
+                activity_status = #{activityStatus,jdbcType=INTEGER},
+            </if>
+            <if test="gmtCreate != null" >
+                gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="gmtModified != null" >
+                gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
+            </if>
+            <if test="isDeleted != null" >
+                is_deleted = #{isDeleted,jdbcType=INTEGER},
+            </if>
+            <if test="time != null" >
+                time = #{time,jdbcType=INTEGER},
+            </if>
+            <if test="activityRuleId != null" >
+                activity_rule_id = #{activityRuleId,jdbcType=BIGINT},
+            </if>
+            <if test="peopleNumber != null" >
+                people_number = #{peopleNumber,jdbcType=INTEGER},
+            </if>
+            <if test="subsidy != null" >
+                subsidy = #{subsidy,jdbcType=DECIMAL},
+            </if>
+            <if test="activitySubsidyLimit != null" >
+                activity_subsidy_limit = #{activitySubsidyLimit,jdbcType=DECIMAL},
+            </if>
+            <if test="activityRemark != null" >
+                activity_remark = #{activityRemark,jdbcType=VARCHAR},
+            </if>
+            <if test="applyTime != null" >
+                apply_time = #{applyTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="applicantId != null" >
+                applicant_id = #{applicantId,jdbcType=BIGINT},
+            </if>
+            <if test="applicant != null" >
+                applicant = #{applicant,jdbcType=VARCHAR},
+            </if>
+            <if test="auditTime != null" >
+                audit_time = #{auditTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="auditorId != null" >
+                auditor_id = #{auditorId,jdbcType=BIGINT},
+            </if>
+            <if test="auditor != null" >
+                auditor = #{auditor,jdbcType=VARCHAR},
+            </if>
+            <if test="auditStatus != null" >
+                audit_status = #{auditStatus,jdbcType=INTEGER},
+            </if>
+            <if test="auditDesc != null" >
+                audit_desc = #{auditDesc,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.hema.newretail.backstage.entry.discounts.BusiActivityEntry" >
+    update busi_activity
+    set activity_name = #{activityName,jdbcType=VARCHAR},
+      sub_title = #{subTitle,jdbcType=VARCHAR},
+      effective_time = #{effectiveTime,jdbcType=TIMESTAMP},
+      Invalid_time = #{invalidTime,jdbcType=TIMESTAMP},
+      activity_desc = #{activityDesc,jdbcType=VARCHAR},
+      activity_status = #{activityStatus,jdbcType=INTEGER},
+      gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
+      is_deleted = #{isDeleted,jdbcType=INTEGER},
+      time = #{time,jdbcType=INTEGER},
+      activity_rule_id = #{activityRuleId,jdbcType=BIGINT},
+      people_number = #{peopleNumber,jdbcType=INTEGER},
+      subsidy = #{subsidy,jdbcType=DECIMAL},
+      activity_subsidy_limit = #{activitySubsidyLimit,jdbcType=DECIMAL},
+      activity_remark = #{activityRemark,jdbcType=VARCHAR},
+      apply_time = #{applyTime,jdbcType=TIMESTAMP},
+      applicant_id = #{applicantId,jdbcType=BIGINT},
+      applicant = #{applicant,jdbcType=VARCHAR},
+      audit_time = #{auditTime,jdbcType=TIMESTAMP},
+      auditor_id = #{auditorId,jdbcType=BIGINT},
+      auditor = #{auditor,jdbcType=VARCHAR},
+      audit_status = #{auditStatus,jdbcType=INTEGER},
+      audit_desc = #{auditDesc,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+    <update id="checkActivityFinally" parameterType="com.hema.newretail.backstage.entry.BaseFinanceAuditing">
+        update busi_activity set audit_status = #{auditStatus},audit_desc = #{auditDesc},auditor=#{auditor},auditor_id=#{auditorId}, gmt_modified = #{gmtModified},
+        audit_time=#{auditTime}
+        where id = #{id}
+    </update>
+</mapper>

@@ -1,5 +1,6 @@
 package com.hema.newretail.backstage.controller;
 
+import com.hema.newretail.backstage.annotation.AutoLog;
 import com.hema.newretail.backstage.common.utils.Response;
 import com.hema.newretail.backstage.dao.BaseTagEntryMapper;
 import com.hema.newretail.backstage.entry.BaseTagEntry;
@@ -19,9 +20,10 @@ import java.util.List;
  * @Description:用户管理controller 数据操作---mongoDB
  * @Version: 1.0
  */
-@Api(description = "≡(▔﹏▔)≡用户管理相关接口")
+@Api(description = "用户管理")
 @Controller
 @RequestMapping(value = "/user")
+@AutoLog
 public class ManagementController {
 
 
@@ -41,7 +43,7 @@ public class ManagementController {
      * @auther: cwz
      * @date: 2018/8/21 15:35
      */
-    @ApiOperation("用户列表查询展示用户信息")
+    @ApiOperation("查询用户")
     @PostMapping(value = "/findUserList")
     @ResponseBody
     public Response findUserList(@RequestBody UserManaCondition userManaCondition)throws  Exception{
@@ -88,7 +90,7 @@ public class ManagementController {
      * @auther: cwz
      * @date: 2018/8/21 15:35
      */
-    @ApiOperation("批量冻结")
+    @ApiOperation("批量解冻")
     @PostMapping(value = "/batchRelease")
     @ResponseBody
     public Response userThawList(String ids){

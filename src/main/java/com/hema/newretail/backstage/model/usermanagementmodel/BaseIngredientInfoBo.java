@@ -3,7 +3,12 @@ package com.hema.newretail.backstage.model.usermanagementmodel;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
-
+/**
+ * @Department 新零售
+ * @Author ---CWZ
+ * @Date 2018/12/12 20:57
+ * @Version 1.0
+ **/
 public class BaseIngredientInfoBo implements Serializable {
     private Long id;
 

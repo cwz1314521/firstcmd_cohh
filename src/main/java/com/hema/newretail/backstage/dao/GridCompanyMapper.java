@@ -1,8 +1,10 @@
 package com.hema.newretail.backstage.dao;
 
+import com.hema.newretail.backstage.common.queryparam.common.CompanyNameCondition;
 import com.hema.newretail.backstage.common.queryparam.grid.GridListCondition;
 import com.hema.newretail.backstage.common.queryparam.grid.LookMapGridCompanyListCondition;
 import com.hema.newretail.backstage.entry.grid.GridCompanyEntry;
+import com.hema.newretail.backstage.model.common.GridCompanyBo;
 import com.hema.newretail.backstage.model.grid.GridCompanyListBo;
 import com.hema.newretail.backstage.model.grid.GridEditBo;
 import com.hema.newretail.backstage.model.grid.GridListBo;
@@ -66,4 +68,15 @@ public interface GridCompanyMapper {
      * @return 网格
      */
     List<String> selectHashcodeByCompanyId(@Param("companyId") Integer companyId);
+
+    /**
+     *
+     * 功能描述: 实时检索网格公司公共接口
+     *
+     * @param  condition
+     * @return  List<GridCompanyBo>
+     * @author  cwz
+     * @date  2018/12/11 10:31
+     */
+    List<GridCompanyBo> selectCommon(CompanyNameCondition condition);
 }

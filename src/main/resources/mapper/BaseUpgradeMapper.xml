@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hema.newretail.backstage.dao.BaseUpgradeMapper" >
+  <resultMap id="BaseResultMap" type="com.hema.newretail.backstage.entry.BaseUpgrade" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="upgrade_type" property="upgradeType" jdbcType="INTEGER" />
+    <result column="ios_version" property="iosVersion" jdbcType="VARCHAR" />
+    <result column="android_version" property="androidVersion" jdbcType="VARCHAR" />
+    <result column="apk_url" property="apkUrl" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="upgrade_desc" property="upgradeDesc" jdbcType="VARCHAR" />
+    <result column="is_deleted" property="isDeleted" jdbcType="INTEGER" />
+    <result column="gmt_create" property="gmtCreate" jdbcType="TIMESTAMP" />
+    <result column="gmt_modify" property="gmtModify" jdbcType="TIMESTAMP" />
+    <result column="create_user" property="createUser" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, upgrade_type, ios_version, android_version, apk_url, status, upgrade_desc, is_deleted, 
+    gmt_create, gmt_modify,create_user
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from base_upgrade
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from base_upgrade
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.hema.newretail.backstage.entry.BaseUpgrade" >
+    insert into base_upgrade (id, upgrade_type, ios_version, 
+      android_version, apk_url, status, 
+      upgrade_desc, is_deleted, gmt_create, 
+      gmt_modify)
+    values (#{id,jdbcType=BIGINT}, #{upgradeType,jdbcType=INTEGER}, #{iosVersion,jdbcType=VARCHAR}, 
+      #{androidVersion,jdbcType=VARCHAR}, #{apkUrl,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, 
+      #{upgradeDesc,jdbcType=VARCHAR}, #{isDeleted,jdbcType=INTEGER}, #{gmtCreate,jdbcType=TIMESTAMP}, 
+      #{gmtModify,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.hema.newretail.backstage.entry.BaseUpgrade" >
+    insert into base_upgrade
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="upgradeType != null" >
+        upgrade_type,
+      </if>
+      <if test="iosVersion != null" >
+        ios_version,
+      </if>
+      <if test="androidVersion != null" >
+        android_version,
+      </if>
+      <if test="apkUrl != null" >
+        apk_url,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="upgradeDesc != null" >
+        upgrade_desc,
+      </if>
+      <if test="isDeleted != null" >
+        is_deleted,
+      </if>
+      <if test="gmtCreate != null" >
+        gmt_create,
+      </if>
+      <if test="gmtModify != null" >
+        gmt_modify,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="upgradeType != null" >
+        #{upgradeType,jdbcType=INTEGER},
+      </if>
+      <if test="iosVersion != null" >
+        #{iosVersion,jdbcType=VARCHAR},
+      </if>
+      <if test="androidVersion != null" >
+        #{androidVersion,jdbcType=VARCHAR},
+      </if>
+      <if test="apkUrl != null" >
+        #{apkUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="upgradeDesc != null" >
+        #{upgradeDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="isDeleted != null" >
+        #{isDeleted,jdbcType=INTEGER},
+      </if>
+      <if test="gmtCreate != null" >
+        #{gmtCreate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gmtModify != null" >
+        #{gmtModify,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hema.newretail.backstage.entry.BaseUpgrade" >
+    update base_upgrade
+    <set >
+      <if test="upgradeType != null" >
+        upgrade_type = #{upgradeType,jdbcType=INTEGER},
+      </if>
+      <if test="iosVersion != null" >
+        ios_version = #{iosVersion,jdbcType=VARCHAR},
+      </if>
+      <if test="androidVersion != null" >
+        android_version = #{androidVersion,jdbcType=VARCHAR},
+      </if>
+      <if test="apkUrl != null" >
+        apk_url = #{apkUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="upgradeDesc != null" >
+        upgrade_desc = #{upgradeDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="isDeleted != null" >
+        is_deleted = #{isDeleted,jdbcType=INTEGER},
+      </if>
+      <if test="gmtCreate != null" >
+        gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gmtModify != null" >
+        gmt_modify = #{gmtModify,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hema.newretail.backstage.entry.BaseUpgrade" >
+    update base_upgrade
+    set upgrade_type = #{upgradeType,jdbcType=INTEGER},
+      ios_version = #{iosVersion,jdbcType=VARCHAR},
+      android_version = #{androidVersion,jdbcType=VARCHAR},
+      apk_url = #{apkUrl,jdbcType=VARCHAR},
+      status = #{status,jdbcType=INTEGER},
+      upgrade_desc = #{upgradeDesc,jdbcType=VARCHAR},
+      is_deleted = #{isDeleted,jdbcType=INTEGER},
+      gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      gmt_modify = #{gmtModify,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+    <select id="baseUpgradeList" resultMap="BaseResultMap" parameterType="com.hema.newretail.backstage.entry.BaseUpgrade">
+        select
+        <include refid="Base_Column_List" />
+        from base_upgrade
+        where 1=1
+        <if test="iosVersion != null and iosVersion !=''" >
+          AND  ios_version = #{iosVersion}
+        </if>
+        <if test="androidVersion != null and androidVersion !=''" >
+          and  android_version = #{androidVersion}
+        </if>
+        <if test="upgradeType != null" >
+          and  upgrade_type = #{upgradeType}
+        </if>
+        <if test="status != null" >
+          and  status = #{status}
+        </if>
+    </select>
+</mapper>

@@ -1,13 +1,15 @@
 spring:
   data:
     mongodb:
-      authentication-database: false
-      database: local
-      host: 172.31.81.227
-      port: 27019
+      primary:
+        uri: mongodb://47.105.117.193:37017,47.105.117.193:47017,47.105.117.193:57017/local_dev
+        authentication-database: false
+      secondary:
+        uri: mongodb://47.105.117.193:37017,47.105.117.193:47017,47.105.117.193:57017/newretail_statics_dev
+        authentication-database: false
   redis:
     database: 13
-    host: 172.31.81.227
+    host: 47.105.117.193
     password: 888888
     pool:
       max-active: 200
@@ -18,7 +20,7 @@ spring:
     timeout: 1000
   datasource:
     name: test
-    url: jdbc:mysql://172.31.81.227:3307/newretail?useUnicode=true&characterEncoding=utf-8
+    url: jdbc:mysql://47.105.117.193:3306/newretail_dev?useUnicode=true&characterEncoding=utf-8
     username: root
     password: 888888
     # 使用druid数据源
@@ -59,11 +61,29 @@ weixin:
   appId: wx5cca670556d1acdd
   appSecret: 646acc89222268d55cb259812d62594a
   templateId: s554M8pMLweVToIJNJv8SSXdFUhD28zrlryI0mpxRlg
+  open:
+    appId: wxdae565ac6b294baa
+    appKey: d3e72e129b4b472a8c8fe615b2c07c36
+    appSecret: 6d76bea0931c3718efc8a5435ad08251
+    cert: /1521144201.p12
+    domain: https://wxdevelop.hemaapp.com
+    mchId: 1521144201
+    urlNotify: http://wxdevelop.hemaapp.com:8392/newRetail/api/wxpay/pay_notify
+    urlNotifyRefund: http://wxdevelop.hemaapp.com:8931/crm/makeOrder/refundNotice
+    urlRefund: https://api.mch.weixin.qq.com/secapi/pay/refund
+    urlUnifiedOrder: https://api.mch.weixin.qq.com/pay/unifiedorder
 excelModel:
   srcFileName: 用户数据导出20180824194505.xlsx
   orderSrcFileName: 订单数据导出.xlsx
   agentFileName: 代理公司导出.xlsx
   orderFileName: Order订单数据导出.xlsx
+  deviceOutStoreName: 设备出库单.xlsx
+  cupExcelName: 杯数统计.xlsx
+  drinkExcelName: 设备饮品销售统计.xlsx
+  dataExcelName: 动态.xlsx
+  deviceCashExcelName: 设备押金管理.xlsx
+  agentAccountExcelName: 代理商账户资金表.xlsx
+  busiComplaintExcelName: 客诉记录.xlsx
 
 custom:
   initUserPassWord: 123456
@@ -72,6 +92,7 @@ custom:
 auth:
   requestCodeUrl: http://47.105.117.19:8082/auth/codeAuth
   requestAccessCodeUrl: http://47.105.117.19:8082/auth/authorization/token
+  ueditorActionUrl: /sys/ueditor/exec
 
 oss:
   endpoint: oss-cn-qingdao.aliyuncs.com
@@ -80,34 +101,26 @@ oss:
   backet_name: shandong-hema-oss
   folder_json: developjson/
   folder_img: developimg/
+  folder_file: developfile/
   web_url: http://newretail.hemaapp.com/
 
 #============== kafka ===================
 kafka:
-  consumer:
-    zookeeper:
-      connect: 47.105.117.19:2181
-    servers: 47.105.117.19:9092
-    enable:
-      auto:
-        commit: true
-    session:
-      timeout: 6000
-    auto:
-      commit:
-        interval: 100
-      offset:
-        reset: latest
-    topic: test
-    group:
-      id: test
-    concurrency: 10
-
   producer:
-    servers: 47.105.117.19:9092
+    servers: 47.105.117.193:9092,47.105.117.193:9093,47.105.117.193:9094
     retries: 0
     batch:
       size: 4096
     linger: 1
     buffer:
       memory: 40960
+  topic:
+    reload: reloadTopic_dev
+    cycle: cycleTopic_dev
+
+logs:
+  log:
+    path: /usr/Downloads
+  # 操作日志
+  operat:
+    path: /usr/Downloads

@@ -15,9 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * @Department 新零售
@@ -49,6 +47,7 @@ public class DiySettingServiceImpl implements DiySettingService {
     private static final Logger logger = LoggerFactory.getLogger(CloudBohhApplication.class);
 
     private final static String DIYPRICE = "diy_price";
+    private final static String PREFERENTIALRATIO = "preferential_ratio";
     private final static String NODATA = "暂无数据";
     private final static String INSERTDATAFAILED ="插入数据失败";
     private final static String UPDATEDATAFAILED ="更新数据失败";
@@ -68,11 +67,16 @@ public class DiySettingServiceImpl implements DiySettingService {
         String key = DIYPRICE;
         logger.info("检索diy价格......");
         BaseGlobalInfoEntry baseGlobalInfoEntry = baseGlobalInfoMapper.selectByKey(key);
+        String key2 = PREFERENTIALRATIO;
+        BaseGlobalInfoEntry baseGlobalInfoEntry2 = baseGlobalInfoMapper.selectByKey(key2);
         if(baseGlobalInfoEntry == null){
             logger.error("检索数据为空......");
             return Response.failure(NODATA);
         }
-        return Response.success(baseGlobalInfoEntry.getValue());
+        Map map = new HashMap(2);
+        map.put("diyPrice",baseGlobalInfoEntry.getValue());
+        map.put("preferentialRatio",baseGlobalInfoEntry2.getValue());
+        return Response.success(map);
     }
 
     /**
@@ -360,11 +364,14 @@ public class DiySettingServiceImpl implements DiySettingService {
      */
     @Override
     public Response editPrice(PriceCondition priceCondition) {
-        logger.info("检索价格数据并拼装......");
         BaseGlobalInfoEntry baseGlobalInfoEntry = baseGlobalInfoMapper.selectByKey(DIYPRICE);
         baseGlobalInfoEntry.setValue(priceCondition.getPrice());
         logger.info("更新价格操作......");
         baseGlobalInfoMapper.updateByPrimaryKey(baseGlobalInfoEntry);
+        BaseGlobalInfoEntry baseGlobalInfoEntry1 = baseGlobalInfoMapper.selectByKey(PREFERENTIALRATIO);
+        baseGlobalInfoEntry1.setValue(priceCondition.getPreferentialRatio());
+        logger.info("更新价格操作......");
+        baseGlobalInfoMapper.updateByPrimaryKey(baseGlobalInfoEntry1);
         return Response.success();
     }
 }

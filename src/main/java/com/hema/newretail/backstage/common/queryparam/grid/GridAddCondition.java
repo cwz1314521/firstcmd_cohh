@@ -2,6 +2,7 @@ package com.hema.newretail.backstage.common.queryparam.grid;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
 
@@ -9,6 +10,7 @@ import javax.validation.constraints.*;
 import java.math.BigDecimal;
 import java.util.Date;
 @ApiModel(description = "GridAddCondition")
+@Data
 public class GridAddCondition {
 
 
@@ -16,7 +18,7 @@ public class GridAddCondition {
     /**密码*/
     @ApiModelProperty(value = "密码")
     @Pattern(regexp = "^[^\\u4e00-\\u9fa5]+$", message = "密码由数字字母符号构成")
-    private String password;
+    private String pwd;
 
     /**子公司归属*/
     @ApiModelProperty(value = "子公司归属")
@@ -110,210 +112,44 @@ public class GridAddCondition {
     private BigDecimal rewardAmount;
 
     /**补货任务时间*/
-    @DecimalMax(value = "99999",message = "输入范围有误 0-99999")
-    @DecimalMin(value = "0",message = "输入范围有误 0-99999")
+//    @Pattern(regexp = "^[+]{0,1}(\\d+)$",message = "只能是正整数")
+    @Max(value = 99999,message = "输入范围有误 0-99999")
+    @Min(value = 0,message = "输入范围有误 0-99999")
     @NotNull(message = "补货任务时间不可为空")
     @ApiModelProperty(value = "补货任务时间")
-    @Pattern(regexp = "^//d+$",message = "只能是正整数")
     private Integer replenishmentTime;
 
     /**保洁任务时间*/
-    @DecimalMax(value = "99999",message = "输入范围有误 0-99999")
-    @DecimalMin(value = "0",message = "输入范围有误 0-99999")
+//    @Pattern(regexp = "^[+]{0,1}(\\d+)$",message = "只能是正整数")
+    @Max(value = 99999,message = "输入范围有误 0-99999")
+    @Min(value = 0,message = "输入范围有误 0-99999")
     @NotNull(message = "保洁任务时间不可为空")
     @ApiModelProperty(value = "保洁任务时间")
-    @Pattern(regexp = "^//d+$",message = "只能是正整数")
     private Integer cleanupReward;
 
     /**换件任务时间*/
-    @DecimalMax(value = "99999",message = "输入范围有误 0-99999")
-    @DecimalMin(value = "0",message = "输入范围有误 0-99999")
+//    @Pattern(regexp = "^[+]{0,1}(\\d+)$",message = "只能是正整数")
+    @Max(value = 99999,message = "输入范围有误 0-99999")
+    @Min(value = 0,message = "输入范围有误 0-99999")
     @NotNull(message = "换件任务时间不可为空")
     @ApiModelProperty(value = "换件任务时间")
-    @Pattern(regexp = "^//d+$",message = "只能是正整数")
     private Integer replaceReward;
 
     /**维修任务时间*/
-    @DecimalMax(value = "99999",message = "输入范围有误 0-99999")
-    @DecimalMin(value = "0",message = "输入范围有误 0-99999")
+//    @Pattern(regexp = "^[+]{0,1}(\\d+)$",message = "只能是正整数")
+    @Max(value = 99999,message = "输入范围有误 0-99999")
+    @Min(value = 0,message = "输入范围有误 0-99999")
     @NotNull(message = "维修任务时间不可为空")
     @ApiModelProperty(value = "维修任务时间")
-    @Pattern(regexp = "^//d+$",message = "只能是正整数")
     private Integer maintenanceReward;
 
     /**巡检任务时间*/
-    @DecimalMax(value = "99999",message = "输入范围有误 0-99999")
-    @DecimalMin(value = "0",message = "输入范围有误 0-99999")
+//    @Pattern(regexp = "^[+]{0,1}(\\d+)$",message = "只能是正整数")
+    @Max(value = 99999,message = "输入范围有误 0-99999")
+    @Min(value = 0,message = "输入范围有误 0-99999")
     @NotNull(message = "巡检任务时间不可为空")
     @ApiModelProperty(value = "巡检任务时间")
-    @Pattern(regexp = "^//d+$",message = "只能是正整数")
     private Integer inspectionReward;
 
-    public String getPassword() {
-        return password;
-    }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public Long getCompanyId() {
-        return companyId;
-    }
-
-    public void setCompanyId(Long companyId) {
-        this.companyId = companyId;
-    }
-
-    public String getCompanyName() {
-        return companyName;
-    }
-
-    public void setCompanyName(String companyName) {
-        this.companyName = companyName;
-    }
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    public String getContactWay() {
-        return contactWay;
-    }
-
-    public void setContactWay(String contactWay) {
-        this.contactWay = contactWay;
-    }
-
-    public String getContact() {
-        return contact;
-    }
-
-    public void setContact(String contact) {
-        this.contact = contact;
-    }
-
-    public String getProvince() {
-        return province;
-    }
-
-    public void setProvince(String province) {
-        this.province = province;
-    }
-
-    public String getCity() {
-        return city;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
-    }
-
-    public String getArea() {
-        return area;
-    }
-
-    public void setArea(String area) {
-        this.area = area;
-    }
-
-    public String getAddr() {
-        return addr;
-    }
-
-    public void setAddr(String addr) {
-        this.addr = addr;
-    }
-
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
-    }
-
-    public String getRemark() {
-        return remark;
-    }
-
-    public void setRemark(String remark) {
-        this.remark = remark;
-    }
-
-    public String getBank() {
-        return bank;
-    }
-
-    public void setBank(String bank) {
-        this.bank = bank;
-    }
-
-    public String getAccountNumber() {
-        return accountNumber;
-    }
-
-    public void setAccountNumber(String accountNumber) {
-        this.accountNumber = accountNumber;
-    }
-
-    public String getAccountName() {
-        return accountName;
-    }
-
-    public void setAccountName(String accountName) {
-        this.accountName = accountName;
-    }
-
-    public BigDecimal getRewardAmount() {
-        return rewardAmount;
-    }
-
-    public void setRewardAmount(BigDecimal rewardAmount) {
-        this.rewardAmount = rewardAmount;
-    }
-
-    public Integer getReplenishmentTime() {
-        return replenishmentTime;
-    }
-
-    public void setReplenishmentTime(Integer replenishmentTime) {
-        this.replenishmentTime = replenishmentTime;
-    }
-
-    public Integer getCleanupReward() {
-        return cleanupReward;
-    }
-
-    public void setCleanupReward(Integer cleanupReward) {
-        this.cleanupReward = cleanupReward;
-    }
-
-    public Integer getReplaceReward() {
-        return replaceReward;
-    }
-
-    public void setReplaceReward(Integer replaceReward) {
-        this.replaceReward = replaceReward;
-    }
-
-    public Integer getMaintenanceReward() {
-        return maintenanceReward;
-    }
-
-    public void setMaintenanceReward(Integer maintenanceReward) {
-        this.maintenanceReward = maintenanceReward;
-    }
-
-    public Integer getInspectionReward() {
-        return inspectionReward;
-    }
-
-    public void setInspectionReward(Integer inspectionReward) {
-        this.inspectionReward = inspectionReward;
-    }
 }

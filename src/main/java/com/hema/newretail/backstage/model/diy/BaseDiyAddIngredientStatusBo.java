@@ -2,7 +2,12 @@ package com.hema.newretail.backstage.model.diy;
 
 import java.io.Serializable;
 import java.util.Date;
-
+/**
+ * @Department 新零售
+ * @Author ---CWZ
+ * @Date 2018/12/12 20:57
+ * @Version 1.0
+ **/
 public class BaseDiyAddIngredientStatusBo implements Serializable {
     private Long id;
 

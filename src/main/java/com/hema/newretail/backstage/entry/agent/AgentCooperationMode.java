@@ -1,5 +1,10 @@
 package com.hema.newretail.backstage.entry.agent;
-
+/**
+ * @Department 新零售
+ * @Author ---CWZ
+ * @Date 2018/12/12 20:57
+ * @Version 1.0
+ **/
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;

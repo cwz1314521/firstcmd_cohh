@@ -1,7 +1,10 @@
 package com.hema.newretail.backstage.dao;
 
+import com.hema.newretail.backstage.common.queryparam.common.CompanyNameCondition;
+import com.hema.newretail.backstage.common.queryparam.system.UpdateByMachinePicCondition;
 import com.hema.newretail.backstage.entry.BaseMachineInfoEntry;
 import com.hema.newretail.backstage.entry.ZoneBase;
+import com.hema.newretail.backstage.model.common.AgentCompanyBo;
 import com.hema.newretail.backstage.model.zonebase.ZoneBo;
 import com.hema.newretail.backstage.model.zonebase.ZoneMapGridBo;
 import org.apache.ibatis.annotations.Param;
@@ -10,6 +13,46 @@ import java.util.List;
 import java.util.Map;
 
 public interface ZoneBaseMapper {
+
+
+
+    List<ZoneBase> selectByPicId(Long id);
+
+    /**
+     *
+     * 功能描述: 片区大屏图片设置
+     *
+     * @param
+     * @return
+     * @author  cwz
+     * @date  2018/12/24 15:37
+     */
+
+    int updateByMachinePic(UpdateByMachinePicCondition condition);
+
+    /**
+     *
+     * 功能描述: 预查询
+     *
+     * @param  condition
+     * @return  List<AgentCompanyBo>
+     * @author  cwz
+     * @date  2018/12/24 16:44
+     */
+    List<AgentCompanyBo> selectCommon(CompanyNameCondition condition);
+
+
+    /**
+     *
+     * 功能描述: 查询是否绑定pic
+     *
+     * @param  id
+     * @return  int
+     * @author  cwz
+     * @date  2018/12/24 16:57
+     */
+    int selectCountByPic(Long id);
+
     int deleteByPrimaryKey(Long id);
 
     int insert(ZoneBase record);

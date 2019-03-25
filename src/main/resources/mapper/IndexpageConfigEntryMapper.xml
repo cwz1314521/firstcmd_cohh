@@ -20,7 +20,7 @@
     <result jdbcType="BIGINT" property="configId" column="configId"/>
 
     <collection property="details" select="selectIndexConfigDetail" column="configId" javaType="java.util.ArrayList"
-                ofType="com.hema.newretail.backstage.entry.IndexpageDetailEntry"></collection>
+                ofType="com.hema.newretail.backstage.model.index.IndexpageDetailBo"></collection>
   </resultMap>
   <resultMap id="DetailMap" type="com.hema.newretail.backstage.model.index.IndexpageDetailBo" >
     <id column="id" property="id" jdbcType="BIGINT" />

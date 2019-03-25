@@ -128,16 +128,12 @@
     g.task_start_pic,
     g.task_end_pic
     FROM
-    grid_tasks g,
-    base_machine_info m,
-    grid_user_info u,
-    grid_company c,
-    base_company b
-    WHERE
-    g.machine_uuid = m.machine_uuid
-    AND g.grid_user_id = u.id
-    AND u.company_id = c.id
-    AND b.id = c.company_id
+    grid_tasks g LEFT JOIN
+    base_machine_info m on g.machine_uuid = m.machine_uuid LEFT JOIN
+    grid_user_info u on g.grid_user_id = u.id LEFT JOIN
+    grid_company c on u.company_id = c.id LEFT JOIN
+    base_company b on b.id = c.company_id
+    where 1=1
     <if test="preAssignTime != null" >
       and g.assign_time between  #{preAssignTime,jdbcType=TIMESTAMP} and  #{assignTime,jdbcType=TIMESTAMP}
     </if>
@@ -163,8 +159,8 @@
     <if test="taskCode != null" >
       and g.task_code = #{taskCode,jdbcType=VARCHAR}
     </if>
-    <if test="machineUuid != null" >
-      and m.id = #{machineUuid,jdbcType=BIGINT}
+    <if test="machineUuid != null and machineUuid !=''" >
+      and m.id = #{machineUuid,jdbcType=VARCHAR}
     </if>
     <if test="province != null and province != ''">
       and m.province = #{province}

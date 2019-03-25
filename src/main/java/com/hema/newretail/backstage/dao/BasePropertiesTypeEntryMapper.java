@@ -6,7 +6,12 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Map;
-
+/**
+ * @Department 新零售
+ * @Author ---CWZ
+ * @Date 2018/12/12 20:57
+ * @Version 1.0
+ **/
 @Component
 public interface BasePropertiesTypeEntryMapper {
     int insert(BasePropertiesTypeEntry record);

@@ -18,6 +18,7 @@
     <result column="gmt_create" property="gmtCreate" jdbcType="TIMESTAMP" />
     <result column="gmt_modified" property="gmtModified" jdbcType="TIMESTAMP" />
     <result column="box_group_id" property="boxGroupId" jdbcType="BIGINT" />
+    <result column="machine_screen_pic_id" property="MachineScreenPicId" jdbcType="BIGINT" />
   </resultMap>
   <resultMap id="ZoneMap" type="com.hema.newretail.backstage.model.zonebase.ZoneMapGridBo" >
     <id column="zoneId" property="zoneId" jdbcType="BIGINT" />
@@ -27,10 +28,50 @@
     <collection property="hashcodes" select="selectZoneGeohash" column="zoneId" javaType="java.util.ArrayList"
                 ofType="com.hema.newretail.backstage.model.zonebase.ZoneHashcodesBo"></collection>
   </resultMap>
+  <resultMap id="BaseCommonMap" type="com.hema.newretail.backstage.model.common.AgentCompanyBo" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="companyName" property="companyName" jdbcType="VARCHAR" />
+  </resultMap>
   <sql id="Base_Column_List" >
     id, zone_name, province, city, area, machine_type_id, machine_num, gmt_create, gmt_modified, 
     box_group_id
   </sql>
+  <select id="selectCountByPic" resultType="java.lang.Integer" parameterType="java.lang.Long" >
+    select
+    count(id)
+    from base_zone
+    where machine_screen_pic_id = #{id,jdbcType=BIGINT}
+  </select>
+
+  <select id="selectByPicId" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select
+    *
+    from base_zone
+    where machine_screen_pic_id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="selectCommon" resultMap="BaseCommonMap" parameterType="com.hema.newretail.backstage.common.queryparam.common.CompanyNameCondition" >
+    select
+    id,
+    zone_name as companyName
+    from base_zone
+    where 1 = 1
+    <if test="companyName != null and companyName !=''" >
+      and zone_name like "%"#{companyName,jdbcType=VARCHAR}"%"
+    </if>
+  </select>
+
+  <update id="updateByMachinePic" parameterType="com.hema.newretail.backstage.common.queryparam.system.UpdateByMachinePicCondition">
+UPDATE base_zone
+SET machine_screen_pic_id = #{mId,jdbcType=BIGINT}
+
+    <if test="type !=null " >
+    WHERE
+	id in
+    <foreach item="item" index="index" collection="id" open="("  close=")" separator=",">
+    #{item}
+  </foreach>
+    </if>
+  </update>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
@@ -147,6 +188,9 @@
       </if>
       <if test="boxGroupId != null" >
         box_group_id = #{boxGroupId,jdbcType=BIGINT},
+      </if>
+      <if test="MachineScreenPicId != null" >
+        machine_screen_pic_id = #{MachineScreenPicId,jdbcType=BIGINT},
       </if>
     </set>
     where id = #{id,jdbcType=BIGINT}

@@ -1,5 +1,7 @@
 package com.hema.newretail.backstage.entry.orderentry;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Data;
 import org.bson.types.Decimal128;
 
 import java.io.Serializable;
@@ -13,23 +15,31 @@ import java.util.List;
  * @Description:出货订单实体类 ---------------对应mongoDB
  * @Version: 1.0
  */
+@Data
 public class OrdersData implements Serializable {
 
     private String id;
 
     private String billId;
 
+    @JsonIgnore
     private Decimal128 amt;
 
+    private BigDecimal amts;
+
+    @JsonIgnore
     private Decimal128 discount;
 
+    private BigDecimal discounts;
+	/**
+	 * 饮品数量
+	 */
     private Integer num;
 
     private String bigPic;
 
     private String smallPic;
 
-    private String menuName;
 
     private String recommend;
 
@@ -49,13 +59,19 @@ public class OrdersData implements Serializable {
 
     private Date productionTime;//制作时间
 
+    @JsonIgnore
     private Decimal128 price;
+
+    private BigDecimal prices;
 
     private Date orderTime;
 
 
-
-    private String orderStatus;//001未制作，002已制作，003未领取，004已领取 默认000账单未付款
+    /**
+     * 订单状态 0，未付款 1未制作，2，不能做，3，超时，4 待确认，6已处在制作队列中，7确认完毕放弃制作，
+     * 8退款中，9退款成功，10已退券，11退款失败，129制作中，135未领取，143已领取，15制作异常
+     */
+    private String orderStatus;
 
     private Integer menuId;
 
@@ -69,212 +85,31 @@ public class OrdersData implements Serializable {
 
     private String deviceLocation;//设备位置
 
+    private Date takeCupTime;
 
-    public String getWaterTemperature() {
-        return waterTemperature;
-    }
+    private String machineUuid;
+	/**  退款单号：待定，每次重新发起退款，重新生成*/
+	private String refundCode;
 
-    public void setWaterTemperature(String waterTemperature) {
-        this.waterTemperature = waterTemperature;
-    }
+	/** 出杯单号*/
+	private String makeCode;
+	/*** 饮品名称*/
+	private String menuName;
+    /**
+     * 优惠券
+     */
+	private Long couponId;
+	private String couponName;
 
-    public String getRemarks() {
-        return remarks;
-    }
+    /**
+     * 失败原因
+     */
+	private List<String> errorCode;
 
-    public void setRemarks(String remarks) {
-        this.remarks = remarks;
-    }
+	private String machineName;
 
-    public String getId() {
-        return id;
-    }
+	private String cupType;
 
-    public void setId(String id) {
-        this.id = id;
-    }
 
-    public String getBillId() {
-        return billId;
-    }
 
-    public void setBillId(String billId) {
-        this.billId = billId;
-    }
-
-    public Decimal128 getAmt() {
-        return amt;
-    }
-
-    public void setAmt(Decimal128 amt) {
-        this.amt = amt;
-    }
-
-    public Decimal128 getDiscount() {
-        return discount;
-    }
-
-    public void setDiscount(Decimal128 discount) {
-        this.discount = discount;
-    }
-
-    public Integer getNum() {
-        return num;
-    }
-
-    public void setNum(Integer num) {
-        this.num = num;
-    }
-
-    public String getBigPic() {
-        return bigPic;
-    }
-
-    public void setBigPic(String bigPic) {
-        this.bigPic = bigPic;
-    }
-
-    public String getSmallPic() {
-        return smallPic;
-    }
-
-    public void setSmallPic(String smallPic) {
-        this.smallPic = smallPic;
-    }
-
-    public String getMenuName() {
-        return menuName;
-    }
-
-    public void setMenuName(String menuName) {
-        this.menuName = menuName;
-    }
-
-    public String getRecommend() {
-        return recommend;
-    }
-
-    public void setRecommend(String recommend) {
-        this.recommend = recommend;
-    }
-
-    public Long getMachineId() {
-        return machineId;
-    }
-
-    public void setMachineId(Long machineId) {
-        this.machineId = machineId;
-    }
-
-    public String getDeviceNumber() {
-        return deviceNumber;
-    }
-
-    public void setDeviceNumber(String deviceNumber) {
-        this.deviceNumber = deviceNumber;
-    }
-
-    public String getProvince() {
-        return province;
-    }
-
-    public void setProvince(String province) {
-        this.province = province;
-    }
-
-    public String getCity() {
-        return city;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
-    }
-
-    public String getArea() {
-        return area;
-    }
-
-    public void setArea(String area) {
-        this.area = area;
-    }
-
-    public String getAgent() {
-        return agent;
-    }
-
-    public void setAgent(String agent) {
-        this.agent = agent;
-    }
-
-    public String getGrid() {
-        return grid;
-    }
-
-    public void setGrid(String grid) {
-        this.grid = grid;
-    }
-
-    public Date getProductionTime() {
-        return productionTime;
-    }
-
-    public void setProductionTime(Date productionTime) {
-        this.productionTime = productionTime;
-    }
-
-    public Decimal128 getPrice() {
-        return price;
-    }
-
-    public void setPrice(Decimal128 price) {
-        this.price = price;
-    }
-
-    public Date getOrderTime() {
-        return orderTime;
-    }
-
-    public void setOrderTime(Date orderTime) {
-        this.orderTime = orderTime;
-    }
-
-    public String getOrderStatus() {
-        return orderStatus;
-    }
-
-    public void setOrderStatus(String orderStatus) {
-        this.orderStatus = orderStatus;
-    }
-
-    public Integer getMenuId() {
-        return menuId;
-    }
-
-    public void setMenuId(Integer menuId) {
-        this.menuId = menuId;
-    }
-
-    public List<OrderIngredients> getOrderIngredients() {
-        return orderIngredients;
-    }
-
-    public void setOrderIngredients(List<OrderIngredients> orderIngredients) {
-        this.orderIngredients = orderIngredients;
-    }
-
-    public List<Properties> getProperties() {
-        return properties;
-    }
-
-    public void setProperties(List<Properties> properties) {
-        this.properties = properties;
-    }
-
-    public String getDeviceLocation() {
-        return deviceLocation;
-    }
-
-    public void setDeviceLocation(String deviceLocation) {
-        this.deviceLocation = deviceLocation;
-    }
 }

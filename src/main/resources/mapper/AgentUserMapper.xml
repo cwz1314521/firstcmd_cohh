@@ -44,10 +44,126 @@
     <result column="remark" jdbcType="VARCHAR" property="remark" />
     <result column="bank" jdbcType="VARCHAR" property="bank" />
   </resultMap>
+  <resultMap id="BaseCommonMap" type="com.hema.newretail.backstage.model.common.AgentCompanyBo" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="company_name" property="companyName" jdbcType="VARCHAR" />
+  </resultMap>
   <sql id="Base_Column_List">
     id, tel, is_deleted, status, gmt_modified, gmt_create, email, company_name,
     company_code, contact_way, contact, province, city, area, addr,remark
   </sql>
+
+
+  <select id="selectAgentCapitalList" resultType="java.util.Map" parameterType="com.hema.newretail.backstage.common.queryparam.financial.AgentCapitalCondition">
+SELECT
+	IFNULL(a.id, 0) AS id,
+	IFNULL(b1.account_number, 0) AS accountNumber,
+	IFNULL(a.company_name, '') AS companyName,
+	IFNULL(b1.amount, 0) AS earningAmount,
+	IFNULL(
+		IFNULL(b2.amount, 0) - IFNULL(b3.amount, 0),
+		0
+	) AS cashAmount,
+    IFNULL(b2.amount, 0) AS preAmount,
+    IFNULL(b3.amount, 0) AS amount,
+	IFNULL(b4.amount, 0) AS rawAmount,
+	IFNULL(b1.freeze_amount, 0) AS freezeAmount,
+	IFNULL(
+		(
+			SELECT
+              ABS(SUM(number))
+			FROM
+				busi_account_log
+			WHERE
+				company_id = a.id
+			AND type = 1
+			AND (action_type = 11 or action_type = 18)
+		),
+		0
+	) AS number,
+	IFNULL(
+		DATE_FORMAT(
+			a.gmt_create,
+			'%Y-%m-%d %H:%i:%s'
+		),
+		''
+	) AS gmtCreate,
+	(
+		SELECT
+			count(0)
+		FROM
+			base_machine_info
+		WHERE
+			agentId = a.id
+	) AS countMachine,
+	CASE a.is_deleted
+WHEN 0 THEN
+	'正常'
+WHEN 1 THEN
+	'禁用'
+ELSE
+	'其他'
+END AS aStatus,
+ IFNULL((SELECT
+    content
+    FROM
+    busi_account_log
+    WHERE
+    company_id = a.id
+    ORDER BY
+    create_date DESC
+    LIMIT 1), '') AS remark
+FROM
+	agent_user a
+LEFT JOIN busi_company_account b1 ON b1.ref_id = a.id
+AND b1.type = 1
+LEFT JOIN busi_company_account b2 ON b2.ref_id = a.id
+AND b2.type = 4
+LEFT JOIN busi_company_account b3 ON b3.ref_id = a.id
+AND b3.type = 3
+LEFT JOIN busi_company_account b4 ON b4.ref_id = a.id
+AND b4.type = 2
+where 1=1
+    <if test="agentId != null">
+      and a.id = #{agentId,jdbcType=BIGINT}
+    </if>
+    <if test="StartGmts != null" >
+      and  a.gmt_create between #{StartGmts,jdbcType=TIMESTAMP} and #{endGmts,jdbcType=TIMESTAMP}
+    </if>
+    ORDER BY
+    a.gmt_create DESC
+  </select>
+  <!--清算-->
+  <update id="updateClearing" parameterType="com.hema.newretail.backstage.common.queryparam.financial.AgentCapitalCondition">
+UPDATE busi_company_account a,
+ busi_company_account b,
+ busi_company_account c,
+ agent_user d
+SET a.amount = 0,
+ a.gmt_modified = NOW(),
+ b.amount = 0,
+ b.gmt_modified = NOW(),
+ c.amount = 0,
+ c.gmt_modified = NOW(),
+ d.is_deleted = 1,
+d.gmt_modified = NOW()  where a.type = 2 and a.ref_id = #{agentId,jdbcType=BIGINT}
+AND b.type = 3
+AND b.ref_id = #{agentId,jdbcType=BIGINT} and c.type = 4 and c.ref_id = #{agentId,jdbcType=BIGINT} and d.id =  #{agentId,jdbcType=BIGINT}
+  </update>
+<update id="updateEdit" parameterType="com.hema.newretail.backstage.common.queryparam.financial.AgentCapitalCondition">
+UPDATE busi_company_account a,
+ busi_company_account b
+SET a.amount = #{earningAmount,jdbcType=DECIMAL},
+ a.freeze_amount = #{freezeAmount,jdbcType=DECIMAL},
+ a.gmt_modified = NOW(),
+ b.amount = #{rawAmount,jdbcType=DECIMAL},
+ b.gmt_modified = NOW()
+WHERE
+	a.type = 1
+AND a.ref_id =  #{agentId,jdbcType=BIGINT}
+AND b.type = 2
+AND b.ref_id =  #{agentId,jdbcType=BIGINT}
+</update>
 
   <select id="selectCountByName" parameterType="java.lang.String" resultType="java.lang.Integer">
     select
@@ -55,6 +171,17 @@
     from agent_user
     where company_name = #{companyName,jdbcType=VARCHAR}
   </select>
+  <select id="selectCommon" resultMap="BaseCommonMap" parameterType="com.hema.newretail.backstage.common.queryparam.common.CompanyNameCondition" >
+    select
+    id,company_name
+    from agent_user
+    where 1 = 1
+    <if test="companyName != null and companyName !=''" >
+      and company_name like "%"#{companyName,jdbcType=VARCHAR}"%"
+    </if>
+  </select>
+
+
 
 
 

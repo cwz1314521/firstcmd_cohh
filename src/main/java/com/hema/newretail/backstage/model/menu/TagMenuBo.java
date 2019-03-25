@@ -5,11 +5,11 @@ import java.io.Serializable;
 /**
  * hema-newetaril-com.hema.newretail.backstage.model.menu
  *
- * @Description:
- * @Author: ZhangHaiSheng
- * @Date: 2018-08-25 9:57
+ * @author ZhangHaiSheng
+ * @date 2018-08-25 9:57
  */
 public class TagMenuBo implements Serializable {
+    private static final long serialVersionUID = 631836463988833653L;
     private Long menuId;
     private Integer num;
     private Boolean ruleType;

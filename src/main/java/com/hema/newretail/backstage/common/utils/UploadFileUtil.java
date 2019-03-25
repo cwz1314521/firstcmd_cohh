@@ -14,27 +14,31 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.math.BigDecimal;
+import java.math.MathContext;
 
 import static com.hema.newretail.backstage.common.utils.ossutil.AliyunOSSClientUtil.getContentType;
 import static com.hema.newretail.backstage.common.utils.ossutil.OSSClientConstants.*;
 
 
 /**
- * @author jiahao
+ * @author ADMIN
  */
-public class UploadFileUtil<psvm> {
+public class UploadFileUtil {
 
-    private static final String IMAGE = "jpg, png，gif, jpeg";
+    private static final String IMAGE = "jpg, png, jpeg";
 
-    private static final int SIZE = 1024000;
+    private static final int SIZE = 10 * 1024 * 1024;
+    private static final int SIZE1 = 2 * 1024 * 1024;
 
     private static final String PROPORTION_IMAGE = "请上传正确比例图片";
 
+    private static final String FILE_PATH = "https://newretail.hemaapp.com/img/";
+    private static final String DOMAIN_NAME_URL = "https://newretail.hemaapp.com/";
+
     private static final Logger logger = LoggerFactory.getLogger(CloudBohhApplication.class);
+
     /**
      * 上传图片到OSS
      */
@@ -53,48 +57,82 @@ public class UploadFileUtil<psvm> {
                 return "请上传图片文件";
             }
             BufferedImage read = ImageIO.read(file.getInputStream());
-            int width = read.getWidth();
-            int height = read.getHeight();
-
+            // 宽度
+            BigDecimal width = new BigDecimal(read.getWidth());
+            // 高度
+            BigDecimal height = new BigDecimal(read.getHeight());
+            BigDecimal divide = width.divide(height, MathContext.DECIMAL32).setScale(2, BigDecimal.ROUND_DOWN);
+            double doubleValue = divide.doubleValue();
             /**
              *  small_pic 1:1 type 1
              *  middle_pic:2:1 type 2
              *  big_pic:3:1 type 3
              *  any_pic:任意比例
+             *
+             *  5:2 proportionType 5
+             *  4:7 proportionType 6
+             *
              */
             switch (proportionType) {
                 case 1:
-                    if (width != height) {
+                    double d = 1.00;
+                    if (doubleValue != d) {
                         return PROPORTION_IMAGE;
                     }
                     break;
                 case 2:
-                    if (height != width * 2) {
+                    double d1 = 2;
+                    if (d1 == doubleValue) {
+                        System.out.println("2:1");
+                    } else {
                         return PROPORTION_IMAGE;
                     }
                     break;
                 case 3:
-                    if (height != width * 3) {
+                    double d3 = 3;
+                    if (d3 == doubleValue) {
+                        System.out.println("3:1");
+                    } else {
                         return PROPORTION_IMAGE;
                     }
                     break;
                 case 4:
                     System.out.println("任意大小图片");
                     break;
+                case 5:
+                    double p = 2.5D;
+                    if (p == doubleValue) {
+                        System.out.println("5:2");
+                    } else {
+                        return PROPORTION_IMAGE;
+                    }
+                    break;
+                case 6:
+                    double d5 = 0.57;
+                    double d6 = 0.58;
+                    if (d5 <= doubleValue && doubleValue <= d6) {
+                        System.out.println("4:7");
+                    } else {
+                        return PROPORTION_IMAGE;
+                    }
+                    break;
                 default:
             }
-//            while (proportionType == 1) {
-//                if (width != height) {
-//                    return PROPORTION_IMAGE;
-//                }
-//            }
 
             String newFileName = String.valueOf(System.currentTimeMillis()) + "." + extensionName;
             int fileSize = (int) file.getSize();
             System.out.println(newFileName + "-->" + fileSize);
-            if (fileSize > SIZE) {
-                return "文件大小不能超过10M";
+            if (fileSize > SIZE1) {
+                return "文件大小不能超过2M";
             }
+//            if (1 == proportionType || 5 == proportionType || 6 == proportionType) {
+//                if (fileSize > SIZE1) {
+//                    return "文件大小不能超过2M";
+//                }
+//            }
+//            if (fileSize > SIZE) {
+//                return "文件大小不能超过10M";
+//            }
 
             //上传至OSS云存储
             InputStream inputStream = file.getInputStream();
@@ -116,7 +154,7 @@ public class UploadFileUtil<psvm> {
             metadata.setContentDisposition("filename/filesize=" + newFileName + "/" + fileSize + "Byte.");
             PutObjectResult por = ossClient.putObject(BACKET_NAME, FOLDER + newFileName, inputStream, metadata);
             if (!por.getETag().isEmpty()) {
-                filePath = "https://newretail.hemaapp.com/img/" + newFileName;
+                filePath = FILE_PATH + newFileName;
             } else {
                 filePath = "上传失败";
             }
@@ -147,7 +185,7 @@ public class UploadFileUtil<psvm> {
             // 上传文件
             PutObjectResult result = ossClient.putObject(new PutObjectRequest(BACKET_NAME, dir + fileName, file));
             if (null != result) {
-                return "https://newretail.hemaapp.com/" + dir + fileName;
+                return DOMAIN_NAME_URL + dir + fileName;
             } else {
                 return null;
             }

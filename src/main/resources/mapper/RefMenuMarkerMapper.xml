@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hema.newretail.backstage.dao.RefMenuMarkerMapper" >
+  <resultMap id="BaseResultMap" type="com.hema.newretail.backstage.entry.RefMenuMarker" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="menu_id" property="menuId" jdbcType="BIGINT" />
+    <result column="marker_id" property="markerId" jdbcType="BIGINT" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, menu_id, marker_id
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from ref_menu_marker
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from ref_menu_marker
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.hema.newretail.backstage.entry.RefMenuMarker" >
+    insert into ref_menu_marker (id, menu_id, marker_id
+      )
+    values (#{id,jdbcType=BIGINT}, #{menuId,jdbcType=BIGINT}, #{markerId,jdbcType=BIGINT}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.hema.newretail.backstage.entry.RefMenuMarker" >
+    insert into ref_menu_marker
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="menuId != null" >
+        menu_id,
+      </if>
+      <if test="markerId != null" >
+        marker_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="menuId != null" >
+        #{menuId,jdbcType=BIGINT},
+      </if>
+      <if test="markerId != null" >
+        #{markerId,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hema.newretail.backstage.entry.RefMenuMarker" >
+    update ref_menu_marker
+    <set >
+      <if test="menuId != null" >
+        menu_id = #{menuId,jdbcType=BIGINT},
+      </if>
+      <if test="markerId != null" >
+        marker_id = #{markerId,jdbcType=BIGINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hema.newretail.backstage.entry.RefMenuMarker" >
+    update ref_menu_marker
+    set menu_id = #{menuId,jdbcType=BIGINT},
+      marker_id = #{markerId,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <delete id="deleteByMarkerId" parameterType="java.lang.Long" >
+    delete from ref_menu_marker
+    where marker_id = #{id,jdbcType=BIGINT}
+  </delete>
+  <select id="queryMenusByMarkerId" parameterType="java.lang.Long" resultType="com.hema.newretail.backstage.model.tag.MenuMarkerListBo">
+    select mm.id, m.id as menuId, m.menu_name as menuName
+    from busi_ingredient_menu as m, ref_menu_marker as mm
+    where m.id=mm.menu_id and mm.marker_id=#{markerId, jdbcType=BIGINT}
+  </select>
+  <insert id="insertRef" parameterType="com.hema.newretail.backstage.entry.RefMenuMarker" >
+      insert into ref_menu_marker (menu_id, marker_id)
+      select ${menuId}, ${markerId}
+      where not exists(select id from ref_menu_marker where menu_id=#{menuId,jdbcType=BIGINT} and marker_id=#{markerId,jdbcType=BIGINT})
+  </insert>
+  <select id="queryMenus" parameterType="java.lang.Long" resultType="java.util.Map">
+    select m.id, m.menu_name as menuName from busi_ingredient_menu as m where m.is_deleted=0 and m.id not in (
+      select mm.menu_id from ref_menu_marker as mm where mm.marker_id = #{markerId,jdbcType=BIGINT}
+    )
+  </select>
+</mapper>

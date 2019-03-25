@@ -25,11 +25,14 @@
     <result column="sex" property="sex" jdbcType="INTEGER" />
     <result column="phone_number" property="phoneNumber" jdbcType="VARCHAR" />
     <result column="qq" property="qq" jdbcType="VARCHAR" />
+    <result column="org_name" property="orgName" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="org_id" property="orgId" jdbcType="BIGINT" />
   </resultMap>
   <sql id="Base_Column_List" >
     id, gmt_create, gmt_modified, user_name, user_password, salt, login_time, login_ip, 
     login_count, post_id, company_id, is_deleted, real_name, email, sex, phone_number, 
-    qq
+    qq,status,org_id
   </sql>
   <update id="logicDelete" parameterType="java.lang.Long">
     UPDATE base_user_info SET is_deleted = 1 WHERE id = #{id,jdbcType=BIGINT}
@@ -48,11 +51,34 @@
     order by id asc
   </select>
   <select id="selectAllIsNotDelete" resultMap="BaseResultMap" >
-    select
-    <include refid="Base_Column_List" />
-    from base_user_info
-    where is_deleted = 0
-    order by id desc
+    SELECT
+	u.id,
+	u.gmt_create,
+	u.gmt_modified,
+	u.user_name,
+	u.user_password,
+	u.salt,
+	u.login_time,
+	u.login_ip,
+	u.login_count,
+	u.post_id,
+	u.company_id,
+	u.is_deleted,
+	u.real_name,
+	u.email,
+	u.sex,
+	u.phone_number,
+	u.qq,
+	u.status,
+	u.org_id,
+	b.org_name
+FROM
+	base_user_info u
+LEFT JOIN base_organization b on u.org_id =b.id
+WHERE
+	u.is_deleted = 0
+ORDER BY
+	id ASC
   </select>
   <select id="selectAll" resultMap="BaseResultMap" >
     select
@@ -144,6 +170,12 @@
       <if test="qq != null" >
         qq,
       </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="orgId != null" >
+        org_id,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -197,6 +229,12 @@
       <if test="qq != null" >
         #{qq,jdbcType=VARCHAR},
       </if>
+      <if test="status != null" >
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="orgId != null" >
+        #{orgId,jdbcType=BIGINT},
+      </if>
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.hema.newretail.backstage.entry.BaseUserInfoEntry" >
@@ -249,6 +287,12 @@
       </if>
       <if test="qq != null" >
         qq = #{qq,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="orgId != null" >
+        org_id = #{orgId,jdbcType=BIGINT},
       </if>
     </set>
     where id = #{id,jdbcType=BIGINT}

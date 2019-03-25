@@ -36,7 +36,7 @@
     <result jdbcType="BIGINT" property="postId" column="postId"/>
 
     <collection property="list" select="isSelectedAll" column="{moudleCode = moudle_code , postId = postId}" javaType="java.util.ArrayList"
-                ofType="BaseResultMapp"></collection>
+                ofType="com.hema.newretail.backstage.entry.BaseFuncGroupIsSelectEntry"></collection>
   </resultMap>
 
   <sql id="Base_Column_List" >
@@ -47,14 +47,14 @@
    select DISTINCT b.moudle_code ,b.moudle_name, ${postId} as
     postId FROM  base_func_group b where b.is_delete = 0
   </select>
-  <select id="isSelectedAll" resultType="com.hema.newretail.backstage.model.authority.BaseFuncGroupBo" parameterType="java.util.Map" >
+  <select id="isSelectedAll" resultType="com.hema.newretail.backstage.entry.BaseFuncGroupIsSelectEntry" parameterType="java.util.Map" >
      select DISTINCT b.func_group_code as funcGroupCode,b.func_group_name as funcGroupName, (
-	select count(DISTINCT r.post_id) from
-	ref_post_func_group as r where r.func_group_code=
-b.func_group_code and r.post_id = ${postId}
-) as isSelected
-from base_func_group as b where b.is_delete = 0
-and b.moudle_code = ${moudleCode}
+        select count(DISTINCT r.post_id) from
+        ref_post_func_group as r where r.func_group_code=
+        b.func_group_code and r.post_id = ${postId}
+        ) as isSelected
+    from base_func_group as b where b.is_delete = 0
+    and b.moudle_code = ${moudleCode}
   </select>
   <select id="selectAll" resultMap="BaseResultMap"  >
   select

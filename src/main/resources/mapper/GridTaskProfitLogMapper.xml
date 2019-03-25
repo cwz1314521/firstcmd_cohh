@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hema.newretail.backstage.dao.GridTaskProfitLogMapper" >
+  <resultMap id="BaseResultMap" type="com.hema.newretail.backstage.entry.grid.GridTaskProfitLogEntry" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="event" property="event" jdbcType="VARCHAR" />
+    <result column="operation_time" property="operationTime" jdbcType="TIMESTAMP" />
+    <result column="status" property="status" jdbcType="CHAR" />
+    <result column="profit" property="profit" jdbcType="DOUBLE" />
+    <result column="grid_company_id" property="gridCompanyId" jdbcType="BIGINT" />
+    <result column="gmt_create_time" property="gmtCreateTime" jdbcType="TIMESTAMP" />
+    <result column="gmt_modified_time" property="gmtModifiedTime" jdbcType="TIMESTAMP" />
+    <result column="question_note" property="questionNote" jdbcType="VARCHAR" />
+    <result column="question_time" property="questionTime" jdbcType="TIMESTAMP" />
+    <result column="reply_note" property="replyNote" jdbcType="VARCHAR" />
+    <result column="reply_time" property="replyTime" jdbcType="TIMESTAMP" />
+    <result column="type" property="type" jdbcType="CHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, event, operation_time, status, profit, grid_company_id, gmt_create_time, gmt_modified_time, 
+    question_note, question_time, reply_note, reply_time, type
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from grid_task_profit_log
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from grid_task_profit_log
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.hema.newretail.backstage.entry.grid.GridTaskProfitLogEntry" >
+    insert into grid_task_profit_log (id, event, operation_time, 
+      status, profit, grid_company_id, 
+      gmt_create_time, gmt_modified_time, question_note, 
+      question_time, reply_note, reply_time, 
+      type)
+    values (#{id,jdbcType=BIGINT}, #{event,jdbcType=VARCHAR}, #{operationTime,jdbcType=TIMESTAMP}, 
+      #{status,jdbcType=CHAR}, #{profit,jdbcType=DOUBLE}, #{gridCompanyId,jdbcType=BIGINT}, 
+      #{gmtCreateTime,jdbcType=TIMESTAMP}, #{gmtModifiedTime,jdbcType=TIMESTAMP}, #{questionNote,jdbcType=VARCHAR}, 
+      #{questionTime,jdbcType=TIMESTAMP}, #{replyNote,jdbcType=VARCHAR}, #{replyTime,jdbcType=TIMESTAMP}, 
+      #{type,jdbcType=CHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.hema.newretail.backstage.entry.grid.GridTaskProfitLogEntry" >
+    insert into grid_task_profit_log
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="event != null" >
+        event,
+      </if>
+      <if test="operationTime != null" >
+        operation_time,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="profit != null" >
+        profit,
+      </if>
+      <if test="gridCompanyId != null" >
+        grid_company_id,
+      </if>
+      <if test="gmtCreateTime != null" >
+        gmt_create_time,
+      </if>
+      <if test="gmtModifiedTime != null" >
+        gmt_modified_time,
+      </if>
+      <if test="questionNote != null" >
+        question_note,
+      </if>
+      <if test="questionTime != null" >
+        question_time,
+      </if>
+      <if test="replyNote != null" >
+        reply_note,
+      </if>
+      <if test="replyTime != null" >
+        reply_time,
+      </if>
+      <if test="type != null" >
+        type,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="event != null" >
+        #{event,jdbcType=VARCHAR},
+      </if>
+      <if test="operationTime != null" >
+        #{operationTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=CHAR},
+      </if>
+      <if test="profit != null" >
+        #{profit,jdbcType=DOUBLE},
+      </if>
+      <if test="gridCompanyId != null" >
+        #{gridCompanyId,jdbcType=BIGINT},
+      </if>
+      <if test="gmtCreateTime != null" >
+        #{gmtCreateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gmtModifiedTime != null" >
+        #{gmtModifiedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="questionNote != null" >
+        #{questionNote,jdbcType=VARCHAR},
+      </if>
+      <if test="questionTime != null" >
+        #{questionTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="replyNote != null" >
+        #{replyNote,jdbcType=VARCHAR},
+      </if>
+      <if test="replyTime != null" >
+        #{replyTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="type != null" >
+        #{type,jdbcType=CHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hema.newretail.backstage.entry.grid.GridTaskProfitLogEntry" >
+    update grid_task_profit_log
+    <set >
+      <if test="event != null" >
+        event = #{event,jdbcType=VARCHAR},
+      </if>
+      <if test="operationTime != null" >
+        operation_time = #{operationTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=CHAR},
+      </if>
+      <if test="profit != null" >
+        profit = #{profit,jdbcType=DOUBLE},
+      </if>
+      <if test="gridCompanyId != null" >
+        grid_company_id = #{gridCompanyId,jdbcType=BIGINT},
+      </if>
+      <if test="gmtCreateTime != null" >
+        gmt_create_time = #{gmtCreateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gmtModifiedTime != null" >
+        gmt_modified_time = #{gmtModifiedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="questionNote != null" >
+        question_note = #{questionNote,jdbcType=VARCHAR},
+      </if>
+      <if test="questionTime != null" >
+        question_time = #{questionTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="replyNote != null" >
+        reply_note = #{replyNote,jdbcType=VARCHAR},
+      </if>
+      <if test="replyTime != null" >
+        reply_time = #{replyTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="type != null" >
+        type = #{type,jdbcType=CHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hema.newretail.backstage.entry.grid.GridTaskProfitLogEntry" >
+    update grid_task_profit_log
+    set event = #{event,jdbcType=VARCHAR},
+      operation_time = #{operationTime,jdbcType=TIMESTAMP},
+      status = #{status,jdbcType=CHAR},
+      profit = #{profit,jdbcType=DOUBLE},
+      grid_company_id = #{gridCompanyId,jdbcType=BIGINT},
+      gmt_create_time = #{gmtCreateTime,jdbcType=TIMESTAMP},
+      gmt_modified_time = #{gmtModifiedTime,jdbcType=TIMESTAMP},
+      question_note = #{questionNote,jdbcType=VARCHAR},
+      question_time = #{questionTime,jdbcType=TIMESTAMP},
+      reply_note = #{replyNote,jdbcType=VARCHAR},
+      reply_time = #{replyTime,jdbcType=TIMESTAMP},
+      type = #{type,jdbcType=CHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

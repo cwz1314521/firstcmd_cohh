@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hema.newretail.backstage.dao.BusiComplaintMapper" >
+  <resultMap id="BaseResultMap" type="com.hema.newretail.backstage.entry.user.BusiComplaintEntry" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="gmt_create" property="gmtCreate" jdbcType="TIMESTAMP" />
+    <result column="gmt_modified" property="gmtModified" jdbcType="TIMESTAMP" />
+    <result column="user_name" property="userName" jdbcType="VARCHAR" />
+    <result column="user_tel" property="userTel" jdbcType="VARCHAR" />
+    <result column="complaint_type" property="complaintType" jdbcType="VARCHAR" />
+    <result column="pic_url" property="picUrl" jdbcType="VARCHAR" />
+    <result column="service_type" property="serviceType" jdbcType="INTEGER" />
+    <result column="handler_id" property="handlerId" jdbcType="BIGINT" />
+    <result column="handler_name" property="handlerName" jdbcType="VARCHAR" />
+    <result column="handle_time" property="handleTime" jdbcType="TIMESTAMP" />
+    <result column="handle_status" property="handleStatus" jdbcType="INTEGER" />
+    <result column="source" property="source" jdbcType="INTEGER" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.hema.newretail.backstage.entry.user.BusiComplaintEntry" extends="BaseResultMap" >
+    <result column="description" property="description" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, gmt_create, gmt_modified, user_name, user_tel, complaint_type, pic_url, service_type, 
+    handler_id, handler_name, handle_time, handle_status, source, remark
+  </sql>
+  <sql id="Blob_Column_List" >
+    description
+  </sql>
+  <!---->
+  <select id="list" parameterType="com.hema.newretail.backstage.common.queryparam.user.BusiComplaintListCondition" resultType="java.util.Map">
+    SELECT
+    id,
+	IFNULL(c.user_name, '') AS userName,
+	IFNULL(c.complaint_type, '') AS complaintType,
+	IFNULL(c.description, '') AS description,
+	IFNULL(
+		CASE c.source
+		WHEN 0 THEN
+			'小程序'
+		WHEN 1 THEN
+			'安卓'
+		WHEN 2 THEN
+			'IOS'
+		ELSE
+			'其他'
+		END,
+		''
+	) AS source,
+	IFNULL(
+		DATE_FORMAT(
+			c.gmt_create,
+			'%Y-%c-%e %H:%i:%s'
+		),
+		''
+	) AS gmtCreate,
+	IFNULL(c.handle_status, '') AS handleStatus,
+	IFNULL(c.handler_name, '') AS handlerName,
+	IFNULL(c.remark, '') AS remark,
+	IFNULL(
+		DATE_FORMAT(
+			c.handle_time,
+			'%Y-%c-%e %H:%i:%s'
+		),
+		''
+	) AS handleTime,
+IFNULL(c.pic_url,'') as picUrl
+FROM
+	busi_complaint c
+    where 1=1
+    <if test="userName != null and userName != ''" >
+      and c.user_name like "%"#{userName,jdbcType=VARCHAR}"%"
+    </if>
+    <if test="complaintType != null and complaintType != ''" >
+      and c.complaint_type = #{complaintType,jdbcType=VARCHAR}
+    </if>
+    <if test="endGmts != null" >
+      and c.gmt_create between #{startGmts,jdbcType=TIMESTAMP} and #{endGmts,jdbcType=TIMESTAMP}
+    </if>
+    <if test="source != null" >
+      and c.source = #{source,jdbcType=INTEGER}
+    </if>
+    <if test="handleStatus != null" >
+      and c.handle_status = #{handleStatus,jdbcType=INTEGER}
+    </if>
+    order by c.gmt_create desc
+  </select>
+  <update id="remark" parameterType="com.hema.newretail.backstage.common.queryparam.user.BusiComplaintListCondition">
+    update busi_complaint set handle_status = #{handleStatus,jdbcType=INTEGER} ,remark =  #{remark,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from busi_complaint
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from busi_complaint
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.hema.newretail.backstage.entry.user.BusiComplaintEntry" >
+    insert into busi_complaint (id, gmt_create, gmt_modified, 
+      user_name, user_tel, complaint_type, 
+      pic_url, service_type, handler_id, 
+      handler_name, handle_time, handle_status, 
+      source, remark, description
+      )
+    values (#{id,jdbcType=BIGINT}, #{gmtCreate,jdbcType=TIMESTAMP}, #{gmtModified,jdbcType=TIMESTAMP}, 
+      #{userName,jdbcType=VARCHAR}, #{userTel,jdbcType=VARCHAR}, #{complaintType,jdbcType=VARCHAR}, 
+      #{picUrl,jdbcType=VARCHAR}, #{serviceType,jdbcType=INTEGER}, #{handlerId,jdbcType=BIGINT}, 
+      #{handlerName,jdbcType=VARCHAR}, #{handleTime,jdbcType=TIMESTAMP}, #{handleStatus,jdbcType=INTEGER}, 
+      #{source,jdbcType=INTEGER}, #{remark,jdbcType=VARCHAR}, #{description,jdbcType=LONGVARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.hema.newretail.backstage.entry.user.BusiComplaintEntry" >
+    insert into busi_complaint
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="gmtCreate != null" >
+        gmt_create,
+      </if>
+      <if test="gmtModified != null" >
+        gmt_modified,
+      </if>
+      <if test="userName != null" >
+        user_name,
+      </if>
+      <if test="userTel != null" >
+        user_tel,
+      </if>
+      <if test="complaintType != null" >
+        complaint_type,
+      </if>
+      <if test="picUrl != null" >
+        pic_url,
+      </if>
+      <if test="serviceType != null" >
+        service_type,
+      </if>
+      <if test="handlerId != null" >
+        handler_id,
+      </if>
+      <if test="handlerName != null" >
+        handler_name,
+      </if>
+      <if test="handleTime != null" >
+        handle_time,
+      </if>
+      <if test="handleStatus != null" >
+        handle_status,
+      </if>
+      <if test="source != null" >
+        source,
+      </if>
+      <if test="remark != null" >
+        remark,
+      </if>
+      <if test="description != null" >
+        description,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="gmtCreate != null" >
+        #{gmtCreate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gmtModified != null" >
+        #{gmtModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="userName != null" >
+        #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="userTel != null" >
+        #{userTel,jdbcType=VARCHAR},
+      </if>
+      <if test="complaintType != null" >
+        #{complaintType,jdbcType=VARCHAR},
+      </if>
+      <if test="picUrl != null" >
+        #{picUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="serviceType != null" >
+        #{serviceType,jdbcType=INTEGER},
+      </if>
+      <if test="handlerId != null" >
+        #{handlerId,jdbcType=BIGINT},
+      </if>
+      <if test="handlerName != null" >
+        #{handlerName,jdbcType=VARCHAR},
+      </if>
+      <if test="handleTime != null" >
+        #{handleTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="handleStatus != null" >
+        #{handleStatus,jdbcType=INTEGER},
+      </if>
+      <if test="source != null" >
+        #{source,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null" >
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null" >
+        #{description,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hema.newretail.backstage.entry.user.BusiComplaintEntry" >
+    update busi_complaint
+    <set >
+      <if test="gmtCreate != null" >
+        gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gmtModified != null" >
+        gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="userName != null" >
+        user_name = #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="userTel != null" >
+        user_tel = #{userTel,jdbcType=VARCHAR},
+      </if>
+      <if test="complaintType != null" >
+        complaint_type = #{complaintType,jdbcType=VARCHAR},
+      </if>
+      <if test="picUrl != null" >
+        pic_url = #{picUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="serviceType != null" >
+        service_type = #{serviceType,jdbcType=INTEGER},
+      </if>
+      <if test="handlerId != null" >
+        handler_id = #{handlerId,jdbcType=BIGINT},
+      </if>
+      <if test="handlerName != null" >
+        handler_name = #{handlerName,jdbcType=VARCHAR},
+      </if>
+      <if test="handleTime != null" >
+        handle_time = #{handleTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="handleStatus != null" >
+        handle_status = #{handleStatus,jdbcType=INTEGER},
+      </if>
+      <if test="source != null" >
+        source = #{source,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null" >
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null" >
+        description = #{description,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.hema.newretail.backstage.entry.user.BusiComplaintEntry" >
+    update busi_complaint
+    set gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
+      user_name = #{userName,jdbcType=VARCHAR},
+      user_tel = #{userTel,jdbcType=VARCHAR},
+      complaint_type = #{complaintType,jdbcType=VARCHAR},
+      pic_url = #{picUrl,jdbcType=VARCHAR},
+      service_type = #{serviceType,jdbcType=INTEGER},
+      handler_id = #{handlerId,jdbcType=BIGINT},
+      handler_name = #{handlerName,jdbcType=VARCHAR},
+      handle_time = #{handleTime,jdbcType=TIMESTAMP},
+      handle_status = #{handleStatus,jdbcType=INTEGER},
+      source = #{source,jdbcType=INTEGER},
+      remark = #{remark,jdbcType=VARCHAR},
+      description = #{description,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hema.newretail.backstage.entry.user.BusiComplaintEntry" >
+    update busi_complaint
+    set gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
+      user_name = #{userName,jdbcType=VARCHAR},
+      user_tel = #{userTel,jdbcType=VARCHAR},
+      complaint_type = #{complaintType,jdbcType=VARCHAR},
+      pic_url = #{picUrl,jdbcType=VARCHAR},
+      service_type = #{serviceType,jdbcType=INTEGER},
+      handler_id = #{handlerId,jdbcType=BIGINT},
+      handler_name = #{handlerName,jdbcType=VARCHAR},
+      handle_time = #{handleTime,jdbcType=TIMESTAMP},
+      handle_status = #{handleStatus,jdbcType=INTEGER},
+      source = #{source,jdbcType=INTEGER},
+      remark = #{remark,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

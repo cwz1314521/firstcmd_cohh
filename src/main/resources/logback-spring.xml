@@ -1,14 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration scan="true" scanPeriod="60 seconds" debug="false">
     <contextName>cloud_boh</contextName>
-    <!--<property name="log.path" value="E:\\logs\\cloud_boh"/>-->
-    <property name="log.path" value="/usr/Downloads"/>
     <property name="log.name" value="logback"/>
+    <springProperty scope="context" name="log.path" source="logs.log.path"/>
+    <springProperty scope="context" name="operat.path" source="logs.operat.path"/>
+    <springProperty scope="context" name="db.url" source="spring.datasource.url"/>
+    <springProperty scope="context" name="db.username" source="spring.datasource.username"/>
+    <springProperty scope="context" name="db.password" source="spring.datasource.password"/>
+    <springProperty scope="context" name="db.drive" source="spring.datasource.driver-class-name"/>
+    <springProperty scope="context" name="db.datasource.class" source="spring.datasource.type"/>
+
     <!--输出到控制台-->
     <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
         <layout class="ch.qos.logback.classic.PatternLayout">
             <pattern>%d{HH:mm:ss,SSS} %contextName [%thread] %-5level %logger{36} - %msg%n</pattern>
         </layout>
+        <!--<layout class="com.hema.newretail.backstage.config.MyPatternLayout">-->
+        <!--<Pattern>%d [%thread] %-5level - %ip %logger{36} %line - %msg%n</Pattern>-->
+        <!--</layout>-->
     </appender>
 
     <appender name="logFileInfo" class="ch.qos.logback.core.rolling.RollingFileAppender">
@@ -44,19 +53,67 @@
             <pattern>%d [%thread] %-5level %logger{36} %line - %msg%n</pattern>
         </encoder>
     </appender>
+    <!-- 操作日志 -->
+    <appender name="operateFileLog" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${operat.path}/operatlog/operatlog.${log.name}.log</file>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>INFO</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <FileNamePattern>${operat.path}/operatlog/operatlog.${log.name}.%d{yyyy-MM-dd}.log</FileNamePattern>
+            <maxHistory>7</maxHistory>
+            <totalSizeCap>1GB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <charset>UTF-8</charset>
+            <Pattern>%d [%thread] %-5level %logger{36} %line - %msg%n</Pattern>
+        </encoder>
+    </appender>
+    <!--<appender name="dblog" class="ch.qos.logback.classic.db.DBAppender">-->
+    <appender name="dbLog" class="com.hema.newretail.backstage.config.OperatDBAppender">
+        <connectionSource class="ch.qos.logback.core.db.DataSourceConnectionSource">
+            <dataSource class="${db.datasource.class}">
+                <driverClassName>${db.drive}</driverClassName>
+                <url>${db.url}</url>
+                <username>${db.username}</username>
+                <password>${db.password}</password>
+            </dataSource>
+        </connectionSource>
+    </appender>
+    <!--<appender name="asyncLog" class="ch.qos.logback.classic.AsyncAppender">-->
+    <!--<discardingThreshold>0</discardingThreshold>-->
+    <!--<queueSize>10000</queueSize>-->
+    <!--<appender-ref ref="dblog"/>-->
+    <!--</appender>-->
 
+    <springProfile name="local">
+        <logger name="OPERATE_LOG" additivity="false">
+            <appender-ref ref="operateFileLog"/>
+            <appender-ref ref="dbLog"/>
+        </logger>
+    </springProfile>
+    <springProfile name="pro">
+        <logger name="com.hema" level="warn" additivity="false">
+            <appender-ref ref="console"/>
+            <appender-ref ref="logFileInfo"/>
+            <appender-ref ref="logFileError"/>
+        </logger>
+        <logger name="OPERATE_LOG" additivity="false">
+            <appender-ref ref="operateFileLog"/>
+            <appender-ref ref="dbLog"/>
+        </logger>
+    </springProfile>
     <springProfile name="test,dev">
         <logger name="com.hema" level="info" additivity="false">
             <appender-ref ref="console"/>
             <appender-ref ref="logFileInfo"/>
             <appender-ref ref="logFileError"/>
         </logger>
-    </springProfile>
-    <springProfile name="prod">
-        <logger name="com.hema" level="warn" additivity="false">
-            <appender-ref ref="console"/>
-            <appender-ref ref="logFileInfo"/>
-            <appender-ref ref="logFileError"/>
+        <logger name="OPERATE_LOG" additivity="false">
+            <appender-ref ref="operateFileLog"/>
+            <appender-ref ref="dbLog"/>
         </logger>
     </springProfile>
     <root level="info">

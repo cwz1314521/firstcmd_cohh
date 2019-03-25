@@ -17,6 +17,7 @@
     <result column="ingredient_code" property="ingredientCode" jdbcType="VARCHAR" />
     <result column="ingredient_price" property="ingredientPrice" jdbcType="DECIMAL" />
     <result column="ingredient_unit_price" property="ingredientUnitPrice" jdbcType="DECIMAL" />
+    <result column="diy_price" property="diyPrice" jdbcType="DECIMAL" />
   </resultMap>
   <resultMap id="BaseSelectListMap" type="com.hema.newretail.backstage.model.erp.ListManufacturerBo" >
     <id column="id" property="id" jdbcType="BIGINT" />
@@ -24,7 +25,7 @@
   </resultMap>
   <sql id="Base_Column_List" >
     id, gmt_create, gmt_modified, ingredient_name, ingredient_description,
-    ingredient_pic, ingredient_price, ingredient_code, ingredient_unit_price
+    ingredient_pic, ingredient_price, ingredient_code, ingredient_unit_price,diy_price
   </sql>
 
   <select id="selectCountByCode" resultType="java.lang.Integer" parameterType="java.lang.String" >
@@ -63,10 +64,10 @@
   <insert id="insert" parameterType="com.hema.newretail.backstage.entry.BaseIngredientInfoEntry" >
     insert into base_ingredient_info (id, gmt_create, gmt_modified,
       ingredient_name, ingredient_code, ingredient_description,
-      ingredient_pic, ingredient_price, ingredient_unit_price)
+      ingredient_pic, ingredient_price, ingredient_unit_price,diy_price)
     values (#{id,jdbcType=BIGINT}, #{gmtCreate,jdbcType=TIMESTAMP}, #{gmtModified,jdbcType=TIMESTAMP},#{ingredientCode,jdbcType=VARCHAR},
       #{ingredientName,jdbcType=VARCHAR}, #{ingredientDescription,jdbcType=VARCHAR},
-      #{ingredientPic,jdbcType=VARCHAR}, #{ingredientPrice,jdbcType=DECIMAL}, #{ingredientUnitPrice,jdbcType=DECIMAL})
+      #{ingredientPic,jdbcType=VARCHAR}, #{ingredientPrice,jdbcType=DECIMAL}, #{ingredientUnitPrice,jdbcType=DECIMAL}, #{diyPrice,jdbcType=DECIMAL})
   </insert>
   <insert id="insertSelective" parameterType="com.hema.newretail.backstage.entry.BaseIngredientInfoEntry" >
     insert into base_ingredient_info
@@ -98,6 +99,9 @@
       <if test="ingredientUnitPrice != null" >
         ingredient_unit_price,
       </if>
+      <if test="diyPrice != null" >
+        diy_price,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -126,6 +130,9 @@
       </if>
       <if test="ingredientUnitPrice != null" >
         #{ingredientUnitPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="diyPrice != null" >
+        #{diyPrice,jdbcType=DECIMAL},
       </if>
     </trim>
   </insert>
@@ -156,6 +163,9 @@
       <if test="ingredientUnitPrice != null" >
         ingredient_unit_price = #{ingredientUnitPrice,jdbcType=DECIMAL},
       </if>
+      <if test="diyPrice != null" >
+        diy_price = #{diyPrice,jdbcType=DECIMAL},
+      </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
@@ -168,7 +178,8 @@
       ingredient_pic = #{ingredientPic,jdbcType=VARCHAR},
       ingredient_code = #{ingredientCode,jdbcType=VARCHAR},
       ingredient_price = #{ingredientPrice,jdbcType=DECIMAL},
-      ingredient_unit_price = #{ingredientUnitPrice,jdbcType=DECIMAL}
+      ingredient_unit_price = #{ingredientUnitPrice,jdbcType=DECIMAL},
+      diy_price = #{diyPrice,jdbcType=DECIMAL}
     where id = #{id,jdbcType=BIGINT}
   </update>
   <select id="findAll" resultMap="BaseResultMap" parameterType="map">
@@ -176,7 +187,7 @@
     <include refid="Base_Column_List" />
     from base_ingredient_info
     <where>
-      1=1
+      and id != 0
       <if test="keyword!=null">
         and ingredient_name like CONCAT('%',#{keyword},'%')
       </if>

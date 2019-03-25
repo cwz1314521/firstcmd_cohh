@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hema.newretail.backstage.dao.BaseMachineOutStockOrderDetailMapper" >
+  <resultMap id="BaseResultMap" type="com.hema.newretail.backstage.entry.device.BaseMachineOutStockOrderDetailEntry" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="outstock_id" property="outstockId" jdbcType="BIGINT" />
+    <result column="machine_type" property="machineType" jdbcType="VARCHAR" />
+    <result column="machine_sequence" property="machineSequence" jdbcType="VARCHAR" />
+    <result column="scan_people" property="scanPeople" jdbcType="VARCHAR" />
+    <result column="scan_time" property="scanTime" jdbcType="TIMESTAMP" />
+    <result column="machine_uuid" property="machineUuid" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, outstock_id, machine_type, machine_sequence, scan_people, scan_time, machine_uuid
+  </sql>
+
+  <select id="selectCountByMS" resultType="java.lang.Integer" parameterType="java.lang.String">
+    select
+    count(id)
+    from base_machine_outstock_order_detail
+    where machine_sequence = #{machineSequence,jdbcType=VARCHAR}
+  </select>
+
+
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from base_machine_outstock_order_detail
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from base_machine_outstock_order_detail
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.hema.newretail.backstage.entry.device.BaseMachineOutStockOrderDetailEntry" >
+    insert into base_machine_outstock_order_detail (id, outstock_id, machine_type, 
+      machine_sequence, scan_people, scan_time, 
+      machine_uuid)
+    values (#{id,jdbcType=BIGINT}, #{outstockId,jdbcType=BIGINT}, #{machineType,jdbcType=VARCHAR}, 
+      #{machineSequence,jdbcType=VARCHAR}, #{scanPeople,jdbcType=VARCHAR}, #{scanTime,jdbcType=TIMESTAMP}, 
+      #{machineUuid,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.hema.newretail.backstage.entry.device.BaseMachineOutStockOrderDetailEntry" >
+    insert into base_machine_outstock_order_detail
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="outstockId != null" >
+        outstock_id,
+      </if>
+      <if test="machineType != null" >
+        machine_type,
+      </if>
+      <if test="machineSequence != null" >
+        machine_sequence,
+      </if>
+      <if test="scanPeople != null" >
+        scan_people,
+      </if>
+      <if test="scanTime != null" >
+        scan_time,
+      </if>
+      <if test="machineUuid != null" >
+        machine_uuid,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="outstockId != null" >
+        #{outstockId,jdbcType=BIGINT},
+      </if>
+      <if test="machineType != null" >
+        #{machineType,jdbcType=VARCHAR},
+      </if>
+      <if test="machineSequence != null" >
+        #{machineSequence,jdbcType=VARCHAR},
+      </if>
+      <if test="scanPeople != null" >
+        #{scanPeople,jdbcType=VARCHAR},
+      </if>
+      <if test="scanTime != null" >
+        #{scanTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="machineUuid != null" >
+        #{machineUuid,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hema.newretail.backstage.entry.device.BaseMachineOutStockOrderDetailEntry" >
+    update base_machine_outstock_order_detail
+    <set >
+      <if test="outstockId != null" >
+        outstock_id = #{outstockId,jdbcType=BIGINT},
+      </if>
+      <if test="machineType != null" >
+        machine_type = #{machineType,jdbcType=VARCHAR},
+      </if>
+      <if test="machineSequence != null" >
+        machine_sequence = #{machineSequence,jdbcType=VARCHAR},
+      </if>
+      <if test="scanPeople != null" >
+        scan_people = #{scanPeople,jdbcType=VARCHAR},
+      </if>
+      <if test="scanTime != null" >
+        scan_time = #{scanTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="machineUuid != null" >
+        machine_uuid = #{machineUuid,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hema.newretail.backstage.entry.device.BaseMachineOutStockOrderDetailEntry" >
+    update base_machine_outstock_order_detail
+    set outstock_id = #{outstockId,jdbcType=BIGINT},
+      machine_type = #{machineType,jdbcType=VARCHAR},
+      machine_sequence = #{machineSequence,jdbcType=VARCHAR},
+      scan_people = #{scanPeople,jdbcType=VARCHAR},
+      scan_time = #{scanTime,jdbcType=TIMESTAMP},
+      machine_uuid = #{machineUuid,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

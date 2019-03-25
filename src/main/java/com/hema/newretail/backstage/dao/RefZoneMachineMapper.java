@@ -1,11 +1,14 @@
 package com.hema.newretail.backstage.dao;
 
 import com.hema.newretail.backstage.entry.RefZoneMachine;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 import java.util.Map;
 
 public interface RefZoneMachineMapper {
+    Long selectByGeoHash(@Param("geoHash") String geoHash);
+
     int deleteByPrimaryKey(Long id);
 
     int insert(RefZoneMachine record);

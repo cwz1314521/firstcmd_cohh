@@ -2,6 +2,7 @@ package com.hema.newretail.backstage.controller.authority;
 
 
 
+import com.hema.newretail.backstage.annotation.AutoLog;
 import com.hema.newretail.backstage.common.utils.Response;
 import com.hema.newretail.backstage.entry.BaseUserInfoEntry;
 import com.hema.newretail.backstage.service.authority.IUserManagermentService;
@@ -18,9 +19,10 @@ import org.springframework.web.bind.annotation.*;
  * @Description:--------------------权限控制模块对于用户权限的管理模块controller
  * @Version: 1.0
  */
-@Api(description = "≡(▔﹏▔)≡权限控制模块对于用户权限的管理模块")
+@Api(description = "权限管理")
 @Controller
 @RequestMapping(value = "/userManagerment")
+@AutoLog
 public class UserManagermentController {
 
     /**注入----权限控制模块对于用户权限的管理模块service*/
@@ -38,7 +40,7 @@ public class UserManagermentController {
      */
     @PostMapping(value = "/list")
     @ResponseBody
-    @ApiOperation("≡(▔﹏▔)≡用户列表，分页显示")
+    @ApiOperation("用户列表")
     public Response list(@RequestParam(defaultValue = "1") Integer pageNum, @RequestParam(defaultValue = "10") Integer pageSize){
         return userManagermentService.list(pageNum,pageSize);
     }
@@ -55,7 +57,7 @@ public class UserManagermentController {
      */
     @PostMapping(value = "/addCompany")
     @ResponseBody
-    @ApiOperation("≡(▔﹏▔)≡添加用户---公司展示")
+    @ApiOperation("公司查询")
     public Response addCompany(){
         return userManagermentService.addCompany();
     }
@@ -72,7 +74,7 @@ public class UserManagermentController {
      */
     @PostMapping(value = "addPost")
     @ResponseBody
-    @ApiOperation("≡(▔﹏▔)≡添加用户----岗位展示")
+    @ApiOperation("岗位展示")
     public Response addPost(){
         return userManagermentService.addPost();
     }
@@ -89,7 +91,7 @@ public class UserManagermentController {
      */
     @PostMapping(value = "/add")
     @ResponseBody
-    @ApiOperation("≡(▔﹏▔)≡添加用户----操作")
+    @ApiOperation("添加用户")
     public Response add(@RequestBody BaseUserInfoEntry entry){
         return userManagermentService.add(entry);
     }
@@ -106,7 +108,7 @@ public class UserManagermentController {
      */
     @PostMapping(value = "/editDetail")
     @ResponseBody
-    @ApiOperation("≡(▔﹏▔)≡编辑用户---用户详情")
+    @ApiOperation("用户详情")
     public Response editDetail(@RequestParam(required = true) Long id){
         return userManagermentService.editDetail(id);
     }
@@ -123,7 +125,7 @@ public class UserManagermentController {
      */
     @PostMapping(value = "/editFunction")
     @ResponseBody
-    @ApiOperation("≡(▔﹏▔)≡编辑用户---查询选定岗位的功能组")
+    @ApiOperation("查询选定岗位的功能组")
     public Response editFunction(){
         return userManagermentService.editFunction();
     }
@@ -140,7 +142,7 @@ public class UserManagermentController {
      */
     @PostMapping(value = "/edit")
     @ResponseBody
-    @ApiOperation("≡(▔﹏▔)≡编辑用户----保存操作")
+    @ApiOperation("编辑用户")
     public Response edit(@RequestBody BaseUserInfoEntry entry){
         return userManagermentService.edit(entry);
     }
@@ -157,7 +159,7 @@ public class UserManagermentController {
      */
     @PostMapping(value = "/delete")
     @ResponseBody
-    @ApiOperation("≡(▔﹏▔)≡删除用户")
+    @ApiOperation("删除用户")
     public Response delete(@RequestParam(required = true) Long id){
         return userManagermentService.delete(id);
     }
@@ -173,7 +175,7 @@ public class UserManagermentController {
      */
     @PostMapping(value = "/grant")
     @ResponseBody
-    @ApiOperation("≡(▔﹏▔)≡岗位权限分配")
+    @ApiOperation("岗位权限分配")
     public Response grant(@RequestParam(required = true) String funkGroupCodes,@RequestParam(required = true) Long postId){
         return userManagermentService.grant(funkGroupCodes,postId);
     }
@@ -190,7 +192,7 @@ public class UserManagermentController {
      */
     @PostMapping(value = "/listPermission")
     @ResponseBody
-    @ApiOperation("≡(▔﹏▔)≡所有权限列表")
+    @ApiOperation("所有权限列表")
     public Response listPermission(@RequestParam(required = true) Long postId){
         return userManagermentService.listPermission(postId);
     }

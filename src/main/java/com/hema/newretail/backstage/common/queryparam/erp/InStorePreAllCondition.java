@@ -2,6 +2,7 @@ package com.hema.newretail.backstage.common.queryparam.erp;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
 
 import java.util.List;
 
@@ -14,17 +15,10 @@ import java.util.List;
  * @Version 1.0
  **/
 @ApiModel(value = "分后台 -列表参数类",description = "分后台 -列表参数类")
+@Data
 public class InStorePreAllCondition {
 
 
         @ApiModelProperty(value = "二维码编码")
-        private List<String> qrcodeCode;
-
-    public List<String> getQrcodeCode() {
-        return qrcodeCode;
-    }
-
-    public void setQrcodeCode(List<String> qrcodeCode) {
-        this.qrcodeCode = qrcodeCode;
-    }
+        private List<String> randomCode;
 }

@@ -1,6 +1,5 @@
 package com.hema.newretail.backstage.service;
 
-import com.hema.newretail.backstage.entry.BaseMachineInfoEntry;
 import com.hema.newretail.backstage.entry.RefZoneMachine;
 import com.hema.newretail.backstage.entry.ZoneBase;
 import com.hema.newretail.backstage.model.tag.BaseIngredientBoxInfoBo;
@@ -14,9 +13,8 @@ import java.util.Map;
 /**
  * hema-newetaril-com.hema.newretail.backstage.service
  *
- * @Description:
- * @Author: ZhangHaiSheng
- * @Date: 2018-08-25 14:44
+ * @author ZhangHaiSheng
+ * @date 2018-08-25 14:44
  */
 public interface IZoneBaseService {
 
@@ -45,8 +43,9 @@ public interface IZoneBaseService {
      * @param city
      * @param area
      * @param hashcodes
+     * @return long
      */
-    void insertZoneData(String zoneName, String machineTypeId, String province, String city, String area, String[] hashcodes);
+    Long insertZoneData(String zoneName, String machineTypeId, String province, String city, String area, String[] hashcodes);
 
     /**
      * 查询配料组合列表
@@ -64,11 +63,24 @@ public interface IZoneBaseService {
      *
      * @param zoneId
      * @param boxGroupId
+     * @return list
      */
-    void updateBoxGroupId(String[] zoneId, String boxGroupId);
+    List<Map<String, Long>> updateBoxGroupId(String[] zoneId, String boxGroupId);
 
+    /**
+     * 查询hashcode
+     *
+     * @param list ids
+     * @return list
+     */
     List<String> getHashCode(List<Long> list);
 
+    /**
+     * 查询机器hashcode
+     *
+     * @param paramsMap 参数map
+     * @return list
+     */
     List<String> getMachHashCode(Map<String, Object> paramsMap);
 
 
@@ -97,8 +109,9 @@ public interface IZoneBaseService {
      * @param city
      * @param area
      * @param hashcodes
+     * @return r
      */
-    Integer updateZoneData(Long zoneId, String zoneName, String province, String city, String area, String[] hashcodes);
+    Map<String, Object> updateZoneData(Long zoneId, String zoneName, String province, String city, String area, String[] hashcodes);
 
     /**
      * 一键查询所有网格

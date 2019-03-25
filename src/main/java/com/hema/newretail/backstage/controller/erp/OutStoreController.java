@@ -1,6 +1,7 @@
 package com.hema.newretail.backstage.controller.erp;
 
 import com.hema.newretail.CloudBohhApplication;
+import com.hema.newretail.backstage.annotation.AutoLog;
 import com.hema.newretail.backstage.common.queryparam.erp.InStoreListCondition;
 import com.hema.newretail.backstage.common.queryparam.erp.InStoreNumCondition;
 import com.hema.newretail.backstage.common.queryparam.erp.InStorePreAllCondition;
@@ -29,9 +30,10 @@ import javax.servlet.http.HttpServletRequest;
  * @Date 2018/11/27 14:01
  * @Version 1.0
  **/
-@Api(description =  "≡(▔﹏▔)≡分后台--出库--相关接口")
+@Api(description =  "溯源系统->出库")
 @Controller
 @RequestMapping("/outstore")
+@AutoLog
 public class OutStoreController {
 
     private static final Logger logger = LoggerFactory.getLogger(CloudBohhApplication.class);

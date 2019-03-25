@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Random;
 
 /**
  * @Department 新零售
@@ -20,6 +21,7 @@ import java.util.Date;
 public class NumberUtils {
 
     private static final Logger logger = LoggerFactory.getLogger(CloudBohhApplication.class);
+    private static final String CK ="CK";
 
     /**
      *
@@ -48,9 +50,29 @@ public class NumberUtils {
      * @author: cwz
      * @date: 2018/11/1 10:24
      */
-    public static String OrderCode(String code,Integer num){
+    public static String orderCode(String code, Integer num){
         StringBuffer result = new StringBuffer();
         result.append(code).append(new SimpleDateFormat("yyMMdd").format(new Date())).append(String.format("%03d", num));
+        return result.toString();
+    }
+    /**
+     *
+     * 功能描述: 出库单号规则定义：CK+年月日+3位数字+1位随机数；例：CK201802010012
+     *
+     * @param  
+     * @return  
+     * @author  cwz
+     * @date  2018/12/11 17:11
+     */
+
+    public static String deviceOutStore(Integer num){
+        StringBuffer result = new StringBuffer();
+        Random rand = new Random();
+        if(num == null){
+            result.append(CK).append(new SimpleDateFormat("yyyyMMdd").format(new Date()));
+        }else {
+            result.append(CK).append(new SimpleDateFormat("yyyyMMdd").format(new Date())).append(String.format("%03d", num)).append(rand.nextInt(10));
+        }
         return result.toString();
     }
 }

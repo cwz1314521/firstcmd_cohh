@@ -1,6 +1,7 @@
 package com.hema.newretail.backstage.controller.erp;
 
 import com.github.pagehelper.Page;
+import com.hema.newretail.backstage.annotation.AutoLog;
 import com.hema.newretail.backstage.common.queryparam.erp.StockManageCondition;
 import com.hema.newretail.backstage.common.utils.Response;
 import com.hema.newretail.backstage.model.erp.StockManageBo;
@@ -27,12 +28,13 @@ import java.util.List;
 @Api(description = "溯源系统->分公司库存管理")
 @RestController
 @RequestMapping("/stockManage")
+@AutoLog
 public class CompanyStockManageController {
 
     @Autowired
     private CompanyStockManageService companyStockManageService;
 
-    @ApiOperation("列表")
+    @ApiOperation("查询库存信息")
     @PostMapping("/list")
     public Response list(@RequestBody StockManageCondition vo) {
         try {

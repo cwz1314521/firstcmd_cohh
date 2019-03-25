@@ -6,6 +6,8 @@ import com.hema.newretail.backstage.common.queryparam.BaseCompanyGeoHashQueryPar
 import com.hema.newretail.backstage.dao.BaseCompanyGeoHashMapper;
 import com.hema.newretail.backstage.entry.BaseCompanyGeoHashData;
 import com.hema.newretail.backstage.service.IBaseCompanyGeoHashService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +23,7 @@ import java.util.Map;
  **/
 @Service("baseCompanyGeoHashService")
 public class BaseCompanyGeoHashServiceImpl implements IBaseCompanyGeoHashService {
+    private Logger logger = LoggerFactory.getLogger(BaseCompanyGeoHashServiceImpl.class);
 
     @Autowired
     private BaseCompanyGeoHashMapper baseCompanyGeoHashMapper;
@@ -44,15 +47,17 @@ public class BaseCompanyGeoHashServiceImpl implements IBaseCompanyGeoHashService
 
     @Override
     public Map<String, List<String>> queryBaseCompanyGeoHash(BaseCompanyGeoHashQueryParameter parameter) {
-        Map<String,List<String>> result = new HashMap<String,List<String>>();
+        Map<String,List<String>> result = new HashMap<>(2);
         List<String> usedGeoHash = baseCompanyGeoHashMapper.freeGeoHash(parameter.getMapGeoHash());
 
         List<String> baseCompanyGeoHash = baseCompanyGeoHashMapper.findBaseCompanyGeoHashByCompanyId(parameter.getBaseCompanyId());
 
-        List<String> otherCompanyGeoHash = new ArrayList<String>();
+        List<String> otherCompanyGeoHash = new ArrayList<>();
 
         if(baseCompanyGeoHash.size()>0){
             if (usedGeoHash.removeAll(baseCompanyGeoHash)){
+                otherCompanyGeoHash = usedGeoHash;
+            }else{
                 otherCompanyGeoHash = usedGeoHash;
             }
         }else {

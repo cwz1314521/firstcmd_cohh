@@ -1,17 +1,21 @@
 package com.hema.newretail.backstage.common.requestparam;
 
-import com.alibaba.fastjson.annotation.JSONField;
+import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
 
-import javax.validation.constraints.*;
+import javax.validation.constraints.DecimalMax;
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.Digits;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.List;
 
 
 /**
- * @author jiahao
+ * @author admin
  */
+@Data
 public class MenuParam {
 
     private Long id;
@@ -51,113 +55,15 @@ public class MenuParam {
 
     private Boolean status;
 
-    @NotNull(message = "推荐排序不允许为空")
-    private Integer recommendOrder;
+    private BigDecimal recommendOrder;
 
     private Long isRecommend;
 
-    public String getAnyPic() {
-        return anyPic;
-    }
 
-    public void setAnyPic(String anyPic) {
-        this.anyPic = anyPic;
-    }
+    private Long menuClassifyId;
+    private String subTitle;
+    private String menuDesc;
 
-    public Long getIsRecommend() {
-        return isRecommend;
-    }
-
-    public void setIsRecommend(Long isRecommend) {
-        this.isRecommend = isRecommend;
-    }
-
-    public List<TagParam> getTagParamList() {
-        return tagParamList;
-    }
-
-    public void setTagParamList(List<TagParam> tagParamList) {
-        this.tagParamList = tagParamList;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getMenuName() {
-        return menuName;
-    }
-
-    public void setMenuName(String menuName) {
-        this.menuName = menuName;
-    }
-
-    public BigDecimal getPrice() {
-        return price;
-    }
-
-    public void setPrice(BigDecimal price) {
-        this.price = price;
-    }
-
-    public String getSmallPic() {
-        return smallPic;
-    }
-
-    public void setSmallPic(String smallPic) {
-        this.smallPic = smallPic;
-    }
-
-    public String getMiddlePic() {
-        return middlePic;
-    }
-
-    public void setMiddlePic(String middlePic) {
-        this.middlePic = middlePic;
-    }
-
-    public String getBigPic() {
-        return bigPic;
-    }
-
-    public void setBigPic(String bigPic) {
-        this.bigPic = bigPic;
-    }
-
-    public List<MaterialParam> getMaterialParamList() {
-        return materialParamList;
-    }
-
-    public void setMaterialParamList(List<MaterialParam> materialParamList) {
-        this.materialParamList = materialParamList;
-    }
-
-    public List<OptionParam> getOptionParamList() {
-        return optionParamList;
-    }
-
-    public void setOptionParamList(List<OptionParam> optionParamList) {
-        this.optionParamList = optionParamList;
-    }
-
-
-    public Boolean getStatus() {
-        return status;
-    }
-
-    public void setStatus(Boolean status) {
-        this.status = status;
-    }
-
-    public Integer getRecommendOrder() {
-        return recommendOrder;
-    }
-
-    public void setRecommendOrder(Integer recommendOrder) {
-        this.recommendOrder = recommendOrder;
-    }
+    private BigDecimal showOrder;
+    private Long imageTextId;
 }

@@ -2,6 +2,7 @@ package com.hema.newretail.backstage.common.queryparam.grid;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
 
 import javax.validation.constraints.NotNull;
 
@@ -14,6 +15,7 @@ import javax.validation.constraints.NotNull;
  * @Version 1.0
  **/
 @ApiModel(value = "GridListCondition",description = "网格公司列表  ---  参数类")
+@Data
 public class GridListCondition {
 
     /**页码  默认为1*/
@@ -54,75 +56,7 @@ public class GridListCondition {
     @ApiModelProperty(value = "多选区数组")
     private String [] area;
 
-    public String getAreas() {
-        return areas;
-    }
-
-    public void setAreas(String areas) {
-        this.areas = areas;
-    }
-
-    public String[] getArea() {
-        return area;
-    }
-
-    public void setArea(String[] area) {
-        this.area = area;
-    }
-
-    public Integer getPageNum() {
-        return pageNum;
-    }
-
-    public void setPageNum(Integer pageNum) {
-        this.pageNum = pageNum;
-    }
-
-    public Integer getPageSize() {
-        return pageSize;
-    }
-
-    public void setPageSize(Integer pageSize) {
-        this.pageSize = pageSize;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getProvince() {
-        return province;
-    }
-
-    public void setProvince(String province) {
-        this.province = province;
-    }
-
-    public String getCity() {
-        return city;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
+    /**组织机构编码*/
+    @ApiModelProperty(value = "组织机构编码")
+    private String orgCode;
 }

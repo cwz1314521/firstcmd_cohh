@@ -27,6 +27,8 @@ public class BaseCompanyQueryParameter {
 
     private int pageNum;
 
+    private String orgCode;
+
     public String getCompanyNameOrId() {
         return companyNameOrId;
     }
@@ -97,5 +99,13 @@ public class BaseCompanyQueryParameter {
 
     public void setPageNum(int pageNum) {
         this.pageNum = pageNum;
+    }
+
+    public String getOrgCode() {
+        return orgCode;
+    }
+
+    public void setOrgCode(String orgCode) {
+        this.orgCode = orgCode;
     }
 }

@@ -68,4 +68,14 @@ public class StockManageCondition {
      * 出库人
      */
     private String companyOutstoreUser;
+
+    /**
+     * 出库时间-开始时间
+     */
+    private String startDateOutstore;
+
+    /**
+     * 出库时间-结束时间
+     */
+    private String endDateOutstore;
 }

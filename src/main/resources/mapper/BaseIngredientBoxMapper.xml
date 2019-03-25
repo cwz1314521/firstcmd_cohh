@@ -38,11 +38,11 @@
 
   <select id="selectBoxOrInfoByBoxGroupId" resultMap="BaseResultOrInfoMap" parameterType="java.lang.Long" >
 
-select
-    b.id, b.box_code, b.ingredient_id, b.duration, b.capacity, b.max_copies,
-    b.warn_percent, b.box_group_id, i.ingredient_name ,GROUP_CONCAT(b.box_code SEPARATOR ',') as boxCode
-    from base_ingredient_box b,base_ingredient_info i
-    where b.ingredient_id = i.id and b.box_group_id = #{boxGroupId,jdbcType=BIGINT}
+select b.id, b.box_code, IF(b.box_code=0, 0, b.ingredient_id) as ingredient_id, b.duration, b.capacity, b.max_copies,
+    b.warn_percent, b.box_group_id, IF(b.box_code=0, '纯净水', i.ingredient_name) as ingredient_name ,GROUP_CONCAT(b.box_code SEPARATOR ',') as boxCode
+    from base_ingredient_box b
+    left join base_ingredient_info i on b.ingredient_id = i.id
+    where b.box_group_id = #{boxGroupId,jdbcType=BIGINT}
 		GROUP BY b.ingredient_id
   </select>
   <select id="selectByBoxGroupId" resultMap="BaseResultMap" parameterType="java.lang.Long" >

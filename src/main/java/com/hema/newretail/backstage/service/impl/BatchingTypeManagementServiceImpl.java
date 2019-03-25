@@ -14,8 +14,8 @@ import com.hema.newretail.backstage.dao.BaseIngredientInfoEntryMapper;
 import com.hema.newretail.backstage.dao.BaseMachineTypeMapper;
 import com.hema.newretail.backstage.entry.BaseBoxGroupEntry;
 import com.hema.newretail.backstage.entry.BaseIngredientBoxEntry;
-import com.hema.newretail.backstage.entry.BaseMachineTypeEntry;
 import com.hema.newretail.backstage.common.queryparam.ingredientstypemodelorcondition.IngredientCondition;
+import com.hema.newretail.backstage.entry.BaseMachineTypeEntry;
 import com.hema.newretail.backstage.model.tag.BaseIngredientBoxInfoBo;
 import com.hema.newretail.backstage.model.taskkafka.IngredientBoxBo;
 import com.hema.newretail.backstage.service.IBatchingTypeManagementService;
@@ -25,10 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * @Auther: 程文政
@@ -86,6 +83,9 @@ public class BatchingTypeManagementServiceImpl implements IBatchingTypeManagemen
     @Transactional
     public Response binAllocationEditAdd(BoxGroupIngredientCondition boxGroupIngredientCondition) {
         logger.info("参数处理......");
+        // add by zhs at 2018-12-26 start
+        Map<String, Object> kafkaMap = new HashMap<>(2);
+        // add by zhs at 2018-12-26 end
         List<BaseIngredientBoxEntry> list = new ArrayList<>();
         for (BaseIngredientBoxCondition b : boxGroupIngredientCondition.getList()
         ) {
@@ -116,19 +116,12 @@ public class BatchingTypeManagementServiceImpl implements IBatchingTypeManagemen
             baseBoxGroupMapper.insert(baseBoxGroupEntry);
             baseIngredientBoxMapper.deleteByGroupId(baseBoxGroupEntry.getId());
             logger.info("轮存次表......");
-            // add by zhs at 20181120 for task to kafka start
-//            Long groupId = baseBoxGroupEntry.getId();
             int num = 0;
-            // add by zhs at 20181120 for task to kafka end
             for (BaseIngredientBoxEntry baseIngredientBoxEntry : list
             ) {
                 baseIngredientBoxEntry.setBoxGroupId(baseBoxGroupEntry.getId());
                 num += baseIngredientBoxMapper.insert(baseIngredientBoxEntry);
             }
-//            if (num > 0) {
-//                taskKafkaHelper.modifyBoxGroup(groupId, baseIngredientBoxMapper.selectByBoxGroupIdForTask(groupId));
-//            }
-            // add by zhs at 20181120 for task to kafka end
         } else {
             logger.info("修改操作......");
             BaseBoxGroupEntry baseBoxGroupEntry = new BaseBoxGroupEntry();
@@ -148,6 +141,17 @@ public class BatchingTypeManagementServiceImpl implements IBatchingTypeManagemen
             // add by zhs at 20181120 for task to kafka start
             Long groupId = baseBoxGroupEntry.getId();
             List<IngredientBoxBo> ingredientBoxBos = baseIngredientBoxMapper.selectByBoxGroupIdForTask(groupId);
+            // 判断是否有变化
+            boolean isChange = false;
+            if (null != ingredientBoxBos && ingredientBoxBos.size() == list.size()) {
+                for (IngredientBoxBo bo : ingredientBoxBos) {
+                    if (null == bo || !list.contains(bo)) {
+                        isChange = true;
+                    }
+                }
+            } else {
+                isChange = true;
+            }
             int num = 0;
             // add by zhs at 20181120 for task to kafka end
             baseIngredientBoxMapper.deleteByGroupId(boxGroupIngredientCondition.getId());
@@ -158,13 +162,14 @@ public class BatchingTypeManagementServiceImpl implements IBatchingTypeManagemen
                 num += baseIngredientBoxMapper.insert(baseIngredientBoxEntry);
             }
             // add by zhs at 20181120 for task to kafka start
-            if (num > 0) {
-                taskKafkaHelper.modifyBoxGroup(groupId, ingredientBoxBos);
+            if (isChange && num > 0) {
+                kafkaMap.put("groupId", groupId);
+                kafkaMap.put("ingredientBoxBos", ingredientBoxBos);
             }
             // add by zhs at 20181120 for task to kafka end
         }
         logger.info("操作完成......");
-        return Response.success();
+        return Response.success(kafkaMap);
     }
 
     //查询所有配料信息接口

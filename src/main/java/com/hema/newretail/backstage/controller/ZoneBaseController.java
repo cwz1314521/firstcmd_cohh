@@ -1,7 +1,9 @@
 package com.hema.newretail.backstage.controller;
 
 import com.github.pagehelper.Page;
+import com.hema.newretail.backstage.annotation.AutoLog;
 import com.hema.newretail.backstage.common.utils.Response;
+import com.hema.newretail.backstage.common.utils.kafka.TaskKafkaHelper;
 import com.hema.newretail.backstage.enums.ResultCode;
 import com.hema.newretail.backstage.model.zonebase.AllZoneHashcodeBo;
 import com.hema.newretail.backstage.model.zonebase.BoxGroupBo;
@@ -25,18 +27,23 @@ import java.util.Map;
 /**
  * hema-newetaril-com.hema.newretail.backstage.controller
  *
- * @Description:
- * @Author: ZhangHaiSheng
- * @Date: 2018-08-25 14:47
+ * @author ZhangHaiSheng
+ * @date 2018-08-25 14:47
  */
 @Api(description = "片区管理")
 @RestController
 @Validated
 @RequestMapping("/zone")
+@AutoLog
 public class ZoneBaseController {
 
     @Autowired
     private IZoneBaseService zoneBaseService;
+    @Autowired
+    private TaskKafkaHelper taskKafkaHelper;
+
+
+    private static final int TWO = -2;
 
     /**
      * 查询片区列表数据
@@ -49,7 +56,7 @@ public class ZoneBaseController {
      * @param pageSize      每页数据条数
      * @return
      */
-    @ApiOperation("查询片区列表数据")
+    @ApiOperation("查询片区")
     @PostMapping(value = "/zoneList")
     public Response zoneList(@RequestParam(required = false) @NotBlank(message = "参数machineTypeId不能为空") String machineTypeId,
                              String province, String city, String area,
@@ -100,7 +107,14 @@ public class ZoneBaseController {
             area = "";
         }
         try {
-            zoneBaseService.insertZoneData(zoneName, machineTypeId, province, city, area, hashcodes);
+            Long zoneId = zoneBaseService.insertZoneData(zoneName, machineTypeId, province, city, area, hashcodes);
+            if(-1L == zoneId) {
+                return Response.failure("检测到有交叉片区");
+            }
+            // 发kafka
+            if (zoneId > 0) {
+                taskKafkaHelper.addZoneHash(zoneId, hashcodes);
+            }
             return Response.success();
         } catch (Exception e) {
             e.printStackTrace();
@@ -203,12 +217,18 @@ public class ZoneBaseController {
      * @param boxGroupId 配料类型组合编码
      * @return
      */
-    @ApiOperation("保存并更新配料类型组合")
+    @ApiOperation("保存并更新配料方案")
     @PostMapping(value = "/set")
     public Response set(@RequestParam String[] zoneId,
                         @RequestParam(required = false) @NotBlank(message = "参数boxGroupId不能为空") String boxGroupId) {
         try {
-            zoneBaseService.updateBoxGroupId(zoneId, boxGroupId);
+            List<Map<String, Long>> list = zoneBaseService.updateBoxGroupId(zoneId, boxGroupId);
+            if (null == list) {
+                return Response.failure();
+            } else {
+                // 发kafka
+                taskKafkaHelper.modifyZoneBoxGroup(list);
+            }
             return Response.success();
         } catch (Exception e) {
             e.printStackTrace();
@@ -222,7 +242,7 @@ public class ZoneBaseController {
      * @param zoneId 片区编码
      * @return
      */
-    @ApiOperation("跳转到更新片区页面需要的初始数据接口")
+    @ApiOperation("查询更新片区页面需要的初始数据")
     @PostMapping(value = "/toUpdate")
     public Response toUpdate(@RequestParam(required = false) @NotBlank(message = "参数zoneId不能为空") String zoneId) {
         try {
@@ -261,7 +281,7 @@ public class ZoneBaseController {
      * @param hashcodes geo hash code
      * @return
      */
-    @ApiOperation("片区修改接口")
+    @ApiOperation("修改片区")
     @PostMapping(value = "/zoneUpdate")
     public Response zoneUpdate(@RequestParam(required = false) @NotBlank(message = "参数zoneId不能为空") String zoneId,
                                @RequestParam(required = false)
@@ -279,9 +299,16 @@ public class ZoneBaseController {
             area = null;
         }
         try {
-            Integer num = zoneBaseService.updateZoneData(Long.valueOf(zoneId), zoneName, province, city, area, hashcodes);
-            if (-2 == num) {
+            Map<String, Object> map = zoneBaseService.updateZoneData(Long.valueOf(zoneId), zoneName, province, city, area, hashcodes);
+            int num = (int) map.get("result");
+            if (TWO == num) {
                 return Response.failure("检测到有交叉片区，更新失败。");
+            }
+            // 发kafka
+            String newHashsStr = "newHashs";
+            if (null != map.get(newHashsStr)) {
+                String[] hashs = (String[]) map.get(newHashsStr);
+                taskKafkaHelper.addZoneHash(Long.valueOf(zoneId), hashs);
             }
             return Response.success();
         } catch (Exception e) {

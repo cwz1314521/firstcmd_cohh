@@ -39,16 +39,22 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
     private String requestCodeUrl;
     @Value("${auth.requestAccessCodeUrl}")
     private String requestAccessCodeUrl;
+    private static final String OPTIONS = "OPTIONS";
+    private static final String MULTIPARTFORM_DATA= "multipart/form-data";
+
+    @Value("${auth.ueditorActionUrl}")
+    private String ueditorActionUrl;
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
+
         System.out.println("--------------------------------crm interceptor----------------------------");
         logger.info("request请求地址url[{}] uri[{}] servletPath[{}]", request.getRequestURL(), request.getRequestURI(), request.getServletPath());
-        if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
+        if (OPTIONS.equalsIgnoreCase(request.getMethod())) {
             return false;
         }
         String contentType = request.getHeader("content-type");
-        if (null != contentType && contentType.contains("multipart/form-data")) {
+        if (null != contentType && contentType.contains(MULTIPARTFORM_DATA) || request.getRequestURI().contains(ueditorActionUrl)) {
             return true;
         }
         String sessionId = request.getSession().getId();
@@ -113,7 +119,6 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
             for (Object anArray : array) {
                 JSONObject json = (JSONObject) anArray;
                 String apis = json.getString("apis");
-//                logger.info("apis:" + apis);
                 if (!StringUtils.isEmpty(apis) && apis.contains(request.getServletPath())) {
                     logger.info("权限校验通过");
                     return true;

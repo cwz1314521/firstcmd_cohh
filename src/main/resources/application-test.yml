@@ -1,28 +1,26 @@
-server:
-  port: 8081
-  context-path: /crm
-
 spring:
   data:
     mongodb:
-      authentication-database: false
-      database: local
-      host: 172.31.81.228
-      port: 27019
+      primary:
+        uri: mongodb://172.31.81.226:37017,172.31.81.226:47017,172.31.81.226:57017/local_test
+        authentication-database: false
+      secondary:
+        uri: mongodb://172.31.81.226:37017,172.31.81.226:47017,172.31.81.226:57017/newretail_statics_test
+        authentication-database: false
   redis:
     database: 13
-    host: 118.190.159.229
+    host: 47.105.117.193
     password: 888888
     pool:
       max-active: 200
       max-idle: 10
       max-wait: -1
       min-idle: 0
-    port: 6379
+    port: 6380
     timeout: 1000
   datasource:
     name: test
-    url: jdbc:mysql://118.190.159.229:3307/newretail?useUnicode=true&characterEncoding=utf-8
+    url: jdbc:mysql://47.105.117.193:3306/newretail_test?useUnicode=true&characterEncoding=utf-8
     username: root
     password: 888888
     # 使用druid数据源
@@ -68,6 +66,11 @@ excelModel:
   orderSrcFileName: 订单数据导出.xlsx
   agentFileName: 代理公司导出.xlsx
   orderFileName: Order订单数据导出.xlsx
+  deviceOutStoreName: 设备出库单.xlsx
+  cupExcelName: 杯数统计.xlsx
+  dataExcelName: 动态.xlsx
+  deviceCashExcelName: 设备押金管理.xlsx
+  agentAccountExcelName: 代理商账户资金表.xlsx
 
 custom:
   initUserPassWord: 123456
@@ -76,6 +79,7 @@ custom:
 auth:
   requestCodeUrl: http://118.190.159.229:8082/auth/codeAuth
   requestAccessCodeUrl: http://118.190.159.229:8082/auth/authorization/token
+  ueditorActionUrl: /sys/ueditor/exec
 
 oss:
   endpoint : oss-cn-qingdao.aliyuncs.com
@@ -84,34 +88,26 @@ oss:
   backet_name : shandong-hema-oss
   folder_json : json/
   folder_img : img/
+  folder_file: testfile/
   web_url: http://newretail.hemaapp.com/
 
 #============== kafka ===================
 kafka:
-  consumer:
-    zookeeper:
-      connect: 47.105.117.19:2181
-    servers: 47.105.117.19:9092
-    enable:
-      auto:
-        commit: true
-    session:
-      timeout: 6000
-    auto:
-      commit:
-        interval: 100
-      offset:
-        reset: latest
-    topic: test
-    group:
-      id: test
-    concurrency: 10
-
   producer:
-    servers: 47.105.117.19:9092
+    servers: 47.105.117.193:9092,47.105.117.193:9093,47.105.117.193:9094
     retries: 0
     batch:
       size: 4096
     linger: 1
     buffer:
       memory: 40960
+  topic:
+    reload: reloadTopic_test
+    cycle: cycleTopic_test
+
+logs:
+  log:
+    path: /usr/Downloads
+  # 操作日志
+  operat:
+    path: /usr/Downloads

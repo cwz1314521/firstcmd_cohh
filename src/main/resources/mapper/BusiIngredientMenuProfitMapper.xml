@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hema.newretail.backstage.dao.BusiIngredientMenuProfitMapper" >
+  <resultMap id="BaseResultMap" type="com.hema.newretail.backstage.entry.BusiIngredientMenuProfit" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="gmt_create" property="gmtCreate" jdbcType="TIMESTAMP" />
+    <result column="gmt_modified" property="gmtModified" jdbcType="TIMESTAMP" />
+    <result column="ingredient_menu_id" property="ingredientMenuId" jdbcType="BIGINT" />
+    <result column="sale_price" property="salePrice" jdbcType="DECIMAL" />
+    <result column="profit_money" property="profitMoney" jdbcType="DECIMAL" />
+    <result column="start_time" property="startTime" jdbcType="TIMESTAMP" />
+    <result column="end_time" property="endTime" jdbcType="TIMESTAMP" />
+    <result column="operator" property="operator" jdbcType="VARCHAR" />
+    <result column="is_deleted" property="isDeleted" jdbcType="BIT" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, gmt_create, gmt_modified, ingredient_menu_id, sale_price, profit_money, start_time, 
+    end_time, operator, is_deleted, remark
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from busi_ingredient_menu_profit
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from busi_ingredient_menu_profit
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.hema.newretail.backstage.entry.BusiIngredientMenuProfit" >
+    insert into busi_ingredient_menu_profit (id, gmt_create, gmt_modified, 
+      ingredient_menu_id, sale_price, profit_money, 
+      start_time, end_time, operator, 
+      is_deleted, remark)
+    values (#{id,jdbcType=BIGINT}, #{gmtCreate,jdbcType=TIMESTAMP}, #{gmtModified,jdbcType=TIMESTAMP}, 
+      #{ingredientMenuId,jdbcType=BIGINT}, #{salePrice,jdbcType=DECIMAL}, #{profitMoney,jdbcType=DECIMAL}, 
+      #{startTime,jdbcType=TIMESTAMP}, #{endTime,jdbcType=TIMESTAMP}, #{operator,jdbcType=VARCHAR}, 
+      #{isDeleted,jdbcType=BIT}, #{remark,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.hema.newretail.backstage.entry.BusiIngredientMenuProfit" >
+    insert into busi_ingredient_menu_profit
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="gmtCreate != null" >
+        gmt_create,
+      </if>
+      <if test="gmtModified != null" >
+        gmt_modified,
+      </if>
+      <if test="ingredientMenuId != null" >
+        ingredient_menu_id,
+      </if>
+      <if test="salePrice != null" >
+        sale_price,
+      </if>
+      <if test="profitMoney != null" >
+        profit_money,
+      </if>
+      <if test="startTime != null" >
+        start_time,
+      </if>
+      <if test="endTime != null" >
+        end_time,
+      </if>
+      <if test="operator != null" >
+        operator,
+      </if>
+      <if test="isDeleted != null" >
+        is_deleted,
+      </if>
+      <if test="remark != null" >
+        remark,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="gmtCreate != null" >
+        #{gmtCreate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gmtModified != null" >
+        #{gmtModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="ingredientMenuId != null" >
+        #{ingredientMenuId,jdbcType=BIGINT},
+      </if>
+      <if test="salePrice != null" >
+        #{salePrice,jdbcType=DECIMAL},
+      </if>
+      <if test="profitMoney != null" >
+        #{profitMoney,jdbcType=DECIMAL},
+      </if>
+      <if test="startTime != null" >
+        #{startTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endTime != null" >
+        #{endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="operator != null" >
+        #{operator,jdbcType=VARCHAR},
+      </if>
+      <if test="isDeleted != null" >
+        #{isDeleted,jdbcType=BIT},
+      </if>
+      <if test="remark != null" >
+        #{remark,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hema.newretail.backstage.entry.BusiIngredientMenuProfit" >
+    update busi_ingredient_menu_profit
+    <set >
+      <if test="gmtCreate != null" >
+        gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gmtModified != null" >
+        gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="ingredientMenuId != null" >
+        ingredient_menu_id = #{ingredientMenuId,jdbcType=BIGINT},
+      </if>
+      <if test="salePrice != null" >
+        sale_price = #{salePrice,jdbcType=DECIMAL},
+      </if>
+      <if test="profitMoney != null" >
+        profit_money = #{profitMoney,jdbcType=DECIMAL},
+      </if>
+      <if test="startTime != null" >
+        start_time = #{startTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endTime != null" >
+        end_time = #{endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="operator != null" >
+        operator = #{operator,jdbcType=VARCHAR},
+      </if>
+      <if test="isDeleted != null" >
+        is_deleted = #{isDeleted,jdbcType=BIT},
+      </if>
+      <if test="remark != null" >
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hema.newretail.backstage.entry.BusiIngredientMenuProfit" >
+    update busi_ingredient_menu_profit
+    set gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
+      ingredient_menu_id = #{ingredientMenuId,jdbcType=BIGINT},
+      sale_price = #{salePrice,jdbcType=DECIMAL},
+      profit_money = #{profitMoney,jdbcType=DECIMAL},
+      start_time = #{startTime,jdbcType=TIMESTAMP},
+      end_time = #{endTime,jdbcType=TIMESTAMP},
+      operator = #{operator,jdbcType=VARCHAR},
+      is_deleted = #{isDeleted,jdbcType=BIT},
+      remark = #{remark,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+  <select id="selectList" resultType="com.hema.newretail.backstage.model.financial.MenuProfitBo">
+      <choose>
+          <when test="vo.status == 0"><!--启用-->
+              select a.id, a.menuId, a.menu_name as menuName, a.menuClassifyName, a.sale_price as salePrice, a.profit_money as profitMoney, a.start_time as startTime, a.end_time as endTime,a.operator, a.is_deleted as isDeleted, a.remark,
+                  a.`status`
+              from (
+                  select g.* from (
+                      select t.*, (@i:=@i+1) as i from (
+                          select p.gmt_create, p.gmt_modified, p.id, m.id as menuId, m.menu_name, c.`name` as menuClassifyName, p.sale_price, p.profit_money, p.start_time, p.end_time, p.operator, p.is_deleted, p.remark,
+                          CASE
+                          WHEN NOW() between p.start_time and p.end_time and p.is_deleted=0 THEN '0'
+                          ELSE '1'
+                          END
+                          as `status`
+                          from busi_ingredient_menu_profit as p
+                          left join busi_ingredient_menu as m on m.id=p.ingredient_menu_id
+                          inner join busi_menu_classify as c on c.id = m.menu_classify_id
+                          order by p.ingredient_menu_id, p.gmt_modified desc
+                      ) as t , (select @i:=0) as t2
+                      order by t.menuId, t.`status`, t.gmt_modified desc
+                  ) as g
+                  group by g.menuId
+              ) as a
+              <where>
+                  <if test="vo.menuName != null and vo.menuName != ''">
+                      and a.menu_name like CONCAT('%',#{vo.menuName},'%')
+                  </if>
+                  <if test="vo.startDate != null and vo.startDate != '' and vo.endDate != null and vo.endDate != ''">
+                      and a.gmt_create between #{vo.startDate,jdbcType=TIMESTAMP} and #{vo.endDate ,jdbcType=TIMESTAMP}
+                  </if>
+              </where>
+              group by a.id
+              HAVING a.`status` = 0
+              order by a.menuId, a.`status`, a.gmt_modified desc
+          </when>
+          <when test="vo.status == 1"><!--停用-->
+              select a.id, a.menuId, a.menu_name as menuName, a.menuClassifyName, a.sale_price as salePrice, a.profit_money as profitMoney, a.start_time as startTime, a.end_time as endTime,a.operator, a.is_deleted as isDeleted, a.remark,
+              a.`status`
+              from (
+                  select g.* from (
+                      select t.*, (@i:=@i+1) as i from (
+                          select p.gmt_create, p.gmt_modified, p.id, m.id as menuId, m.menu_name, c.`name` as menuClassifyName, p.sale_price, p.profit_money, p.start_time, p.end_time, p.operator, p.is_deleted, p.remark,
+                              CASE
+                              WHEN NOW() between p.start_time and p.end_time and p.is_deleted=0 THEN '0'
+                              ELSE '1'
+                              END
+                              as `status`
+                          from busi_ingredient_menu_profit as p
+                          left join busi_ingredient_menu as m on m.id=p.ingredient_menu_id
+                          inner join busi_menu_classify as c on c.id = m.menu_classify_id
+                          order by p.ingredient_menu_id, p.gmt_modified desc
+                      ) as t , (select @i:=0) as t2
+                      order by t.menuId, t.`status`, t.gmt_modified desc
+                  ) as g
+                  group by g.menuId
+                  union all
+                      select t.*, 0 as i from (
+                      select p.gmt_create, p.gmt_modified, p.id, m.id as menuId, m.menu_name, c.`name` as menuClassifyName, p.sale_price, p.profit_money, p.start_time, p.end_time, p.operator, p.is_deleted, p.remark, '1' as `status`
+                      from busi_ingredient_menu_profit as p
+                      left join busi_ingredient_menu as m on m.id=p.ingredient_menu_id
+                      inner join busi_menu_classify as c on c.id = m.menu_classify_id
+                      order by p.ingredient_menu_id, p.gmt_modified desc
+                  ) as t
+              ) as a
+              <where>
+                  <if test="vo.menuName != null and vo.menuName != ''">
+                      and a.menu_name like CONCAT('%',#{vo.menuName},'%')
+                  </if>
+                  <if test="vo.startDate != null and vo.startDate != '' and vo.endDate != null and vo.endDate != ''">
+                      and a.gmt_create between #{vo.startDate,jdbcType=TIMESTAMP} and #{vo.endDate ,jdbcType=TIMESTAMP}
+                  </if>
+              </where>
+              group by a.id
+              HAVING a.`status` = 1
+              order by a.menuId, a.`status`, a.gmt_modified desc
+          </when>
+          <otherwise>
+              select a.id, a.menuId, a.menu_name as menuName, a.menuClassifyName, a.sale_price as salePrice, a.profit_money as profitMoney, a.start_time as startTime, a.end_time as endTime,a.operator, a.is_deleted as isDeleted, a.remark,
+              a.`status`
+              from (
+                  select g.* from (
+                      select t.*, (@i:=@i+1) as i from (
+                          select p.gmt_create, p.gmt_modified, p.id, m.id as menuId, m.menu_name, c.`name` as menuClassifyName, p.sale_price, p.profit_money, p.start_time, p.end_time, p.operator, p.is_deleted, p.remark,
+                              CASE
+                              WHEN NOW() between p.start_time and p.end_time and p.is_deleted=0 THEN '0'
+                              ELSE '1'
+                              END
+                              as `status`
+                          from busi_ingredient_menu_profit as p
+                          left join busi_ingredient_menu as m on m.id=p.ingredient_menu_id
+                          inner join busi_menu_classify as c on c.id = m.menu_classify_id
+                          order by p.ingredient_menu_id, p.gmt_modified desc
+                      ) as t , (select @i:=0) as t2
+                      order by t.menuId, t.`status`, t.gmt_modified desc
+                  ) as g
+                  group by g.menuId
+              union all
+                  select t.*, 0 as i from (
+                      select p.gmt_create, p.gmt_modified, p.id, m.id as menuId, m.menu_name, c.`name` as menuClassifyName, p.sale_price, p.profit_money, p.start_time, p.end_time, p.operator, p.is_deleted, p.remark, '1' as `status`
+                      from busi_ingredient_menu_profit as p
+                      left join busi_ingredient_menu as m on m.id=p.ingredient_menu_id
+                      inner join busi_menu_classify as c on c.id = m.menu_classify_id
+                      order by p.ingredient_menu_id, p.gmt_modified desc
+                  ) as t
+              ) as a
+              <where>
+                  1=1
+                  <if test="vo.menuName != null and vo.menuName != ''">
+                      and a.menu_name like CONCAT('%',#{vo.menuName},'%')
+                  </if>
+                  <if test="vo.startDate != null and vo.startDate != '' and vo.endDate != null and vo.endDate != ''">
+                      and a.gmt_create between #{vo.startDate,jdbcType=TIMESTAMP} and #{vo.endDate ,jdbcType=TIMESTAMP}
+                  </if>
+              </where>
+              group by a.id
+              order by a.menuId, a.`status`, a.gmt_modified desc
+          </otherwise>
+      </choose>
+  </select>
+    <select id="selectNum" parameterType="com.hema.newretail.backstage.entry.BusiIngredientMenuProfit" resultType="java.lang.Long">
+        select count(p.id) as num from busi_ingredient_menu_profit as p where p.id=#{id} and NOW() BETWEEN p.start_time and p.end_time
+    </select>
+    <update id="updateIsDeleted" parameterType="com.hema.newretail.backstage.entry.BusiIngredientMenuProfit">
+        update busi_ingredient_menu_profit
+        set
+          is_deleted = 1
+        where ingredient_menu_id = #{ingredientMenuId,jdbcType=BIGINT}
+    </update>
+</mapper>

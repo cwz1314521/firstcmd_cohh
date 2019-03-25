@@ -2,10 +2,7 @@ package com.hema.newretail.backstage.service.impl;
 
 import com.hema.newretail.backstage.dao.*;
 import com.hema.newretail.backstage.entry.*;
-import com.hema.newretail.backstage.model.menu.IngredientMenuBo;
-import com.hema.newretail.backstage.model.menu.MenuPropertiesBo;
-import com.hema.newretail.backstage.model.menu.RefMenuIngredientBo;
-import com.hema.newretail.backstage.model.menu.TagMenuBo;
+import com.hema.newretail.backstage.model.menu.*;
 import com.hema.newretail.backstage.model.menuproperties.PropertyTypeBo;
 import com.hema.newretail.backstage.service.IIngredientMenuService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,9 +15,8 @@ import java.util.Map;
 /**
  * hema-newetaril-com.hema.newretail.backstage.service.impl
  *
- * @Description:
- * @Author: ZhangHaiSheng
- * @Date: 2018-08-23 11:23
+ * @author ZhangHaiSheng
+ * @date 2018-08-23 11:23
  */
 @Service("ingredientMenuService")
 public class IngredientMenuServiceImpl implements IIngredientMenuService {
@@ -38,10 +34,12 @@ public class IngredientMenuServiceImpl implements IIngredientMenuService {
     private BaseMenuPropertiesEntryMapper baseMenuPropertiesEntryMapper;
     @Autowired
     private BaseTagEntryMapper baseTagEntryMapper;
+    @Autowired
+    private BusiMenuClassifyMapper busiMenuClassifyMapper;
 
     /**
-     * @param params
-     * @return
+     * @param params 参数
+     * @return list
      */
     @Override
     public List<IngredientMenuBo> queryDataByConditions(Map<String, Object> params) {
@@ -49,8 +47,8 @@ public class IngredientMenuServiceImpl implements IIngredientMenuService {
     }
 
     /**
-     * @param ids
-     * @return
+     * @param ids ids
+     * @return r
      */
     @Override
     public int deleteBatch(Long[] ids) {
@@ -58,7 +56,7 @@ public class IngredientMenuServiceImpl implements IIngredientMenuService {
     }
 
     /**
-     * @return
+     * @return r
      */
     @Override
     public List<BaseIngredientInfoEntry> queryAllIngredient() {
@@ -66,7 +64,7 @@ public class IngredientMenuServiceImpl implements IIngredientMenuService {
     }
 
     /**
-     * @return
+     * @return r
      */
     @Override
     public List<PropertyTypeBo> queryPropertyList() {
@@ -85,8 +83,10 @@ public class IngredientMenuServiceImpl implements IIngredientMenuService {
         List<MenuPropertiesBo> menuPropertiesBoList = baseMenuPropertiesEntryMapper.selectMenuProByMenuId(menuId);
         // 查询所有标签
         List<BaseTagEntry> tagEntryList = baseTagEntryMapper.selectNotDelete();
-        // 查询所有饮品
+        // 查询所有配料
         List<BaseIngredientInfoEntry> ingredientInfoEntryList = baseIngredientInfoEntryMapper.selectAll();
+        // 商品分类
+        List<AllMenuClassifyBo> allMenuClassifyList = busiMenuClassifyMapper.selectAll();
 
         Map<String, Object> map = new HashMap<>(6);
         map.put("menuTagList", tagMenuBoList);
@@ -95,6 +95,7 @@ public class IngredientMenuServiceImpl implements IIngredientMenuService {
         map.put("menuProList", menuPropertiesBoList);
         map.put("tagList", tagEntryList);
         map.put("ingredientList", ingredientInfoEntryList);
+        map.put("allMenuClassifyList", allMenuClassifyList);
         return map;
     }
 
@@ -104,10 +105,12 @@ public class IngredientMenuServiceImpl implements IIngredientMenuService {
         List<BaseIngredientInfoEntry> ingredientInfoEntryList = baseIngredientInfoEntryMapper.selectAll();
         // 初始化属性
         List<PropertyTypeBo> propertyTypeBoList = basePropertiesTypeEntryMapper.selectAllType();
-
+        // 商品分类
+        List<AllMenuClassifyBo> allMenuClassifyList = busiMenuClassifyMapper.selectAll();
         Map<String, Object> map = new HashMap<>(2);
         map.put("proTypeList", propertyTypeBoList);
         map.put("ingredientList", ingredientInfoEntryList);
+        map.put("allMenuClassifyList", allMenuClassifyList);
         return map;
     }
 

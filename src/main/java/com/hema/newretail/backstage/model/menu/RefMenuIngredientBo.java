@@ -5,12 +5,12 @@ import java.io.Serializable;
 /**
  * hema-newRetail-crm-com.hema.newretail.backstage.model.menu
  *
- * @Description:
- * @Author: ZhangHaiSheng
- * @Date: 2018-08-29 13:57
+ * @author ZhangHaiSheng
+ * @date 2018-08-29 13:57
  */
 public class RefMenuIngredientBo implements Serializable {
 
+    private static final long serialVersionUID = -5739894802237648791L;
     private Long menuId;
     private Long ingredientId;
     private String ingredientName;

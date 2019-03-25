@@ -219,7 +219,7 @@ public class UserPushInfoServiceImpl implements IUserPushInfoService {
         json.put("touser", touser);
         json.put("template_id", templateId);
         json.put("form_id", formId);
-//        json.put("emphasis_keyword", "keyword1.DATA");
+/**      json.put("emphasis_keyword", "keyword1.DATA");*/
         JSONObject dataJson = new JSONObject();
         for (int i = 0; i < fillData.length; i++) {
             JSONObject sonDateJson = new JSONObject();

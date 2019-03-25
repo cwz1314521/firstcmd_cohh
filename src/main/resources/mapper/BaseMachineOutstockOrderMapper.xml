@@ -1,0 +1,367 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hema.newretail.backstage.dao.BaseMachineOutStockOrderMapper" >
+  <resultMap id="BaseResultMap" type="com.hema.newretail.backstage.entry.device.BaseMachineOutStockOrderEntry" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="outstock_order_code" property="outstockOrderCode" jdbcType="VARCHAR" />
+    <result column="agent_company_id" property="agentCompanyId" jdbcType="BIGINT" />
+    <result column="receiver" property="receiver" jdbcType="VARCHAR" />
+    <result column="outstock_user_name" property="outstockUserName" jdbcType="VARCHAR" />
+    <result column="outstock_time" property="outstockTime" jdbcType="TIMESTAMP" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+    <result column="outstock_user_id" property="outstockUserId" jdbcType="BIGINT" />
+  </resultMap>
+
+  <!--列表显示出库单map-->
+  <resultMap id="DeviceOutStoreMap" type="com.hema.newretail.backstage.model.device.outsotre.DeviceOutListBo" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="outstockOrderCode" property="outstockOrderCode" jdbcType="VARCHAR" />
+    <result column="outstockTime" property="outstockTime" jdbcType="TIMESTAMP" />
+    <result column="agentCompany" property="agentCompany" jdbcType="VARCHAR" />
+    <result column="agentContactWay" property="agentContactWay" jdbcType="VARCHAR" />
+    <result column="receiver" property="receiver" jdbcType="VARCHAR" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+    <collection property="details" select="selectDeviceOutStoreDetailMap" column="{id=id}" javaType="java.util.List"
+                ofType="DeviceOutStoreDetailMap"></collection>
+  </resultMap>
+  <resultMap id="DeviceOutStoreDetailMap" type="com.hema.newretail.backstage.model.device.outsotre.DeviceOutListDetailBo" >
+    <result column="machineType" property="machineType" jdbcType="VARCHAR" />
+    <result column="machineNum" property="machineNum" jdbcType="INTEGER" />
+  </resultMap>
+<!--出库单详情-->
+  <resultMap id="DeviceOutStoreInfoMap" type="com.hema.newretail.backstage.model.device.outsotre.DeviceOutInfoBo" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="agentCompanyId" property="agentCompanyId" jdbcType="BIGINT" />
+    <result column="outstockOrderCode" property="outstockOrderCode" jdbcType="VARCHAR" />
+    <result column="outstockTime" property="outstockTime" jdbcType="VARCHAR" />
+    <result column="agentCompany" property="agentCompany" jdbcType="VARCHAR" />
+    <result column="agentContactWay" property="agentContactWay" jdbcType="VARCHAR" />
+    <result column="outstockUserName" property="outstockUserName" jdbcType="VARCHAR" />
+    <result column="receiver" property="receiver" jdbcType="VARCHAR" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+    <collection property="details" select="selectDeviceOutStoreInfoDetailMap" column="{id=id}" javaType="java.util.List"
+                ofType="DeviceOutStoreInfoDetailMap"></collection>
+  </resultMap>
+  <resultMap id="DeviceOutStoreInfoDetailMap" type="com.hema.newretail.backstage.model.device.outsotre.DeviceOutListInfoDetailBo" >
+    <result column="machineType" property="machineType" jdbcType="VARCHAR" />
+    <result column="machineSequence" property="machineSequence" jdbcType="VARCHAR" />
+    <result column="machineUuid" property="machineUuid" jdbcType="VARCHAR" />
+    <result column="scanPeople" property="scanPeople" jdbcType="VARCHAR" />
+    <result column="scanTime" property="scanTime" jdbcType="VARCHAR" />
+    <result column="machineNum" property="machineNum" jdbcType="INTEGER" />
+    <result column="fromType" property="fromType" jdbcType="VARCHAR" />
+    <result column="isDelete" property="isDelete" jdbcType="VARCHAR" />
+  </resultMap>
+<!--已出售设备列表Map-->
+    <resultMap id="SoldListMap" type="com.hema.newretail.backstage.model.device.sold.SoldListBo" >
+        <id column="id" property="id" jdbcType="BIGINT" />
+        <result column="bmiId" property="bmiId" jdbcType="BIGINT" />
+        <result column="machineSequence" property="machineSequence" jdbcType="VARCHAR" />
+        <result column="machineName" property="machineName" jdbcType="VARCHAR" />
+        <result column="province" property="province" jdbcType="VARCHAR" />
+        <result column="city" property="city" jdbcType="VARCHAR" />
+        <result column="area" property="area" jdbcType="VARCHAR" />
+        <result column="street" property="street" jdbcType="VARCHAR" />
+        <result column="agentCompany" property="agentCompany" jdbcType="VARCHAR" />
+        <result column="contactWay" property="contactWay" jdbcType="VARCHAR" />
+        <result column="gridCompany" property="gridCompany" jdbcType="VARCHAR" />
+        <result column="activityTime" property="activityTime" jdbcType="VARCHAR" />
+        <result column="machineUuid" property="machineUuid" jdbcType="VARCHAR" />
+        <result column="fromType" property="fromType" jdbcType="VARCHAR" />
+        <result column="isDelete" property="isDelete" jdbcType="VARCHAR" />
+        <result column="longitude" property="longitude" jdbcType="DOUBLE" />
+        <result column="latitude" property="latitude" jdbcType="DOUBLE" />
+    </resultMap>
+    <!--已出售设备详情Map-->
+    <resultMap id="SoldListDetailMap" type="com.hema.newretail.backstage.model.device.sold.SoldDetailBo" >
+        <id column="id" property="id" jdbcType="BIGINT" />
+        <result column="gridCompany" property="gridCompany" jdbcType="VARCHAR" />
+        <result column="gridContact" property="gridContact" jdbcType="VARCHAR" />
+        <result column="gridContactWay" property="gridContactWay" jdbcType="VARCHAR" />
+        <result column="agentContact" property="agentContact" jdbcType="VARCHAR" />
+        <result column="agentContactWay" property="agentContactWay" jdbcType="VARCHAR" />
+        <result column="clientManager" property="clientManager" jdbcType="VARCHAR" />
+        <result column="clientManagerContactWay" property="clientManagerContactWay" jdbcType="VARCHAR" />
+        <result column="machineType" property="machineType" jdbcType="VARCHAR" />
+        <result column="machineSequence" property="machineSequence" jdbcType="VARCHAR" />
+        <result column="bluetoothLock" property="bluetoothLock" jdbcType="VARCHAR" />
+        <result column="machineNumber" property="machineNumber" jdbcType="VARCHAR" />
+        <result column="machineAddr" property="machineAddr" jdbcType="VARCHAR" />
+        <result column="outstockOrderCode" property="outstockOrderCode" jdbcType="VARCHAR" />
+        <result column="outstockTime" property="outstockTime" jdbcType="VARCHAR" />
+        <result column="installer" property="installer" jdbcType="VARCHAR" />
+        <result column="activityTime" property="activityTime" jdbcType="VARCHAR" />
+        <result column="machinePic" property="machinePic" jdbcType="VARCHAR" />
+        <result column="cleanupCycle" property="cleanupCycle" jdbcType="VARCHAR" />
+        <result column="replaceCycle" property="replaceCycle" jdbcType="VARCHAR" />
+        <result column="inspectionCycle" property="inspectionCycle" jdbcType="VARCHAR" />
+        <result column="machineIsDeleted" property="machineIsDeleted" jdbcType="VARCHAR" />
+        <result column="fromType" property="fromType" jdbcType="VARCHAR" />
+        <result column="uuid" property="uuid" jdbcType="VARCHAR" />
+
+    </resultMap>
+
+  <sql id="Base_Column_List" >
+    id, outstock_order_code, agent_company_id, receiver, outstock_user_name, outstock_time, 
+    remark, outstock_user_id
+  </sql>
+  <!--出库单父查询sql-->
+  <select id="selectDeviceOutStoreMap" parameterType="com.hema.newretail.backstage.common.queryparam.device.outstore.DeviceOutStoreDBCondition" resultMap="DeviceOutStoreMap">
+    SELECT
+    DISTINCT
+    o.id,
+    o.outstock_order_code AS outstockOrderCode,
+    o.outstock_time AS outstockTime,
+    a.company_name AS agentCompany,
+    a.contact_way AS agentContactWay,
+    o.receiver AS receiver,
+    o.remark AS remark
+FROM
+	base_machine_outstock_order o
+LEFT JOIN agent_user a ON o.agent_company_id = a.id
+LEFT JOIN base_machine_outstock_order_detail d on o.id = d.outstock_id
+      LEFT JOIN base_user_info as i on i.id=o.outstock_user_id
+      LEFT JOIN base_organization as org on org.id=i.org_id
+  where 1=1
+      <if test="orgCode != null and orgCode != ''">
+          and org.org_code like CONCAT(#{orgCode,jdbcType=VARCHAR},'%')
+      </if>
+    <choose>
+      <when test=" ids == null">
+    <if test="outstockOrderCode != null" >
+      and  o.outstock_order_code like "%"#{outstockOrderCode,jdbcType=VARCHAR}"%"
+    </if>
+    <if test="machineType != null" >
+      and  d.machine_type like "%"#{machineType,jdbcType=VARCHAR}"%"
+    </if>
+    <if test="agentCompany != null" >
+      and  o.agent_company_id = #{agentCompany,jdbcType=BIGINT}
+    </if>
+    <if test="outstockTimeStart != null" >
+      and  o.outstock_time between #{outstockTimeStart,jdbcType=TIMESTAMP} and #{outstockTimeEnd,jdbcType=TIMESTAMP}
+    </if>
+      </when>
+      <otherwise>
+        and o.id IN
+        <foreach collection="ids" item="id" index="index" open="(" close=")" separator=",">
+          #{id}
+        </foreach>
+      </otherwise>
+    </choose>
+      order by o.outstock_time desc
+  </select>
+  <!--出库单子查询sql-->
+  <select id="selectDeviceOutStoreDetailMap" resultMap="DeviceOutStoreDetailMap" parameterType="java.util.Map">
+    SELECT
+	d.machine_type as machineType,
+	COUNT(d.machine_type) as  machineNum
+FROM
+	base_machine_outstock_order_detail d
+ where d.outstock_id =  #{id,jdbcType=BIGINT}
+GROUP BY d.machine_type
+  </select>
+  <!--出库单详情父查询-->
+  <select id="selectDeviceOutStoreInfoMap" parameterType="java.lang.Long" resultMap="DeviceOutStoreInfoMap">
+SELECT distinct
+	o.id,
+	o.outstock_order_code AS outstockOrderCode,
+
+	 DATE_FORMAT(
+		o.outstock_time,
+		'%Y-%c-%e %H:%i:%s'
+	)AS outstockTime,
+	o.agent_company_id AS agentCompanyId,
+	a.company_name AS agentCompany,
+	a.contact_way AS agentContactWay,
+	o.outstock_user_name AS outstockUserName,
+	o.receiver AS receiver,
+	o.remark AS remark
+FROM
+	base_machine_outstock_order o
+LEFT JOIN agent_user a ON o.agent_company_id = a.id
+LEFT JOIN base_machine_outstock_order_detail d ON o.id = d.outstock_id
+WHERE
+	o.id = #{id,jdbcType=BIGINT}
+  </select>
+  <!--出库单详情子查询-->
+  <select id="selectDeviceOutStoreInfoDetailMap" resultMap="DeviceOutStoreInfoDetailMap" parameterType="java.util.Map">
+SELECT DISTINCT
+	d.machine_type AS machineType,
+	d.machine_sequence AS machineSequence,
+	d.scan_people AS scanPeople,
+	DATE_FORMAT(
+		d.scan_time,
+		'%Y-%c-%e %H:%i:%s'
+	) AS scanTime,
+	1 AS machineNum,
+	bmi.machine_uuid AS machineUuid,
+bmi.fromType as fromType,
+bmi.is_deleted as isDelete
+FROM
+	base_machine_outstock_order_detail d LEFT  JOIN
+base_machine_info bmi on bmi.machine_sequence = d.machine_sequence
+WHERE
+	d.outstock_id = #{id,jdbcType=BIGINT}
+  </select>
+  <!--新增出库单查询-->
+  <insert  id="insert"  useGeneratedKeys="true" keyProperty="id"  parameterType="com.hema.newretail.backstage.entry.device.BaseMachineOutStockOrderEntry" >
+    insert into base_machine_outstock_order (id, outstock_order_code, agent_company_id,
+      receiver, outstock_user_name, outstock_time, remark, outstock_user_id)
+    values (#{id,jdbcType=BIGINT}, #{outstockOrderCode,jdbcType=VARCHAR}, #{agentCompanyId,jdbcType=BIGINT},
+      #{receiver,jdbcType=VARCHAR}, #{outstockUserName,jdbcType=VARCHAR}, #{outstockTime,jdbcType=TIMESTAMP},
+      #{remark,jdbcType=VARCHAR}, #{outstockUserId,jdbcType=BIGINT})
+  </insert>
+  <!--新增订单出库单号生成预查询-->
+  <select id="selectOutCodeCount" resultType="java.lang.Integer" parameterType="java.lang.String">
+    SELECT
+	count(id)+1 as num
+FROM
+	base_machine_outstock_order o
+ where o.outstock_order_code like "%"#{outstockOrderCode,jdbcType=VARCHAR}"%"
+  </select>
+    <!--已出售设备列表sql-->
+  <select id="selectSoldListMap" resultMap="SoldListMap" parameterType="com.hema.newretail.backstage.common.queryparam.device.sold.DeviceSoldCondition">
+      SELECT
+      bod.id AS id,
+      bmi.id AS bmiId,
+	bod.machine_sequence AS machineSequence,
+	bmi.machine_name AS machineName,
+    IFNULL(bmi.province,'') AS province,
+    IFNULL(bmi.city,'') AS city,
+    IFNULL(bmi.area,'') AS area,
+    IFNULL(bmi.street,'') AS street,
+      bmi.machine_desc as machineDesc,
+	a.company_name AS agentCompany,
+	a.contact_way AS contactWay,
+	gc.company_name AS gridCompany,
+    bmi.machine_uuid AS machineUuid,
+    bmi.fromType as fromType,
+    bmi.is_deleted as isDelete,
+	DATE_FORMAT(
+		bmi.activity_time,
+		'%Y-%c-%e %H:%i:%s'
+      ) activityTime,
+      bmi.longitude AS longitude,
+      bmi.latitude AS latitude
+FROM
+      base_machine_outstock_order_detail bod
+INNER JOIN base_machine_outstock_order boo ON boo.id = bod.outstock_id
+LEFT JOIN base_machine_info bmi ON bod.machine_sequence = bmi.machine_sequence
+left JOIN agent_user a ON a.id = boo.agent_company_id
+left JOIN grid_company_geohash gg ON gg.geo_hash_code = bmi.hashcode
+left JOIN grid_company gc ON gg.grid_company_id = gc.id
+where 1=1
+      <if test="province != null and province != ''">
+          and bmi.province = #{province,jdbcType=VARCHAR}
+          <if test="city != null and city != ''">
+              and bmi.city = #{city,jdbcType=VARCHAR}
+              <if test="area != null and area != ''">
+                  and bmi.area = #{area,jdbcType=VARCHAR}
+              </if>
+          </if>
+      </if>
+      <if test="agentCompanyId != null and agentCompanyId != ''">
+          and a.id = #{agentCompanyId,jdbcType=BIGINT}
+      </if>
+      <if test="gridCompanyId != null and gridCompanyId != ''">
+          and gc.id = #{gridCompanyId,jdbcType=BIGINT}
+      </if>
+      <if test="machineSequence != null and machineSequence != ''">
+          and bod.machine_sequence like "%"#{machineSequence,jdbcType=VARCHAR}"%"
+      </if>
+      order by bod.id desc
+  </select>
+<!--批量设置任务周期-->
+  <update id="updateTaskPeriod" parameterType="com.hema.newretail.backstage.common.queryparam.device.sold.SetTaskCycleCondition" >
+      UPDATE base_machine_info b
+SET b.cleanup_cycle = #{cleanupCycle,jdbcType=INTEGER},
+ b.replace_cycle = #{replaceCycle,jdbcType=INTEGER},
+ b.inspection_cycle = #{inspectionCycle,jdbcType=INTEGER}
+WHERE
+	id in
+      <foreach collection="id" item="id" index="index" open="(" close=")" separator=",">
+          #{id}
+      </foreach>
+  </update>
+<!--批量手动关停服务-->
+  <update id="updateSetMachineService" parameterType="com.hema.newretail.backstage.common.queryparam.device.sold.SetMachineServiceCondition" >
+        UPDATE base_machine_info b
+        SET b.is_deleted = #{isDeleted,jdbcType=INTEGER}
+        WHERE
+        id in
+        <foreach collection="id" item="id" index="index" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+  </update>
+<!--已出售设备详情-->
+   <select id="selectSoldListDetailMap" resultMap="SoldListDetailMap" parameterType="java.lang.Long">
+        SELECT DISTINCT
+	bod.id AS id,
+	gc.company_name AS gridCompany,
+	gc.contact AS gridContact,
+	gc.contact_way AS gridContactWay,
+	a.contact AS agentContact,
+	a.contact_way AS agentContactWay,
+	'业务员---待定' AS clientManager,
+	'业务员联系方式---待定' AS clientManagerContactWay,
+	bod.machine_type AS machineType,
+	bod.machine_sequence AS machineSequence,
+	bmi.machine_name AS machineName,
+	bmi.bluetooth_addr AS bluetoothLock,
+	'设备手机号---待定' AS machineNumber,
+	CONCAT(
+		IFNULL(bmi.province, ''),
+		IFNULL(bmi.city, ''),
+		IFNULL(bmi.area, ''),
+		IFNULL(bmi.street, '')
+	) AS machineAddr,
+	boo.outstock_order_code AS outstockOrderCode,
+	DATE_FORMAT(
+		boo.outstock_time,
+		'%Y-%c-%e %H:%i:%s'
+	) AS outstockTime,
+	'安装人' AS installer,
+	DATE_FORMAT(
+		bmi.activity_time,
+		'%Y-%c-%e %H:%i:%s'
+	) AS activityTime,
+	bmi.machine_pic AS machinePic,
+	bmi.cleanup_cycle AS cleanupCycle,
+	bmi.replace_cycle AS replaceCycle,
+	bmi.inspection_cycle AS inspectionCycle,
+	bmi.fromType AS fromType,
+	bmi.machine_uuid AS uuid,
+	bmi.is_deleted AS machineIsDeleted
+FROM
+	base_machine_outstock_order_detail bod
+INNER JOIN base_machine_outstock_order boo ON boo.id = bod.outstock_id
+LEFT JOIN base_machine_info bmi ON bod.machine_sequence = bmi.machine_sequence
+LEFT JOIN agent_user a ON a.id = boo.agent_company_id
+LEFT JOIN grid_company_geohash gg ON gg.geo_hash_code = bmi.hashcode
+LEFT JOIN grid_company gc ON gg.grid_company_id = gc.id
+WHERE bod.id = #{id,jdbcType=BIGINT}
+   </select>
+
+
+
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from base_machine_outstock_order
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from base_machine_outstock_order
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+
+    <select id="selectTaskCycleByIds" parameterType="com.hema.newretail.backstage.common.queryparam.device.sold.SetMachineServiceCondition" resultType="java.util.Map">
+        select m.id, m.machine_uuid as machineUuid, IFNULL(m.cleanup_cycle,0) as cleanupCycle,
+          IFNULL(m.replace_cycle,0) as replaceCycle, IFNULL(m.inspection_cycle,0) as inspectionCycle
+        from base_machine_info as m where m.id in
+        <foreach collection="id" item="id" index="index" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </select>
+</mapper>

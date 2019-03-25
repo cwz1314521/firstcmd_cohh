@@ -47,6 +47,7 @@ public class PostServiceImpl implements IPostService {
         if (0 == num) {
             data.setGmtCreate(new Date());
             data.setIsDeleted(false);
+            data.setGmtModified(new Date());
             basePostMapper.insert(data);
             return Response.success();
         } else {
@@ -70,6 +71,7 @@ public class PostServiceImpl implements IPostService {
         post.setPostDesc(data.getPostDesc());
         post.setPostName(data.getPostName());
         post.setGmtModified(new Date());
+        post.setStatus(data.getStatus());
         basePostMapper.updateByPrimaryKey(post);
         return Response.success();
     }
@@ -82,6 +84,10 @@ public class PostServiceImpl implements IPostService {
      */
     @Override
     public int deleteData(String postId) {
+        int num = basePostMapper.selectUserCountByPostId(Long.valueOf(postId));
+        if(num > 0) {
+            return -1;
+        }
         return basePostMapper.deleteByPrimaryKey(Long.valueOf(postId));
     }
 }

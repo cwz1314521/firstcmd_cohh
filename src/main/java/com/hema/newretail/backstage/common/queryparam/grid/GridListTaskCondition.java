@@ -2,6 +2,7 @@ package com.hema.newretail.backstage.common.queryparam.grid;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
 
 import javax.validation.constraints.NotNull;
 import java.util.Date;
@@ -15,6 +16,7 @@ import java.util.Date;
  * @Version 1.0
  **/
 @ApiModel(value = "GridListTaskCondition",description = "网格任务列表  ---  参数类")
+@Data
 public class GridListTaskCondition {
 
     /**页码  默认为1*/
@@ -61,7 +63,7 @@ public class GridListTaskCondition {
 
     /**设备编号*/
     @ApiModelProperty(value = "设备编号")
-    private Long machineUuid;
+    private String machineUuid;
 
     /**网格公司*/
     @ApiModelProperty(value = "网格公司")
@@ -79,147 +81,5 @@ public class GridListTaskCondition {
     @ApiModelProperty(value = "完成时间2")
     private String endTimes;
 
-    public Integer getPageNum() {
-        return pageNum;
-    }
 
-    public void setPageNum(Integer pageNum) {
-        this.pageNum = pageNum;
-    }
-
-    public Integer getPageSize() {
-        return pageSize;
-    }
-
-    public void setPageSize(Integer pageSize) {
-        this.pageSize = pageSize;
-    }
-
-    public String getProvince() {
-        return province;
-    }
-
-    public void setProvince(String province) {
-        this.province = province;
-    }
-
-    public String getCity() {
-        return city;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
-    }
-
-    public String[] getArea() {
-        return area;
-    }
-
-    public void setArea(String[] area) {
-        this.area = area;
-    }
-
-    public String getTaskCode() {
-        return taskCode;
-    }
-
-    public void setTaskCode(String taskCode) {
-        this.taskCode = taskCode;
-    }
-
-    public String[] getTaskStatus() {
-        return taskStatus;
-    }
-
-    public void setTaskStatus(String[] taskStatus) {
-        this.taskStatus = taskStatus;
-    }
-
-    public Integer[] getTaskType() {
-        return taskType;
-    }
-
-    public void setTaskType(Integer[] taskType) {
-        this.taskType = taskType;
-    }
-
-    public Date getPreAssignTime() {
-        return preAssignTime;
-    }
-
-    public void setPreAssignTime(Date preAssignTime) {
-        this.preAssignTime = preAssignTime;
-    }
-
-    public Date getAssignTime() {
-        return assignTime;
-    }
-
-    public void setAssignTime(Date assignTime) {
-        this.assignTime = assignTime;
-    }
-
-    public Date getPreEndTime() {
-        return preEndTime;
-    }
-
-    public void setPreEndTime(Date preEndTime) {
-        this.preEndTime = preEndTime;
-    }
-
-    public Date getEndTime() {
-        return endTime;
-    }
-
-    public void setEndTime(Date endTime) {
-        this.endTime = endTime;
-    }
-
-    public Long getMachineUuid() {
-        return machineUuid;
-    }
-
-    public void setMachineUuid(Long machineUuid) {
-        this.machineUuid = machineUuid;
-    }
-
-    public Long getwId() {
-        return wId;
-    }
-
-    public void setwId(Long wId) {
-        this.wId = wId;
-    }
-
-    public String getPreAssignTimes() {
-        return preAssignTimes;
-    }
-
-    public void setPreAssignTimes(String preAssignTimes) {
-        this.preAssignTimes = preAssignTimes;
-    }
-
-    public String getAssignTimes() {
-        return assignTimes;
-    }
-
-    public void setAssignTimes(String assignTimes) {
-        this.assignTimes = assignTimes;
-    }
-
-    public String getPreEndTimes() {
-        return preEndTimes;
-    }
-
-    public void setPreEndTimes(String preEndTimes) {
-        this.preEndTimes = preEndTimes;
-    }
-
-    public String getEndTimes() {
-        return endTimes;
-    }
-
-    public void setEndTimes(String endTimes) {
-        this.endTimes = endTimes;
-    }
 }

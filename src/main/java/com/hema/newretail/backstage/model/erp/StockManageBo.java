@@ -34,7 +34,7 @@ public class StockManageBo implements Serializable {
     /**
      * 到期日期
      */
-    private Date qualityGuaranteePeriod;
+    private String qualityGuaranteePeriod;
     /**
      * 状态
      */
@@ -58,9 +58,9 @@ public class StockManageBo implements Serializable {
     /**
      * 分公司入库时间
      */
-    private Date companyInstoreTime;
+    private String companyInstoreTime;
     /**
      * 分公司出库时间
      */
-    private Date companyOutstoreTime;
+    private String companyOutstoreTime;
 }

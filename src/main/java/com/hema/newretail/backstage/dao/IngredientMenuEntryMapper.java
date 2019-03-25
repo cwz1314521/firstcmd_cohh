@@ -1,5 +1,6 @@
 package com.hema.newretail.backstage.dao;
 
+import com.hema.newretail.backstage.common.queryparam.common.GlobalCondition;
 import com.hema.newretail.backstage.entry.IngredientMenuEntry;
 import com.hema.newretail.backstage.model.menu.IngredientMenuBo;
 import org.apache.ibatis.annotations.Param;
@@ -37,4 +38,19 @@ public interface IngredientMenuEntryMapper {
     int deleteBatch(Long[] ids);
 
     List<IngredientMenuEntry> getList();
+
+    /**
+     * 修改饮品价格
+     *
+     * @param record
+     * @return
+     */
+    int updatePriceByPrimaryKey(IngredientMenuEntry record);
+
+    /**
+     * 查询所有饮品，重新组装DIY，分页显示
+     *
+     * @return
+     */
+    List<Map<String, Object>> selectAllMenus();
 }

@@ -2,6 +2,7 @@ package com.hema.newretail.backstage.common.mongodb;
 
 import org.bson.types.Decimal128;
 import org.springframework.core.convert.converter.Converter;
+import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 
@@ -12,6 +13,7 @@ import java.math.BigDecimal;
  * @link
  * @date 2018-11-24 11:49
  */
+@Component
 public class Decimal128ToBigDecimalConverter implements Converter<Decimal128, BigDecimal> {
 
     @Override

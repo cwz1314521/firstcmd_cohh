@@ -4,6 +4,7 @@ package com.hema.newretail.backstage.common.utils;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 /**
  * @Department 新零售
@@ -27,7 +28,7 @@ public class StringUtil {
      * @author: admin
      * @date: 2018/10/13 11:10
      */
-    public static List<String> StringsToString(String data){
+    public static List<String> stringsToString(String data){
         List<String> idList = Arrays.asList(data.split(","));
         return idList;
     }
@@ -41,7 +42,7 @@ public class StringUtil {
      * @author: admin
      * @date: 2018/10/13 11:10
      */
-    public static List<Integer> StringsToInteger(String data){
+    public static List<Integer> stringsToInteger(String data){
         List<String> idList = Arrays.asList(data.split(","));
         List<Integer> integers = new ArrayList<>();
         for (String a:idList
@@ -59,7 +60,7 @@ public class StringUtil {
      * @author: cwz
      * @date: 2018/10/13 11:10
      */
-    public static List<Long> StringsToLong(String data){
+    public static List<Long> stringsToLong(String data){
         List<String> idList = Arrays.asList(data.split(","));
         List<Long> longs = new ArrayList<>();
         for (String a:idList
@@ -67,6 +68,17 @@ public class StringUtil {
             longs.add(Long.parseLong(a));
         }
         return longs;
+    }
+
+    public static String getRandomStringByLength(int length) {
+        String base = "abcdefghijklmnopqrstuvwxyz0123456789";
+        Random random = new Random();
+        StringBuffer sb = new StringBuffer();
+        for (int i = 0; i < length; i++) {
+            int number = random.nextInt(base.length());
+            sb.append(base.charAt(number));
+        }
+        return sb.toString();
     }
 
 

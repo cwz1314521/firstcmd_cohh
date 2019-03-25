@@ -1,6 +1,7 @@
 package com.hema.newretail.backstage.controller.drinkmanagement;
 
 import com.hema.newretail.CloudBohhApplication;
+import com.hema.newretail.backstage.annotation.AutoLog;
 import com.hema.newretail.backstage.common.queryparam.diy.*;
 import com.hema.newretail.backstage.common.utils.Response;
 import com.hema.newretail.backstage.service.drinkmanagement.DiySettingService;
@@ -47,6 +48,7 @@ public class DiySettingController {
     @PostMapping("/diyPrice")
     @ResponseBody
     @ApiOperation("显示diy商品价格")
+    @AutoLog(logmsg = "显示非活动DIY价格")
     public Response diyPrice(){
         return diySettingService.diyPrice();
     }
@@ -63,6 +65,7 @@ public class DiySettingController {
     @PostMapping("/editPrice")
     @ResponseBody
     @ApiOperation("修改diy商品价格")
+    @AutoLog(logmsg = "修改非活动DIY价格")
     public Response editPrice(@RequestBody@Validated PriceCondition priceCondition, BindingResult bindingResult){
         if (bindingResult.hasErrors()) {
             logger.info("数据校验没通过......"+bindingResult.getFieldError().getDefaultMessage());
@@ -83,6 +86,7 @@ public class DiySettingController {
     @PostMapping("/listStatusDescription")
     @ResponseBody
     @ApiOperation("DIY状态描述设置")
+    @AutoLog(logmsg = "查询DIY状态描述")
     public Response diyStatusDescription(){
         return diySettingService.diyStatusDescription();
     }
@@ -100,6 +104,7 @@ public class DiySettingController {
     @PostMapping("/addEditStatusDescription")
     @ResponseBody
     @ApiOperation("DIY状态描述增加修改")
+    @AutoLog(logmsg = "编辑/修改DIY状态描述")
     public Response addEditStatusDescription(@RequestBody@Validated DiyStatusAddEditCondition diyIdCondition, BindingResult bindingResult){
 
         if (bindingResult.hasErrors()) {
@@ -132,6 +137,7 @@ public class DiySettingController {
     @PostMapping("/deleteStatusDescription")
     @ResponseBody
     @ApiOperation("DIY状态描述删除")
+    @AutoLog(logmsg = "删除DIY状态描述")
     public Response deleteStatusDescription(@RequestBody@Validated IdCondition idCondition,BindingResult bindingResult){
         if (bindingResult.hasErrors()) {
             logger.info("数据校验没通过......"+bindingResult.getFieldError().getDefaultMessage());
@@ -170,6 +176,7 @@ public class DiySettingController {
     @PostMapping("/listEvent")
     @ResponseBody
     @ApiOperation("配料事件---列表")
+    @AutoLog(logmsg = "查询DIY配料信息列表")
     public Response listEvent(@RequestBody@Validated NameCondition nameCondition,BindingResult bindingResult){
 
         if (bindingResult.hasErrors()) {
@@ -192,6 +199,7 @@ public class DiySettingController {
     @PostMapping("/detailEvent")
     @ResponseBody
     @ApiOperation("配料事件---编辑detail")
+    @AutoLog(logmsg = "查看DIY配料信息")
     public Response detailEvent(@RequestBody@Validated IdCondition idCondition,BindingResult bindingResult){
         if (bindingResult.hasErrors()) {
             logger.info("数据校验没通过......"+bindingResult.getFieldError().getDefaultMessage());
@@ -214,6 +222,7 @@ public class DiySettingController {
     @PostMapping("/addEditEvent")
     @ResponseBody
     @ApiOperation("配料事件---编辑添加")
+    @AutoLog(logmsg = "添加/编辑DIY配料")
     public Response addEditEvent(@RequestBody@Validated AddEditEventCondition addEditEventCondition,BindingResult bindingResult){
         if (bindingResult.hasErrors()) {
             logger.info("数据校验没通过......"+bindingResult.getFieldError().getDefaultMessage());
@@ -235,6 +244,7 @@ public class DiySettingController {
     @PostMapping("/deleteEvent")
     @ResponseBody
     @ApiOperation("配料事件---删除")
+    @AutoLog(logmsg = "删除DIY配料")
     public Response deleteEvent(@RequestBody@Validated IdCondition idCondition,BindingResult bindingResult){
         if (bindingResult.hasErrors()) {
             logger.info("数据校验没通过......"+bindingResult.getFieldError().getDefaultMessage());

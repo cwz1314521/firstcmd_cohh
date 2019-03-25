@@ -1,5 +1,7 @@
 package com.hema.newretail.backstage.common.queryparam.erp;
 
+import lombok.Data;
+
 /**
  * @Department 新零售
  * @ClassName InStoreNumCondition
@@ -8,15 +10,10 @@ package com.hema.newretail.backstage.common.queryparam.erp;
  * @Date 2018/11/3 11:48
  * @Version 1.0
  **/
+@Data
 public class InStoreNumCondition {
 
-    private String qrcodeCode;
+    private String randomCode;
 
-    public String getQrcodeCode() {
-        return qrcodeCode;
-    }
 
-    public void setQrcodeCode(String qrcodeCode) {
-        this.qrcodeCode = qrcodeCode;
-    }
 }

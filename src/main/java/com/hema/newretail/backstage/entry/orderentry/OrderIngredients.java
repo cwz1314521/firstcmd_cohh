@@ -1,13 +1,17 @@
 package com.hema.newretail.backstage.entry.orderentry;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Data;
 import org.bson.types.Decimal128;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 
 /**
  * Created by jiahao on 2018-08-16
  */
+@Data
 public class OrderIngredients implements Serializable {
 
     private String id;
@@ -16,48 +20,11 @@ public class OrderIngredients implements Serializable {
 
     private Integer num;
 
+    @JsonIgnore
     private Decimal128 price;
+    private BigDecimal prices;
 
     private String ingredientsName;
 
-    public String getId() {
-        return id;
-    }
 
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getPicture() {
-        return picture;
-    }
-
-    public void setPicture(String picture) {
-        this.picture = picture;
-    }
-
-    public Integer getNum() {
-        return num;
-    }
-
-    public void setNum(Integer num) {
-        this.num = num;
-    }
-
-
-    public Decimal128 getPrice() {
-        return price;
-    }
-
-    public void setPrice(Decimal128 price) {
-        this.price = price;
-    }
-
-    public String getIngredientsName() {
-        return ingredientsName;
-    }
-
-    public void setIngredientsName(String ingredientsName) {
-        this.ingredientsName = ingredientsName;
-    }
 }

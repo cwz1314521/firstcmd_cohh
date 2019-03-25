@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hema.newretail.backstage.dao.BaseIndexArticleMapper" >
+  <resultMap id="BaseResultMap" type="com.hema.newretail.backstage.entry.BaseIndexArticleEntry" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="pic_url" property="picUrl" jdbcType="VARCHAR" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="gmt_create" property="gmtCreate" jdbcType="TIMESTAMP" />
+    <result column="gmt_modify" property="gmtModify" jdbcType="TIMESTAMP" />
+    <result column="gmt_start" property="gmtStart" jdbcType="TIMESTAMP" />
+    <result column="gmt_end" property="gmtEnd" jdbcType="TIMESTAMP" />
+    <result column="skip_url" property="skipUrl" jdbcType="VARCHAR" />
+    <result column="sort" property="sort" jdbcType="DOUBLE" />
+    <result column="type" property="type" jdbcType="BIGINT" />
+    <result column="typeName" property="typeName" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="article_abstract" property="articleAbstract" jdbcType="VARCHAR" />
+    <result column="is_delete" property="isDelete" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.hema.newretail.backstage.entry.BaseIndexArticleEntry" extends="BaseResultMap" >
+    <result column="info" property="info" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, pic_url, title, gmt_create, gmt_modify, gmt_start, gmt_end, skip_url, sort, type, 
+    status, article_abstract, is_delete
+  </sql>
+  <sql id="Blob_Column_List" >
+    info
+  </sql>
+
+  <!--文章列表条件检索-->
+<select id="list" parameterType="com.hema.newretail.backstage.common.queryparam.index.ArticleListCondition" resultMap="ResultMapWithBLOBs">
+  SELECT
+	a.id,
+a.pic_url,
+a.title,
+a.gmt_create,
+a.gmt_modify,
+a.gmt_start,
+a.gmt_end,
+a.skip_url,
+a.sort,
+a.type,
+t.type_name as typeName ,
+a.`status`,
+a.article_abstract,
+a.is_delete,
+a.info
+FROM
+	base_index_article a
+LEFT JOIN base_index_article_type t ON a.type = t.id
+where 1=1 and a.is_delete = '0'
+  <if test="title != null and title != ''" >
+    and a.title like CONCAT('%',#{title,jdbcType=VARCHAR},'%')
+  </if>
+  <if test="type != null" >
+    and a.type = #{type,jdbcType=BIGINT}
+  </if>
+  <if test="status != null" >
+    and a.`status` = #{status,jdbcType=INTEGER}
+  </if>
+</select>
+<update id="updateDelete" parameterType="java.lang.Long">
+  update base_index_article set is_delete = 1 where id =  #{id,jdbcType=BIGINT}
+</update>
+<select id="selectAllArticleType" resultType="java.util.Map">
+  SELECT
+	id,
+	IFNULL(type_name, '') AS typeName
+FROM
+	base_index_article_type
+where is_delete = 0
+</select>
+
+
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from base_index_article
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from base_index_article
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.hema.newretail.backstage.entry.BaseIndexArticleEntry" >
+    insert into base_index_article (id, pic_url, title, 
+      gmt_create, gmt_modify, gmt_start, 
+      gmt_end, skip_url, sort, 
+      type, status, article_abstract, 
+      is_delete, info)
+    values (#{id,jdbcType=BIGINT}, #{picUrl,jdbcType=VARCHAR}, #{title,jdbcType=VARCHAR}, 
+      #{gmtCreate,jdbcType=TIMESTAMP}, #{gmtModify,jdbcType=TIMESTAMP}, #{gmtStart,jdbcType=TIMESTAMP}, 
+      #{gmtEnd,jdbcType=TIMESTAMP}, #{skipUrl,jdbcType=VARCHAR}, #{sort,jdbcType=DOUBLE}, 
+      #{type,jdbcType=BIGINT}, #{status,jdbcType=INTEGER}, #{articleAbstract,jdbcType=VARCHAR}, 
+      #{isDelete,jdbcType=VARCHAR}, #{info,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.hema.newretail.backstage.entry.BaseIndexArticleEntry" >
+    insert into base_index_article
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="picUrl != null" >
+        pic_url,
+      </if>
+      <if test="title != null" >
+        title,
+      </if>
+      <if test="gmtCreate != null" >
+        gmt_create,
+      </if>
+      <if test="gmtModify != null" >
+        gmt_modify,
+      </if>
+      <if test="gmtStart != null" >
+        gmt_start,
+      </if>
+      <if test="gmtEnd != null" >
+        gmt_end,
+      </if>
+      <if test="skipUrl != null" >
+        skip_url,
+      </if>
+      <if test="sort != null" >
+        sort,
+      </if>
+      <if test="type != null" >
+        type,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="articleAbstract != null" >
+        article_abstract,
+      </if>
+      <if test="isDelete != null" >
+        is_delete,
+      </if>
+      <if test="info != null" >
+        info,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="picUrl != null" >
+        #{picUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="title != null" >
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="gmtCreate != null" >
+        #{gmtCreate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gmtModify != null" >
+        #{gmtModify,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gmtStart != null" >
+        #{gmtStart,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gmtEnd != null" >
+        #{gmtEnd,jdbcType=TIMESTAMP},
+      </if>
+      <if test="skipUrl != null" >
+        #{skipUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="sort != null" >
+        #{sort,jdbcType=DOUBLE},
+      </if>
+      <if test="type != null" >
+        #{type,jdbcType=BIGINT},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="articleAbstract != null" >
+        #{articleAbstract,jdbcType=VARCHAR},
+      </if>
+      <if test="isDelete != null" >
+        #{isDelete,jdbcType=VARCHAR},
+      </if>
+      <if test="info != null" >
+        #{info,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hema.newretail.backstage.entry.BaseIndexArticleEntry" >
+    update base_index_article
+    <set >
+      <if test="picUrl != null" >
+        pic_url = #{picUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="title != null" >
+        title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="gmtCreate != null" >
+        gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gmtModify != null" >
+        gmt_modify = #{gmtModify,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gmtStart != null" >
+        gmt_start = #{gmtStart,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gmtEnd != null" >
+        gmt_end = #{gmtEnd,jdbcType=TIMESTAMP},
+      </if>
+      <if test="skipUrl != null" >
+        skip_url = #{skipUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="sort != null" >
+        sort = #{sort,jdbcType=DOUBLE},
+      </if>
+      <if test="type != null" >
+        type = #{type,jdbcType=BIGINT},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="articleAbstract != null" >
+        article_abstract = #{articleAbstract,jdbcType=VARCHAR},
+      </if>
+      <if test="isDelete != null" >
+        is_delete = #{isDelete,jdbcType=VARCHAR},
+      </if>
+      <if test="info != null" >
+        info = #{info,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.hema.newretail.backstage.entry.BaseIndexArticleEntry" >
+    update base_index_article
+    set pic_url = #{picUrl,jdbcType=VARCHAR},
+      title = #{title,jdbcType=VARCHAR},
+      gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      gmt_modify = #{gmtModify,jdbcType=TIMESTAMP},
+      gmt_start = #{gmtStart,jdbcType=TIMESTAMP},
+      gmt_end = #{gmtEnd,jdbcType=TIMESTAMP},
+      skip_url = #{skipUrl,jdbcType=VARCHAR},
+      sort = #{sort,jdbcType=DOUBLE},
+      type = #{type,jdbcType=BIGINT},
+      status = #{status,jdbcType=INTEGER},
+      article_abstract = #{articleAbstract,jdbcType=VARCHAR},
+      is_delete = #{isDelete,jdbcType=VARCHAR},
+      info = #{info,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hema.newretail.backstage.entry.BaseIndexArticleEntry" >
+    update base_index_article
+    set pic_url = #{picUrl,jdbcType=VARCHAR},
+      title = #{title,jdbcType=VARCHAR},
+      gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      gmt_modify = #{gmtModify,jdbcType=TIMESTAMP},
+      gmt_start = #{gmtStart,jdbcType=TIMESTAMP},
+      gmt_end = #{gmtEnd,jdbcType=TIMESTAMP},
+      skip_url = #{skipUrl,jdbcType=VARCHAR},
+      sort = #{sort,jdbcType=DOUBLE},
+      type = #{type,jdbcType=BIGINT},
+      status = #{status,jdbcType=INTEGER},
+      article_abstract = #{articleAbstract,jdbcType=VARCHAR},
+      is_delete = #{isDelete,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

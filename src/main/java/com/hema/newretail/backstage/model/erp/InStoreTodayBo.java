@@ -1,5 +1,7 @@
 package com.hema.newretail.backstage.model.erp;
 
+import lombok.Data;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -11,6 +13,7 @@ import java.util.List;
  * @Date 2018/11/3 10:56
  * @Version 1.0
  **/
+@Data
 public class InStoreTodayBo implements Serializable {
 
     private Long id;
@@ -18,35 +21,5 @@ public class InStoreTodayBo implements Serializable {
     private Integer status;
     private List<InStoreTodaySonBo>  ingredients;
 
-    public Long getId() {
-        return id;
-    }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getOrderCode() {
-        return orderCode;
-    }
-
-    public void setOrderCode(String orderCode) {
-        this.orderCode = orderCode;
-    }
-
-    public List<InStoreTodaySonBo> getIngredients() {
-        return ingredients;
-    }
-
-    public void setIngredients(List<InStoreTodaySonBo> ingredients) {
-        this.ingredients = ingredients;
-    }
-
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
-    }
 }

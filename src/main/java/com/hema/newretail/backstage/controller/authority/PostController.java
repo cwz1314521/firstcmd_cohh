@@ -1,6 +1,7 @@
 package com.hema.newretail.backstage.controller.authority;
 
 import com.github.pagehelper.Page;
+import com.hema.newretail.backstage.annotation.AutoLog;
 import com.hema.newretail.backstage.common.utils.Response;
 import com.hema.newretail.backstage.entry.BasePost;
 import com.hema.newretail.backstage.service.authority.IPostService;
@@ -22,14 +23,16 @@ import java.util.Map;
  * @link
  * @date 2018-09-11 10:34
  */
-@Api(description = "权限管理->岗位接口")
+
+@Api(description = "权限管理-岗位接口")
 @RestController
 @RequestMapping("/post")
+@AutoLog
 public class PostController {
     @Autowired
     private IPostService postService;
 
-    @ApiOperation("岗位列表，分页展示")
+    @ApiOperation("查询岗位列表")
     @PostMapping(value = "/list")
     public Response list(@RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum,
                          @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize) {
@@ -74,7 +77,10 @@ public class PostController {
     @PostMapping(value = "/delete")
     public Response delete(@RequestParam(required = false) @NotBlank(message = "参数postId不能为空") String postId) {
         try {
-            postService.deleteData(postId);
+            int num = postService.deleteData(postId);
+            if (-1 == num) {
+                return Response.failure("岗位已关联用户，无法删除");
+            }
             return Response.success();
         } catch (Exception e) {
             e.printStackTrace();

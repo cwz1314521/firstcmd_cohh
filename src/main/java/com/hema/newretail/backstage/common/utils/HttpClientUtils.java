@@ -3,18 +3,26 @@ package com.hema.newretail.backstage.common.utils;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpStatus;
+import org.apache.http.NameValuePair;
+import org.apache.http.StatusLine;
 import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * hema-newRetail-crm-com.hema.newretail.backstage.common.utils
@@ -153,4 +161,56 @@ public class HttpClientUtils {
         }
         return jsonResult;
     }
+
+
+	/**
+	 * post请求
+	 *
+	 * @param url
+	 * @param params
+	 * @return
+	 */
+	public static String doPost(String url, Map<String,Object> params) throws Exception {
+		CloseableHttpClient httpclient = HttpClients.createDefault();
+		// 创建httpPost
+		HttpPost httpPost = new HttpPost(url);
+		String charSet = "UTF-8";
+		List<NameValuePair> pairList = new ArrayList<>(params.size());
+		for (Map.Entry<String, Object> entry : params.entrySet()) {
+			NameValuePair pair = new BasicNameValuePair(entry.getKey(), entry.getValue().toString());
+			pairList.add(pair);
+		}
+		httpPost.setEntity(new UrlEncodedFormEntity(pairList, Charset.forName(charSet)));
+		CloseableHttpResponse response = null;
+		try {
+			response = httpclient.execute(httpPost);
+			StatusLine status = response.getStatusLine();
+			int state = status.getStatusCode();
+			logger.info("------------------------------------------->"+state);
+			if (state == HttpStatus.SC_OK) {
+				HttpEntity responseEntity = response.getEntity();
+				String jsonString = EntityUtils.toString(responseEntity);
+				logger.info("----------------------------------------->"+jsonString);
+				return jsonString;
+			}
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		finally {
+			if (response != null) {
+				try {
+					response.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+			try {
+				httpclient.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return null;
+	}
 }

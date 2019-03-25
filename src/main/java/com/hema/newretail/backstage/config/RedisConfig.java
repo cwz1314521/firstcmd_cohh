@@ -6,18 +6,18 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.interceptor.KeyGenerator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.serializer.*;
 import org.springframework.util.StringUtils;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 
 /**
- * @Auther: 程文政
- * @Date: 2018/8/20 09:30
- * @Description:
- * @Version: 1.0
+ * @author admin
  */
 @Configuration
-@EnableCaching//开启注解
+@EnableCaching
 public class RedisConfig extends CachingConfigurerSupport {
     @Value("${spring.redis.host}")
     private String host;
@@ -72,7 +72,26 @@ public class RedisConfig extends CachingConfigurerSupport {
             for (Object obj : params) {
                 sb.append(obj.toString());
             }
+            System.out.println("keyGenerator::key::" + sb.toString());
             return sb.toString();
         };
+    }
+
+    /**
+     * key redis serializer: {@link StringRedisSerializer} and
+     * value redis serializer: {@link GenericJackson2JsonRedisSerializer}
+     **/
+    @Bean(name = "genericRedisTemplate")
+    public RedisTemplate<String, String> redisTemplate(RedisConnectionFactory redisConnectionFactory) {
+        RedisTemplate<String, String> template = new RedisTemplate<>();
+        RedisSerializer<Object> valueRedisSerializer = new GenericJackson2JsonRedisSerializer();
+        RedisSerializer<String> keyRedisSerializer = new StringRedisSerializer();
+        template.setKeySerializer(keyRedisSerializer);
+        template.setValueSerializer(valueRedisSerializer);
+        template.setHashKeySerializer(keyRedisSerializer);
+        template.setHashValueSerializer(valueRedisSerializer);
+        template.setConnectionFactory(redisConnectionFactory);
+        template.afterPropertiesSet();
+        return template;
     }
 }

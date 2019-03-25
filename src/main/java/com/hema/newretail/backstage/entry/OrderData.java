@@ -1,143 +1,129 @@
 package com.hema.newretail.backstage.entry;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.hema.newretail.backstage.entry.orderentry.BillData;
+import com.hema.newretail.backstage.entry.orderentry.OrderIngredients;
+import lombok.Data;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
 /**
  * 订单实体类
  */
-@Document(collection = "userManagementEntry")
+@Data
 public class OrderData implements Serializable {
     private String id;
-    private String amt;
-    private int num;
+    private String userId;
+    private String userName;
+    private String billId;
+    private BigDecimal orderPrice;
+    private BigDecimal amt;
+    private String makeCode;
+
+    private String refundCode;
+
+    private List<BillData> billData;
+
+    /**
+     * 单杯活动优惠金额
+     */
+    private BigDecimal activityDiscount;
+
+    /**
+     * 单杯优惠券优惠金额
+     */
+    private BigDecimal discount;
+
+    /**
+     * 优惠类型
+     */
+    private Integer discountType;
+    /**
+     * 优惠方式
+     */
+    private Integer discountMode;
+
+    /**
+     * 优惠券id
+     */
+    private Long couponId;
+    /**
+     * 优惠券名称
+     */
+    private String couponName;
+
+    private Integer num;
+    private String bigPic;
+    private String smallPic;
+    private String anyPic;
+
+    private String middlePic;
+    private String menuName;
+    private String recommend;
+    /**
+     * (机器编码): int （扫码制作，用户确认后提交）
+     */
+    private String machineId;
+    private String machineName;
+    /**
+     * 设备序列号（扫码制作，用户确认后提交）
+     */
+    private String deviceNumber;
     private String province;
     private String city;
     private String area;
-    private String agent;
-    private String grid;
-    private String price;
+    private Long agent;
+    private Long grid;
+    /**
+     * 制作时间
+     */
+    private Date productionTime;
+
+    private BigDecimal price;
+
     private Date orderTime;
-    private String isOver;
-    private int menuId;
-    private String menuName;
 
+    private Date takeCupTime;
+    private String againStatus;
+    private String orderStatus;
+    private Boolean compensationRefund;
+
+    private BigDecimal compensationMoney;
+    /**
+     * 退款原因，退款回调
+     */
+    private String refundDesc;
+    /**
+     * 退款申请时间，退款回调
+     */
+    @JsonIgnore
+    private Date applyRefundTime;
+    private String applyRefundTimes;
+    /**
+     * 退款成功时间，退款通知接口回调
+     */
+    @JsonIgnore
+    private Object successRefundTime;
+    private String successRefundTimes;
+    private Long menuId;
+    private String gmtModified;
+    private Integer diy;
+    private List<OrderIngredients> orderIngredients;
     private List<OrderPropertyData> properties;
+    private String givenScountId;
 
-    public String getId() {
-        return id;
-    }
+    /**
+     * 订单下标，默认65636：退款、下单、继续制作
+     */
+    private Integer orderIndex;
 
-    public void setId(String id) {
-        this.id = id;
-    }
+    /**
+     * 机器UUID码
+     */
+    private String machineUuid;
 
-    public String getAmt() {
-        return amt;
-    }
-
-    public void setAmt(String amt) {
-        this.amt = amt;
-    }
-
-    public int getNum() {
-        return num;
-    }
-
-    public void setNum(int num) {
-        this.num = num;
-    }
-
-    public String getProvince() {
-        return province;
-    }
-
-    public void setProvince(String province) {
-        this.province = province;
-    }
-
-    public String getCity() {
-        return city;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
-    }
-
-    public String getArea() {
-        return area;
-    }
-
-    public void setArea(String area) {
-        this.area = area;
-    }
-
-    public String getAgent() {
-        return agent;
-    }
-
-    public void setAgent(String agent) {
-        this.agent = agent;
-    }
-
-    public String getGrid() {
-        return grid;
-    }
-
-    public void setGrid(String grid) {
-        this.grid = grid;
-    }
-
-    public String getPrice() {
-        return price;
-    }
-
-    public void setPrice(String price) {
-        this.price = price;
-    }
-
-    public Date getOrderTime() {
-        return orderTime;
-    }
-
-    public void setOrderTime(Date orderTime) {
-        this.orderTime = orderTime;
-    }
-
-    public String getIsOver() {
-        return isOver;
-    }
-
-    public void setIsOver(String isOver) {
-        this.isOver = isOver;
-    }
-
-    public int getMenuId() {
-        return menuId;
-    }
-
-    public void setMenuId(int menuId) {
-        this.menuId = menuId;
-    }
-
-    public List<OrderPropertyData> getProperties() {
-        return properties;
-    }
-
-    public void setProperties(List<OrderPropertyData> properties) {
-        this.properties = properties;
-    }
-
-    public String getMenuName() {
-        return menuName;
-    }
-
-    public void setMenuName(String menuName) {
-        this.menuName = menuName;
-    }
+    private String phoneNum;
 }

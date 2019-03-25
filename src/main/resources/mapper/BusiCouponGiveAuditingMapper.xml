@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hema.newretail.backstage.dao.BusiCouponGiveAuditingMapper" >
+  <resultMap id="BaseResultMap" type="com.hema.newretail.backstage.entry.BusiCouponGiveAuditing" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="coupon_auditing_id" property="couponAuditingId" jdbcType="BIGINT" />
+    <result column="coupon_give_number" property="couponGiveNumber" jdbcType="INTEGER" />
+    <result column="coupon_give_remark" property="couponGiveRemark" jdbcType="VARCHAR" />
+    <result column="gmt_create" property="gmtCreate" jdbcType="TIMESTAMP" />
+    <result column="gmt_modify" property="gmtModify" jdbcType="TIMESTAMP" />
+    <result column="apply_time" property="applyTime" jdbcType="TIMESTAMP" />
+    <result column="applicant_id" property="applicantId" jdbcType="BIGINT" />
+    <result column="applicant" property="applicant" jdbcType="VARCHAR" />
+    <result column="audit_time" property="auditTime" jdbcType="TIMESTAMP" />
+    <result column="auditor_id" property="auditorId" jdbcType="BIGINT" />
+    <result column="auditor" property="auditor" jdbcType="VARCHAR" />
+    <result column="audit_status" property="auditStatus" jdbcType="INTEGER" />
+    <result column="audit_desc" property="auditDesc" jdbcType="VARCHAR" />
+      <result column="couponName" property="couponName" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.hema.newretail.backstage.entry.BusiCouponGiveAuditing" extends="BaseResultMap" >
+    <result column="give_person_id" property="givePersonId" jdbcType="LONGVARCHAR" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    id, coupon_auditing_id, coupon_give_number, coupon_give_remark, gmt_create, gmt_modify, 
+    apply_time, applicant_id, applicant, audit_time, auditor_id, auditor, audit_status, 
+    audit_desc
+  </sql>
+  <sql id="Blob_Column_List" >
+    give_person_id
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from busi_coupon_give_auditing
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from busi_coupon_give_auditing
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.hema.newretail.backstage.entry.BusiCouponGiveAuditing" >
+    insert into busi_coupon_give_auditing (id, coupon_auditing_id, coupon_give_number, 
+      coupon_give_remark, gmt_create, gmt_modify, 
+      apply_time, applicant_id, applicant, 
+      audit_time, auditor_id, auditor, 
+      audit_status, audit_desc, give_person_id
+      )
+    values (#{id,jdbcType=BIGINT}, #{couponAuditingId,jdbcType=BIGINT}, #{couponGiveNumber,jdbcType=INTEGER}, 
+      #{couponGiveRemark,jdbcType=VARCHAR}, #{gmtCreate,jdbcType=TIMESTAMP}, #{gmtModify,jdbcType=TIMESTAMP}, 
+      #{applyTime,jdbcType=TIMESTAMP}, #{applicantId,jdbcType=BIGINT}, #{applicant,jdbcType=VARCHAR}, 
+      #{auditTime,jdbcType=TIMESTAMP}, #{auditorId,jdbcType=BIGINT}, #{auditor,jdbcType=VARCHAR}, 
+      #{auditStatus,jdbcType=INTEGER}, #{auditDesc,jdbcType=VARCHAR}, #{givePersonId,jdbcType=LONGVARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.hema.newretail.backstage.entry.BusiCouponGiveAuditing" >
+    insert into busi_coupon_give_auditing
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="couponAuditingId != null" >
+        coupon_auditing_id,
+      </if>
+      <if test="couponGiveNumber != null" >
+        coupon_give_number,
+      </if>
+      <if test="couponGiveRemark != null" >
+        coupon_give_remark,
+      </if>
+      <if test="gmtCreate != null" >
+        gmt_create,
+      </if>
+      <if test="gmtModify != null" >
+        gmt_modify,
+      </if>
+      <if test="applyTime != null" >
+        apply_time,
+      </if>
+      <if test="applicantId != null" >
+        applicant_id,
+      </if>
+      <if test="applicant != null" >
+        applicant,
+      </if>
+      <if test="auditTime != null" >
+        audit_time,
+      </if>
+      <if test="auditorId != null" >
+        auditor_id,
+      </if>
+      <if test="auditor != null" >
+        auditor,
+      </if>
+      <if test="auditStatus != null" >
+        audit_status,
+      </if>
+      <if test="auditDesc != null" >
+        audit_desc,
+      </if>
+      <if test="givePersonId != null" >
+        give_person_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="couponAuditingId != null" >
+        #{couponAuditingId,jdbcType=BIGINT},
+      </if>
+      <if test="couponGiveNumber != null" >
+        #{couponGiveNumber,jdbcType=INTEGER},
+      </if>
+      <if test="couponGiveRemark != null" >
+        #{couponGiveRemark,jdbcType=VARCHAR},
+      </if>
+      <if test="gmtCreate != null" >
+        #{gmtCreate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gmtModify != null" >
+        #{gmtModify,jdbcType=TIMESTAMP},
+      </if>
+      <if test="applyTime != null" >
+        #{applyTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="applicantId != null" >
+        #{applicantId,jdbcType=BIGINT},
+      </if>
+      <if test="applicant != null" >
+        #{applicant,jdbcType=VARCHAR},
+      </if>
+      <if test="auditTime != null" >
+        #{auditTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="auditorId != null" >
+        #{auditorId,jdbcType=BIGINT},
+      </if>
+      <if test="auditor != null" >
+        #{auditor,jdbcType=VARCHAR},
+      </if>
+      <if test="auditStatus != null" >
+        #{auditStatus,jdbcType=INTEGER},
+      </if>
+      <if test="auditDesc != null" >
+        #{auditDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="givePersonId != null" >
+        #{givePersonId,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hema.newretail.backstage.entry.BusiCouponGiveAuditing" >
+    update busi_coupon_give_auditing
+    <set >
+      <if test="couponAuditingId != null" >
+        coupon_auditing_id = #{couponAuditingId,jdbcType=BIGINT},
+      </if>
+      <if test="couponGiveNumber != null" >
+        coupon_give_number = #{couponGiveNumber,jdbcType=INTEGER},
+      </if>
+      <if test="couponGiveRemark != null" >
+        coupon_give_remark = #{couponGiveRemark,jdbcType=VARCHAR},
+      </if>
+      <if test="gmtCreate != null" >
+        gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gmtModify != null" >
+        gmt_modify = #{gmtModify,jdbcType=TIMESTAMP},
+      </if>
+      <if test="applyTime != null" >
+        apply_time = #{applyTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="applicantId != null" >
+        applicant_id = #{applicantId,jdbcType=BIGINT},
+      </if>
+      <if test="applicant != null" >
+        applicant = #{applicant,jdbcType=VARCHAR},
+      </if>
+      <if test="auditTime != null" >
+        audit_time = #{auditTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="auditorId != null" >
+        auditor_id = #{auditorId,jdbcType=BIGINT},
+      </if>
+      <if test="auditor != null" >
+        auditor = #{auditor,jdbcType=VARCHAR},
+      </if>
+      <if test="auditStatus != null" >
+        audit_status = #{auditStatus,jdbcType=INTEGER},
+      </if>
+      <if test="auditDesc != null" >
+        audit_desc = #{auditDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="givePersonId != null" >
+        give_person_id = #{givePersonId,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.hema.newretail.backstage.entry.BusiCouponGiveAuditing" >
+    update busi_coupon_give_auditing
+    set coupon_auditing_id = #{couponAuditingId,jdbcType=BIGINT},
+      coupon_give_number = #{couponGiveNumber,jdbcType=INTEGER},
+      coupon_give_remark = #{couponGiveRemark,jdbcType=VARCHAR},
+      gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      gmt_modify = #{gmtModify,jdbcType=TIMESTAMP},
+      apply_time = #{applyTime,jdbcType=TIMESTAMP},
+      applicant_id = #{applicantId,jdbcType=BIGINT},
+      applicant = #{applicant,jdbcType=VARCHAR},
+      audit_time = #{auditTime,jdbcType=TIMESTAMP},
+      auditor_id = #{auditorId,jdbcType=BIGINT},
+      auditor = #{auditor,jdbcType=VARCHAR},
+      audit_status = #{auditStatus,jdbcType=INTEGER},
+      audit_desc = #{auditDesc,jdbcType=VARCHAR},
+      give_person_id = #{givePersonId,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hema.newretail.backstage.entry.BusiCouponGiveAuditing" >
+    update busi_coupon_give_auditing
+    set coupon_auditing_id = #{couponAuditingId,jdbcType=BIGINT},
+      coupon_give_number = #{couponGiveNumber,jdbcType=INTEGER},
+      coupon_give_remark = #{couponGiveRemark,jdbcType=VARCHAR},
+      gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      gmt_modify = #{gmtModify,jdbcType=TIMESTAMP},
+      apply_time = #{applyTime,jdbcType=TIMESTAMP},
+      applicant_id = #{applicantId,jdbcType=BIGINT},
+      applicant = #{applicant,jdbcType=VARCHAR},
+      audit_time = #{auditTime,jdbcType=TIMESTAMP},
+      auditor_id = #{auditorId,jdbcType=BIGINT},
+      auditor = #{auditor,jdbcType=VARCHAR},
+      audit_status = #{auditStatus,jdbcType=INTEGER},
+      audit_desc = #{auditDesc,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+    <select id="getUnCheckedDataDetail" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Long" >
+        select
+        a.id, a.coupon_auditing_id, a.coupon_give_number, a.coupon_give_remark, a.gmt_create, a.gmt_modify,
+        a.apply_time, a.applicant_id, a.applicant, a.audit_time, a.auditor_id, a.auditor, a.audit_status,
+        a.audit_desc
+        ,
+        a.give_person_id
+        ,
+        b.coupon_name
+        from busi_coupon_give_auditing  a  INNER JOIN   busi_coupon_auditing b
+        ON  a.coupon_auditing_id = b.id
+        where a.id = #{id,jdbcType=BIGINT}
+    </select>
+
+    <update id="checkCouponFinally" parameterType="com.hema.newretail.backstage.entry.BaseFinanceAuditing" >
+        update busi_coupon_give_auditing
+        set
+        gmt_modify = #{gmtModified},
+        audit_time = #{auditTime},
+        auditor_id = #{auditorId},
+        auditor = #{auditor},
+        audit_status = #{auditStatus},
+        audit_desc = #{auditDesc}
+        where id = #{id}
+    </update>
+</mapper>

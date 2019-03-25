@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hema.newretail.backstage.dao.DMonthMapper" >
+  <resultMap id="BaseResultMap" type="com.hema.newretail.backstage.entry.data.DMonthEntry" >
+    <result column="dimension" property="dimension" jdbcType="VARCHAR" />
+    <result column="month" property="month" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <!--数据统计销量趋势接口sql-->
+  <select id="selectBaseResultMap" resultMap="BaseResultMap" parameterType="com.hema.newretail.backstage.common.queryparam.data.DataSalesTrendDBCondition">
+    SELECT
+    dimension,
+    `month`
+    FROM
+    d_month
+    WHERE
+     <![CDATA[
+    #{dateStart,jdbcType=VARCHAR} <= `month`
+    AND `month` <= #{dateEnd,jdbcType=VARCHAR}
+     ]]>
+    and length(`month`)=7
+
+    order by `month` desc
+  </select>
+
+
+  <insert id="insert" parameterType="com.hema.newretail.backstage.entry.data.DMonthEntry" >
+    insert into d_month (dimension, month)
+    values (#{dimension,jdbcType=VARCHAR}, #{month,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.hema.newretail.backstage.entry.data.DMonthEntry" >
+    insert into d_month
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="dimension != null" >
+        dimension,
+      </if>
+      <if test="month != null" >
+        month,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="dimension != null" >
+        #{dimension,jdbcType=VARCHAR},
+      </if>
+      <if test="month != null" >
+        #{month,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+</mapper>

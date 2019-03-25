@@ -179,5 +179,14 @@ public interface TraceabilityService {
      */
     Response inStoreDelete(InStoreDeleteCondition inStoreDeleteCondition);
 
+    /**
+     * 功能描述:分后台  入库记录--待入库列表
+     *
+     * @param: InStoreListCondition
+     * @return: list
+     * @author: cwz
+     * @date: 2018/11/2 14:07
+     */
+    Response inStoreLoadList();
 
 }

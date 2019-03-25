@@ -124,4 +124,8 @@ LEFT JOIN base_machine_info b ON g.geo_hash_code = b.hashcode
     <select id="selectCountByIdAndHashcode" resultType="java.lang.Long" parameterType="java.util.Map">
         select count(g.id) as num from grid_company_geohash as g where g.grid_company_id=#{gridCompanyId} and g.geo_hash_code=#{geoHashCode}
     </select>
+
+  <select id="selectGridCompanyIdByHashcode" resultType="java.lang.Long">
+    select grid_company_id as gridCompanyId from grid_company_geohash where geo_hash_code = #{geoHash,jdbcType=VARCHAR}
+  </select>
 </mapper>

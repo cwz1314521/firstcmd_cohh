@@ -2,6 +2,7 @@ package com.hema.newretail.backstage.common.caches;
 
 
 import org.apache.ibatis.cache.Cache;
+import org.apache.ibatis.cache.CacheKey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.connection.RedisServerCommands;
@@ -23,10 +24,8 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 public class MybatisRedisCache implements Cache {
     private static final Logger logger = LoggerFactory.getLogger(MybatisRedisCache.class);
     private final ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
-    // cache instance id
     private final String id;
     private RedisTemplate redisTemplate;
-    // redis过期时间
     private static final long EXPIRE_TIME_IN_MINUTES = 30;
 
     public MybatisRedisCache(final String id) {
@@ -52,7 +51,8 @@ public class MybatisRedisCache implements Cache {
     public void putObject(Object key, Object value) {
         RedisTemplate redisTemplate = getRedisTemplate();
         ValueOperations opsForValue = redisTemplate.opsForValue();
-        opsForValue.set(key, value, EXPIRE_TIME_IN_MINUTES, TimeUnit.MINUTES);
+        CacheKey cacheKey = (CacheKey) key;
+        opsForValue.set(cacheKey.toString(), value, EXPIRE_TIME_IN_MINUTES, TimeUnit.MINUTES);
         logger.debug("Put query result to redis");
     }
 
@@ -67,7 +67,8 @@ public class MybatisRedisCache implements Cache {
         RedisTemplate redisTemplate = getRedisTemplate();
         ValueOperations opsForValue = redisTemplate.opsForValue();
         logger.debug("Get cached query result from redis");
-        return opsForValue.get(key);
+        CacheKey cacheKey = (CacheKey) key;
+        return opsForValue.get(cacheKey.toString());
     }
 
     /**
@@ -80,7 +81,8 @@ public class MybatisRedisCache implements Cache {
     @SuppressWarnings("unchecked")
     public Object removeObject(Object key) {
         RedisTemplate redisTemplate = getRedisTemplate();
-        redisTemplate.delete(key);
+        CacheKey cacheKey = (CacheKey) key;
+        redisTemplate.delete(cacheKey.toString());
         logger.debug("Remove cached query result from redis");
         return null;
     }
@@ -111,7 +113,7 @@ public class MybatisRedisCache implements Cache {
 
     private RedisTemplate getRedisTemplate() {
         if (redisTemplate == null) {
-            redisTemplate = ApplicationContextUtil.getBean("redisTemplate");
+            redisTemplate = ApplicationContextUtil.getBean("genericRedisTemplate");
         }
         return redisTemplate;
     }

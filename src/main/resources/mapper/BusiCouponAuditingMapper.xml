@@ -1,0 +1,324 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hema.newretail.backstage.dao.BusiCouponAuditingMapper" >
+  <resultMap id="BaseResultMap" type="com.hema.newretail.backstage.entry.discounts.BusiCouponAuditingEntry" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="gmt_create" property="gmtCreate" jdbcType="TIMESTAMP" />
+    <result column="gmt_modified" property="gmtModified" jdbcType="TIMESTAMP" />
+    <result column="coupon_name" property="couponName" jdbcType="VARCHAR" />
+    <result column="coupon_title" property="couponTitle" jdbcType="VARCHAR" />
+    <result column="coupon_description" property="couponDescription" jdbcType="VARCHAR" />
+    <result column="coupon_pic" property="couponPic" jdbcType="VARCHAR" />
+    <result column="coupon_type" property="couponType" jdbcType="INTEGER" />
+    <result column="period" property="period" jdbcType="INTEGER" />
+    <result column="period_unit" property="periodUnit" jdbcType="INTEGER" />
+    <result column="auth_status" property="authStatus" jdbcType="INTEGER" />
+    <result column="auth_desc" property="authDesc" jdbcType="VARCHAR" />
+    <result column="limitNum" property="limitnum" jdbcType="INTEGER" />
+    <result column="num" property="num" jdbcType="INTEGER" />
+    <result column="surplus_num" property="surplusNum" jdbcType="INTEGER" />
+    <result column="denomination" property="denomination" jdbcType="DECIMAL" />
+    <result column="denomination_unit" property="denominationUnit" jdbcType="VARCHAR" />
+  </resultMap>
+    <resultMap id="ListMap" type="com.hema.newretail.backstage.model.discounts.DiscountsListBo" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="couponName" property="couponName" jdbcType="VARCHAR" />
+    <result column="denominationUnit" property="denominationUnit" jdbcType="VARCHAR" />
+    <result column="authStatus" property="authStatus" jdbcType="VARCHAR" />
+    <result column="authDesc" property="authDesc" jdbcType="VARCHAR" />
+    <result column="gmtCreate" property="gmtCreate" jdbcType="VARCHAR" />
+    <result column="couponType" property="couponType" jdbcType="INTEGER" />
+    <result column="period" property="period" jdbcType="INTEGER" />
+    <result column="periodUnit" property="periodUnit" jdbcType="INTEGER" />
+    <result column="num" property="num" jdbcType="INTEGER" />
+    <result column="denomination" property="denomination" jdbcType="DECIMAL" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, gmt_create, gmt_modified, coupon_name, coupon_title, coupon_description, coupon_pic, 
+    coupon_type, period, period_unit, auth_status, auth_desc, limitNum, num, surplus_num, 
+    denomination, denomination_unit
+  </sql>
+
+    <select id="list" resultMap="ListMap" parameterType="com.hema.newretail.backstage.common.queryparam.discounts.DiscountsListCondition">
+    SELECT
+	b.id AS id,
+	b.coupon_name AS couponName,
+	b.coupon_type AS couponType,
+	b.denomination AS denomination,
+	b.denomination_unit AS denominationUnit,
+	b.period AS period,
+	b.period_unit AS periodUnit,
+	b.num AS num,
+	b.auth_status AS authStatus,
+	DATE_FORMAT(
+		b.gmt_create,
+		'%Y-%c-%e %H:%i:%s'
+	) AS gmtCreate,
+	b.auth_desc AS authDesc,
+        p.getnum  as getnum
+
+FROM
+	busi_coupon_auditing b    LEFT JOIN (
+        SELECT
+        count(1) AS getnum,
+
+        t.coupon_auth_id
+        FROM
+        busi_coupon t  where t.use_status=1
+        GROUP BY
+        t.coupon_auth_id
+        ) p ON b.id = p.coupon_auth_id
+        where 1=1
+        <if test="couponName != null" >
+            and b.coupon_name like  "%"#{couponName,jdbcType=VARCHAR}"%"
+        </if>
+        <if test="couponType != null" >
+        and b.coupon_type = #{couponType,jdbcType=INTEGER}
+        </if>
+        <if test="authStatus != null" >
+            and b.auth_status = #{authStatus,jdbcType=INTEGER}
+        </if>
+        <if test="startDates != null" >
+            and b.gmt_create between  #{startDates,jdbcType=TIMESTAMP}  and  #{endDates,jdbcType=TIMESTAMP}
+        </if>
+      and b.is_deleted = 0
+      order  by b.gmt_create desc
+    </select>
+    <!--审核-->
+    <update id="check" parameterType="com.hema.newretail.backstage.common.queryparam.discounts.EventCheckCondition">
+    update busi_coupon_auditing set auth_status = #{authStatus,jdbcType=INTEGER},auth_desc = #{authDesc,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <!--all-->
+  <select id="all" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from busi_coupon_auditing
+    where auth_status = 1 and surplus_num &gt; 0
+  </select>
+  <!--delete-->
+  <update id="updateDelete" parameterType="com.hema.newretail.backstage.common.queryparam.discounts.EventCheckCondition">
+    update busi_coupon_auditing set is_deleted = 1
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+<!---->
+  <select id="selectMenu" parameterType="java.lang.Long" resultType="java.util.Map">
+    SELECT DISTINCT
+	m.id,m.menu_name
+FROM
+	busi_coupon_auditing b
+LEFT JOIN ref_menu_coupon r ON b.id = r.coupon_id
+LEFT JOIN busi_ingredient_menu m ON r.menu_id = m.id
+where r.coupon_id =  #{couponId,jdbcType=BIGINT}
+  </select>
+
+
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from busi_coupon_auditing
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from busi_coupon_auditing
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" useGeneratedKeys="true"   keyProperty="id" parameterType="com.hema.newretail.backstage.entry.discounts.BusiCouponAuditingEntry" >
+    insert into busi_coupon_auditing (id, gmt_create, gmt_modified, 
+      coupon_name, coupon_title, coupon_description, 
+      coupon_pic, coupon_type, period, 
+      period_unit, auth_status, auth_desc, 
+      limitNum, num, surplus_num, 
+      denomination, denomination_unit,is_deleted)
+    values (#{id,jdbcType=BIGINT}, #{gmtCreate,jdbcType=TIMESTAMP}, #{gmtModified,jdbcType=TIMESTAMP}, 
+      #{couponName,jdbcType=VARCHAR}, #{couponTitle,jdbcType=VARCHAR}, #{couponDescription,jdbcType=VARCHAR}, 
+      #{couponPic,jdbcType=VARCHAR}, #{couponType,jdbcType=INTEGER}, #{period,jdbcType=INTEGER}, 
+      #{periodUnit,jdbcType=INTEGER}, #{authStatus,jdbcType=INTEGER}, #{authDesc,jdbcType=VARCHAR}, 
+      #{limitnum,jdbcType=INTEGER}, #{num,jdbcType=INTEGER}, #{surplusNum,jdbcType=INTEGER}, 
+      #{denomination,jdbcType=DECIMAL}, #{denominationUnit,jdbcType=VARCHAR}, #{isDeleted,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.hema.newretail.backstage.entry.discounts.BusiCouponAuditingEntry" >
+    insert into busi_coupon_auditing
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="gmtCreate != null" >
+        gmt_create,
+      </if>
+      <if test="gmtModified != null" >
+        gmt_modified,
+      </if>
+      <if test="couponName != null" >
+        coupon_name,
+      </if>
+      <if test="couponTitle != null" >
+        coupon_title,
+      </if>
+      <if test="couponDescription != null" >
+        coupon_description,
+      </if>
+      <if test="couponPic != null" >
+        coupon_pic,
+      </if>
+      <if test="couponType != null" >
+        coupon_type,
+      </if>
+      <if test="period != null" >
+        period,
+      </if>
+      <if test="periodUnit != null" >
+        period_unit,
+      </if>
+      <if test="authStatus != null" >
+        auth_status,
+      </if>
+      <if test="authDesc != null" >
+        auth_desc,
+      </if>
+      <if test="limitnum != null" >
+        limitNum,
+      </if>
+      <if test="num != null" >
+        num,
+      </if>
+      <if test="surplusNum != null" >
+        surplus_num,
+      </if>
+      <if test="denomination != null" >
+        denomination,
+      </if>
+      <if test="denominationUnit != null" >
+        denomination_unit,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="gmtCreate != null" >
+        #{gmtCreate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gmtModified != null" >
+        #{gmtModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="couponName != null" >
+        #{couponName,jdbcType=VARCHAR},
+      </if>
+      <if test="couponTitle != null" >
+        #{couponTitle,jdbcType=VARCHAR},
+      </if>
+      <if test="couponDescription != null" >
+        #{couponDescription,jdbcType=VARCHAR},
+      </if>
+      <if test="couponPic != null" >
+        #{couponPic,jdbcType=VARCHAR},
+      </if>
+      <if test="couponType != null" >
+        #{couponType,jdbcType=INTEGER},
+      </if>
+      <if test="period != null" >
+        #{period,jdbcType=INTEGER},
+      </if>
+      <if test="periodUnit != null" >
+        #{periodUnit,jdbcType=INTEGER},
+      </if>
+      <if test="authStatus != null" >
+        #{authStatus,jdbcType=INTEGER},
+      </if>
+      <if test="authDesc != null" >
+        #{authDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="limitnum != null" >
+        #{limitnum,jdbcType=INTEGER},
+      </if>
+      <if test="num != null" >
+        #{num,jdbcType=INTEGER},
+      </if>
+      <if test="surplusNum != null" >
+        #{surplusNum,jdbcType=INTEGER},
+      </if>
+      <if test="denomination != null" >
+        #{denomination,jdbcType=DECIMAL},
+      </if>
+      <if test="denominationUnit != null" >
+        #{denominationUnit,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hema.newretail.backstage.entry.discounts.BusiCouponAuditingEntry" >
+    update busi_coupon_auditing
+    <set >
+      <if test="gmtCreate != null" >
+        gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gmtModified != null" >
+        gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="couponName != null" >
+        coupon_name = #{couponName,jdbcType=VARCHAR},
+      </if>
+      <if test="couponTitle != null" >
+        coupon_title = #{couponTitle,jdbcType=VARCHAR},
+      </if>
+      <if test="couponDescription != null" >
+        coupon_description = #{couponDescription,jdbcType=VARCHAR},
+      </if>
+      <if test="couponPic != null" >
+        coupon_pic = #{couponPic,jdbcType=VARCHAR},
+      </if>
+      <if test="couponType != null" >
+        coupon_type = #{couponType,jdbcType=INTEGER},
+      </if>
+      <if test="period != null" >
+        period = #{period,jdbcType=INTEGER},
+      </if>
+      <if test="periodUnit != null" >
+        period_unit = #{periodUnit,jdbcType=INTEGER},
+      </if>
+      <if test="authStatus != null" >
+        auth_status = #{authStatus,jdbcType=INTEGER},
+      </if>
+      <if test="authDesc != null" >
+        auth_desc = #{authDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="limitnum != null" >
+        limitNum = #{limitnum,jdbcType=INTEGER},
+      </if>
+      <if test="num != null" >
+        num = #{num,jdbcType=INTEGER},
+      </if>
+      <if test="surplusNum != null" >
+        surplus_num = #{surplusNum,jdbcType=INTEGER},
+      </if>
+      <if test="denomination != null" >
+        denomination = #{denomination,jdbcType=DECIMAL},
+      </if>
+      <if test="denominationUnit != null" >
+        denomination_unit = #{denominationUnit,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hema.newretail.backstage.entry.discounts.BusiCouponAuditingEntry" >
+    update busi_coupon_auditing
+    set gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
+      coupon_name = #{couponName,jdbcType=VARCHAR},
+      coupon_title = #{couponTitle,jdbcType=VARCHAR},
+      coupon_description = #{couponDescription,jdbcType=VARCHAR},
+      coupon_pic = #{couponPic,jdbcType=VARCHAR},
+      coupon_type = #{couponType,jdbcType=INTEGER},
+      period = #{period,jdbcType=INTEGER},
+      period_unit = #{periodUnit,jdbcType=INTEGER},
+      auth_status = #{authStatus,jdbcType=INTEGER},
+      auth_desc = #{authDesc,jdbcType=VARCHAR},
+      limitNum = #{limitnum,jdbcType=INTEGER},
+      num = #{num,jdbcType=INTEGER},
+      surplus_num = #{surplusNum,jdbcType=INTEGER},
+      denomination = #{denomination,jdbcType=DECIMAL},
+      denomination_unit = #{denominationUnit,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

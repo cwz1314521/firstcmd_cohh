@@ -44,4 +44,42 @@ public interface IMakeOrderService {
     Response excle(HttpServletRequest request, HttpServletResponse response, CentralBillListCondition centralBillListCondition)throws   Exception;
 
     Response excleOrder(HttpServletRequest request, HttpServletResponse response, MakeOrderCondition makeOrderCondition)throws   Exception;
+
+	/**
+	 * 退款订单管理
+	 * @param centralBillListCondition  centralBillListCondition
+	 * @return  Response
+	 */
+	Response refundBillList(CentralBillListCondition centralBillListCondition);
+
+	/**
+	 * 添加备注
+	 * @param centralBillListCondition centralBillListCondition
+	 * @return Response
+	 */
+	Response addComment(CentralBillListCondition centralBillListCondition);
+
+	/**
+	 * 获取退款详情
+	 * @param centralBillListCondition centralBillListCondition
+	 * @return Response
+	 */
+	Response refundBillDetail(CentralBillListCondition centralBillListCondition);
+
+	/**
+	 * 重新退款
+	 * @param centralBillListCondition centralBillListCondition
+	 * @return Response
+	 */
+	Response refund(CentralBillListCondition centralBillListCondition);
+
+	/**
+	 * 导出退款账单
+	 *
+	 * @param request
+	 * @param response
+	 * @param centralBillListCondition
+	 * @return
+	 */
+	Response refundExcel( HttpServletResponse response, CentralBillListCondition centralBillListCondition);
 }

@@ -1,44 +1,124 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.hema.newretail.backstage.dao.BaseMachineTypeMapper" >
-  <cache type="com.hema.newretail.backstage.common.caches.MybatisRedisCache" >
-    <property name="eviction" value="FIFO" />
-    <property name="flushInterval" value="6000000" />
-    <property name="size" value="1024" />
-    <property name="readOnly" value="false" />
-  </cache>
   <resultMap id="BaseResultMap" type="com.hema.newretail.backstage.entry.BaseMachineTypeEntry" >
-    <id column="id" property="id" jdbcType="BIGINT" />
+    <id column="id" property="id" jdbcType="INTEGER" />
     <result column="gmt_create" property="gmtCreate" jdbcType="TIMESTAMP" />
     <result column="gmt_modified" property="gmtModified" jdbcType="TIMESTAMP" />
     <result column="machine_type_name" property="machineTypeName" jdbcType="VARCHAR" />
     <result column="machine_type_code" property="machineTypeCode" jdbcType="VARCHAR" />
     <result column="ingredient_box_num" property="ingredientBoxNum" jdbcType="INTEGER" />
+    <result column="pic_url" property="picUrl" jdbcType="VARCHAR" />
+    <result column="is_deleted" property="isDeleted" jdbcType="INTEGER" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+    <result column="operator" property="operator" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.hema.newretail.backstage.entry.BaseMachineTypeEntry" extends="BaseResultMap" >
+    <result column="description" property="description" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, gmt_create, gmt_modified, machine_type_name, machine_type_code, ingredient_box_num
+    id, gmt_create, gmt_modified, machine_type_name, machine_type_code, ingredient_box_num, 
+    pic_url, is_deleted, status, remark, operator
   </sql>
+  <sql id="Blob_Column_List" >
+    description
+  </sql>
+
+  <!--查询关联设备数量-->
+  <select id="selectCountByMachine" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+    SELECT COUNT(1)from base_machine_info where machine_type_id = #{id,jdbcType=INTEGER}
+  </select>
+  <!--逻辑删除-->
+  <update id="updateDelete" parameterType="java.lang.Integer">
+    UPDATE base_machine_type SET is_deleted = 1 where id = #{id,jdbcType=INTEGER}
+  </update>
+  <!--列表查询-->
+  <select id="list" parameterType="com.hema.newretail.backstage.common.queryparam.device.type.DeviceBasicListCondition" resultType="java.util.Map">
+   SELECT
+	t.id,
+	IFNULL(t.machine_type_name, '') AS machineTypeName,
+	IFNULL(t.machine_type_code, '') AS machineTypeCode,
+	IFNULL(t.pic_url, '') AS picUrl,
+    IFNULL(
+    t.gmt_modified,
+    DATE_FORMAT(
+    t.gmt_modified,
+    '%Y-%c-%e %H:%i:%s'
+    )
+    ) AS gmtModified,
+	IFNULL(t.`status`, 0) AS `status`,
+	IFNULL(t.ingredient_box_num, 0) AS ingredientBoxNum,
+	IFNULL(t.description, '') AS description,
+    IFNULL(t.operator, '') AS operator
+FROM
+	base_machine_type t
+WHERE
+	1 = 1
+AND t.is_deleted = 0
+    <if test="status != null" >
+      AND t.`status` =  #{status,jdbcType=INTEGER}
+    </if>
+    <if test="machineTypeName != null and machineTypeName != '' " >
+      and t.machine_type_name like "%"#{machineTypeName,jdbcType=VARCHAR}"%"
+    </if>
+    ORDER BY
+    t.gmt_modified DESC
+  </select>
+  <!--查询是否重名-->
+  <select id="countName" parameterType="java.util.Map" resultType="java.lang.Integer">
+    SELECT
+    (n.num + c.num) as number
+    FROM
+    (SELECT
+    COUNT(1) as num
+    FROM
+    base_machine_type t
+    WHERE
+    t.machine_type_name = #{machineTypeName}
+    <if test="id != null">
+      and t.id not in (#{id})
+    </if>) n,
+    (SELECT
+    COUNT(1) as num
+    FROM
+    base_machine_type t
+    WHERE
+    t.machine_type_code = #{machineTypeCode}
+    <if test="id != null">
+      and t.id not in (#{id})
+    </if>) c
+  </select>
+
   <select id="selectAll" resultMap="BaseResultMap" >
     select
     <include refid="Base_Column_List" />
-    from base_machine_type
+    ,
+    <include refid="Blob_Column_List" />
+    from base_machine_type where `status` = 0 AND is_deleted = 0
   </select>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
     from base_machine_type
-    where id = #{id,jdbcType=BIGINT}
+    where id = #{id,jdbcType=INTEGER}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from base_machine_type
-    where id = #{id,jdbcType=BIGINT}
+    where id = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.hema.newretail.backstage.entry.BaseMachineTypeEntry" >
     insert into base_machine_type (id, gmt_create, gmt_modified, 
-      machine_type_name, machine_type_code, ingredient_box_num
+      machine_type_name, machine_type_code, ingredient_box_num, 
+      pic_url, is_deleted, status, 
+      remark, operator, description
       )
-    values (#{id,jdbcType=BIGINT}, #{gmtCreate,jdbcType=TIMESTAMP}, #{gmtModified,jdbcType=TIMESTAMP}, 
-      #{machineTypeName,jdbcType=VARCHAR}, #{machineTypeCode,jdbcType=VARCHAR}, #{ingredientBoxNum,jdbcType=INTEGER}
+    values (#{id,jdbcType=INTEGER}, #{gmtCreate,jdbcType=TIMESTAMP}, #{gmtModified,jdbcType=TIMESTAMP}, 
+      #{machineTypeName,jdbcType=VARCHAR}, #{machineTypeCode,jdbcType=VARCHAR}, #{ingredientBoxNum,jdbcType=INTEGER}, 
+      #{picUrl,jdbcType=VARCHAR}, #{isDeleted,jdbcType=INTEGER}, #{status,jdbcType=INTEGER}, 
+      #{remark,jdbcType=VARCHAR}, #{operator,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.hema.newretail.backstage.entry.BaseMachineTypeEntry" >
@@ -62,10 +142,28 @@
       <if test="ingredientBoxNum != null" >
         ingredient_box_num,
       </if>
+      <if test="picUrl != null" >
+        pic_url,
+      </if>
+      <if test="isDeleted != null" >
+        is_deleted,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="remark != null" >
+        remark,
+      </if>
+      <if test="operator != null" >
+        operator,
+      </if>
+      <if test="description != null" >
+        description,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
-        #{id,jdbcType=BIGINT},
+        #{id,jdbcType=INTEGER},
       </if>
       <if test="gmtCreate != null" >
         #{gmtCreate,jdbcType=TIMESTAMP},
@@ -81,6 +179,24 @@
       </if>
       <if test="ingredientBoxNum != null" >
         #{ingredientBoxNum,jdbcType=INTEGER},
+      </if>
+      <if test="picUrl != null" >
+        #{picUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="isDeleted != null" >
+        #{isDeleted,jdbcType=INTEGER},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null" >
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="operator != null" >
+        #{operator,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null" >
+        #{description,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -102,8 +218,41 @@
       <if test="ingredientBoxNum != null" >
         ingredient_box_num = #{ingredientBoxNum,jdbcType=INTEGER},
       </if>
+      <if test="picUrl != null" >
+        pic_url = #{picUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="isDeleted != null" >
+        is_deleted = #{isDeleted,jdbcType=INTEGER},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null" >
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="operator != null" >
+        operator = #{operator,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null" >
+        description = #{description,jdbcType=VARCHAR},
+      </if>
     </set>
-    where id = #{id,jdbcType=BIGINT}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.hema.newretail.backstage.entry.BaseMachineTypeEntry" >
+    update base_machine_type
+    set gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
+      machine_type_name = #{machineTypeName,jdbcType=VARCHAR},
+      machine_type_code = #{machineTypeCode,jdbcType=VARCHAR},
+      ingredient_box_num = #{ingredientBoxNum,jdbcType=INTEGER},
+      pic_url = #{picUrl,jdbcType=VARCHAR},
+      is_deleted = #{isDeleted,jdbcType=INTEGER},
+      status = #{status,jdbcType=INTEGER},
+      remark = #{remark,jdbcType=VARCHAR},
+      operator = #{operator,jdbcType=VARCHAR},
+      description = #{description,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.hema.newretail.backstage.entry.BaseMachineTypeEntry" >
     update base_machine_type
@@ -111,7 +260,12 @@
       gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
       machine_type_name = #{machineTypeName,jdbcType=VARCHAR},
       machine_type_code = #{machineTypeCode,jdbcType=VARCHAR},
-      ingredient_box_num = #{ingredientBoxNum,jdbcType=INTEGER}
-    where id = #{id,jdbcType=BIGINT}
+      ingredient_box_num = #{ingredientBoxNum,jdbcType=INTEGER},
+      pic_url = #{picUrl,jdbcType=VARCHAR},
+      is_deleted = #{isDeleted,jdbcType=INTEGER},
+      status = #{status,jdbcType=INTEGER},
+      remark = #{remark,jdbcType=VARCHAR},
+      operator = #{operator,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>

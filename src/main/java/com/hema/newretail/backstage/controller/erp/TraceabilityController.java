@@ -1,6 +1,7 @@
 package com.hema.newretail.backstage.controller.erp;
 
 import com.hema.newretail.CloudBohhApplication;
+import com.hema.newretail.backstage.annotation.AutoLog;
 import com.hema.newretail.backstage.common.queryparam.erp.*;
 import com.hema.newretail.backstage.common.utils.Response;
 import com.hema.newretail.backstage.service.erp.TraceabilityService;
@@ -50,6 +51,7 @@ public class TraceabilityController {
     @ApiOperation("≡(▔﹏▔)≡原料厂商---总后台列表展示")
     @PostMapping("/list")
     @ResponseBody
+    @AutoLog(logmsg = "溯源系统->原料厂商->查询原料厂商列表")
     public Response manufacturerList(@RequestBody@Validated ManufacturerListCondition manufacturerListCondition, BindingResult bindingResult){
         if (bindingResult.hasErrors()) {
             logger.error("数据校验没通过......"+bindingResult.getFieldError().getDefaultMessage());
@@ -71,6 +73,7 @@ public class TraceabilityController {
     @ApiOperation("≡(▔﹏▔)≡原料厂商---添加")
     @PostMapping("/add")
     @ResponseBody
+    @AutoLog(logmsg = "溯源系统->原料厂商->添加原料厂商")
     public Response manufacturerAdd(@RequestBody@Validated ManufacturerAddCondition manufacturerAddCondition, BindingResult bindingResult){
         if (bindingResult.hasErrors()) {
             logger.error("数据校验没通过......"+bindingResult.getFieldError().getDefaultMessage());
@@ -92,6 +95,7 @@ public class TraceabilityController {
     @ApiOperation("≡(▔﹏▔)≡原料厂商---编辑")
     @PostMapping("/edit")
     @ResponseBody
+    @AutoLog(logmsg = "溯源系统->原料厂商->编辑原料厂商")
     public Response manufacturerEdit(@RequestBody@Validated ManufacturerEditCondition manufacturerEditCondition, BindingResult bindingResult){
         if (bindingResult.hasErrors()) {
             logger.error("数据校验没通过......"+bindingResult.getFieldError().getDefaultMessage());
@@ -116,6 +120,7 @@ public class TraceabilityController {
     @ApiOperation("≡(▔﹏▔)≡订单列表")
     @PostMapping("/orderList")
     @ResponseBody
+    @AutoLog(logmsg = "溯源系统->溯源订单->查询订单列表")
     public Response orderList(@RequestBody@Validated OrderListCondition orderListCondition, BindingResult bindingResult) throws Exception{
         if (bindingResult.hasErrors()) {
             logger.error("数据校验没通过......"+bindingResult.getFieldError().getDefaultMessage());
@@ -205,6 +210,7 @@ public class TraceabilityController {
     @ApiOperation("≡(▔﹏▔)≡订单添加")
     @PostMapping("/orderAdd")
     @ResponseBody
+    @AutoLog(logmsg = "溯源系统->溯源订单->创建订单")
     public Response orderAdd(@RequestBody@Validated OrderAddCondition orderAddCondition, BindingResult bindingResult)throws Exception{
         if (bindingResult.hasErrors()) {
             logger.error("数据校验没通过......"+bindingResult.getFieldError().getDefaultMessage());
@@ -227,6 +233,7 @@ public class TraceabilityController {
     @ApiOperation("≡(▔﹏▔)≡ 分后台---列表")
     @PostMapping("/inStoreList")
     @ResponseBody
+    @AutoLog(logmsg = "溯源系统->入库->查询待入库原料列表")
     public Response inStoreList(@RequestBody@Validated InStoreListCondition inStoreListCondition, BindingResult bindingResult){
         if (bindingResult.hasErrors()) {
             logger.error("数据校验没通过......"+bindingResult.getFieldError().getDefaultMessage());
@@ -248,6 +255,7 @@ public class TraceabilityController {
     @ApiOperation("≡(▔﹏▔)≡ 分后台---批量提交串码进入待入库")
     @PostMapping("/inStorePreAll")
     @ResponseBody
+    @AutoLog(logmsg = "溯源系统->入库->批量提交串码进入待入库")
     public Response inStorePreAll(@RequestBody@Validated InStorePreAllCondition inStorePreAllCondition, BindingResult bindingResult){
         if (bindingResult.hasErrors()) {
             logger.error("数据校验没通过......"+bindingResult.getFieldError().getDefaultMessage());
@@ -268,6 +276,7 @@ public class TraceabilityController {
     @ApiOperation("≡(▔﹏▔)≡ 分后台  列表---删除")
     @PostMapping("/inStoreDelete")
     @ResponseBody
+    @AutoLog(logmsg = "溯源系统->入库->删除待入库原料")
     public Response inStoreDelete(@RequestBody@Validated InStoreDeleteCondition inStoreDeleteCondition, BindingResult bindingResult){
         if (bindingResult.hasErrors()) {
             logger.error("数据校验没通过......"+bindingResult.getFieldError().getDefaultMessage());
@@ -289,6 +298,7 @@ public class TraceabilityController {
     @ApiOperation("≡(▔﹏▔)≡ 分后台---当天入库列表")
     @PostMapping("/inStoreToday")
     @ResponseBody
+    @AutoLog(logmsg = "溯源系统->入库->今日待入库")
     public Response inStoreToday(){
             return traceabilityService.inStoreToday();
     }
@@ -305,6 +315,7 @@ public class TraceabilityController {
     @ApiOperation("≡(▔﹏▔)≡ 分后台---提交入库")
     @PostMapping("/inStoreInStore")
     @ResponseBody
+    @AutoLog(logmsg = "溯源系统->入库->提交入库")
     public Response inStoreInStore(HttpServletRequest request) {
         return traceabilityService.inStoreInStore(request);
     }
@@ -320,6 +331,7 @@ public class TraceabilityController {
     @ApiOperation("≡(▔﹏▔)≡ 分后台---输入串码入库")
     @PostMapping("/inStoreNum")
     @ResponseBody
+    @AutoLog(logmsg = "溯源系统->入库->输入串码入库")
     public Response inStoreNum(@RequestBody@Validated InStoreNumCondition inStoreNumCondition, HttpServletRequest request,BindingResult bindingResult){
         if (bindingResult.hasErrors()) {
             logger.error("数据校验没通过......"+bindingResult.getFieldError().getDefaultMessage());
@@ -349,6 +361,20 @@ public class TraceabilityController {
             return traceabilityService.inStoreRecordList(inStoreRecordListCondition);
         }
     }
-
+    /**
+     *
+     * 功能描述:分后台  入库记录--待入库列表
+     *
+     * @param: InStoreListCondition
+     * @return: list
+     * @author: cwz
+     * @date: 2018/11/2 14:07
+     */
+    @ApiOperation("≡(▔﹏▔)≡ 分后台---待入库--列表")
+    @PostMapping("/inStoreLoadList")
+    @ResponseBody
+    public Response inStoreLoadList(){
+        return traceabilityService.inStoreLoadList();
+    }
 
 }

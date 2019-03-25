@@ -1,10 +1,11 @@
 package com.hema.newretail.backstage.entry;
 
-import java.io.Serializable;
-import java.util.Date;
+import lombok.Data;
 
-public class BaseMachineTypeEntry implements Serializable {
-    private Long id;
+import java.util.Date;
+@Data
+public class BaseMachineTypeEntry {
+    private Integer id;
 
     private Date gmtCreate;
 
@@ -16,51 +17,15 @@ public class BaseMachineTypeEntry implements Serializable {
 
     private Integer ingredientBoxNum;
 
-    public Long getId() {
-        return id;
-    }
+    private String picUrl;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    private Integer isDeleted;
 
-    public Date getGmtCreate() {
-        return gmtCreate;
-    }
+    private Integer status;
 
-    public void setGmtCreate(Date gmtCreate) {
-        this.gmtCreate = gmtCreate;
-    }
+    private String remark;
 
-    public Date getGmtModified() {
-        return gmtModified;
-    }
+    private String operator;
 
-    public void setGmtModified(Date gmtModified) {
-        this.gmtModified = gmtModified;
-    }
-
-    public String getMachineTypeName() {
-        return machineTypeName;
-    }
-
-    public void setMachineTypeName(String machineTypeName) {
-        this.machineTypeName = machineTypeName == null ? null : machineTypeName.trim();
-    }
-
-    public String getMachineTypeCode() {
-        return machineTypeCode;
-    }
-
-    public void setMachineTypeCode(String machineTypeCode) {
-        this.machineTypeCode = machineTypeCode == null ? null : machineTypeCode.trim();
-    }
-
-    public Integer getIngredientBoxNum() {
-        return ingredientBoxNum;
-    }
-
-    public void setIngredientBoxNum(Integer ingredientBoxNum) {
-        this.ingredientBoxNum = ingredientBoxNum;
-    }
+    private String description;
 }

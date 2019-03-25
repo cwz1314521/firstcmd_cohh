@@ -10,14 +10,13 @@ import com.hema.newretail.backstage.common.queryparam.agent.AgentListCondition;
 import com.hema.newretail.backstage.common.queryparam.agent.EditAgentCondition;
 import com.hema.newretail.backstage.common.queryparam.agent.PushCondition;
 import com.hema.newretail.backstage.common.utils.*;
+import com.hema.newretail.backstage.common.utils.excel.AgentExcelUtils;
 import com.hema.newretail.backstage.common.utils.rongyun.RongCloudMethodUtil;
-import com.hema.newretail.backstage.dao.AgentCooperationModeMapper;
 import com.hema.newretail.backstage.dao.AgentUserMapper;
 import com.hema.newretail.backstage.dao.BasePushMessageMapper;
 import com.hema.newretail.backstage.dao.BusiCompanyAccountMapper;
 import com.hema.newretail.backstage.entry.BasePushMessageEntry;
 import com.hema.newretail.backstage.entry.BusiCompanyAccountEntry;
-import com.hema.newretail.backstage.entry.agent.AgentCooperationMode;
 import com.hema.newretail.backstage.entry.agent.AgentUserEntry;
 import com.hema.newretail.backstage.model.agent.AgentListBo;
 import com.hema.newretail.backstage.model.agent.PushListBo;
@@ -31,11 +30,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.math.BigDecimal;
 import java.net.URLEncoder;
 import java.util.*;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * @Department 新零售
@@ -62,12 +60,13 @@ public class AgentServiceImpl implements AgentService {
 
     private static final Logger logger = LoggerFactory.getLogger(CloudBohhApplication.class);
     /**
+     *
      * 功能描述:展示代理公司列表
      *
-     * @param:
-     * @return: list
-     * @author: cwz
-     * @date: 2018/9/21 10:50
+     * @param agentListCondition
+     * @return list
+     * @author cwz
+     * @date 2018/9/21 10:50
      */
     @Override
     public Response list(AgentListCondition agentListCondition) {
@@ -89,24 +88,25 @@ public class AgentServiceImpl implements AgentService {
     }
 
     /**
+     *
      * 功能描述:添加代理公司
      *
-     * @param:
-     * @return: list
-     * @author: cwz
-     * @date: 2018/9/21 10:50
+     * @param condition
+     * @return Response
+     * @author cwz
+     * @date 2018/9/21 10:50
      */
     @Override
     @Transactional
-    public Response add(AddAgentCondition AddAgentCondition) {
+    public Response add(AddAgentCondition condition) {
 
-        int i = agentUserMapper.selectCountByName(AddAgentCondition.getCompanyName());
+        int i = agentUserMapper.selectCountByName(condition.getCompanyName());
         if(i>=1){
             logger.error("代理公司名称重复");
             return  Response.failure("代理公司名称重复");
         }
         logger.info("参数处理......");
-        AgentUserEntry agentUserEntry = addAssembly(AddAgentCondition);
+        AgentUserEntry agentUserEntry = addAssembly(condition);
         logger.info("代理主表存入......");
         agentUserMapper.insert(agentUserEntry);
         logger.info("代理合作模式拼装......");
@@ -116,22 +116,43 @@ public class AgentServiceImpl implements AgentService {
         busiCompanyAccountEntry.setRefId(agentUserEntry.getId());
         busiCompanyAccountEntry.setGmtModified(new Date());
         busiCompanyAccountEntry.setGmtCreate(new Date());
-        busiCompanyAccountEntry.setBank(AddAgentCondition.getBank());
-        busiCompanyAccountEntry.setAccountName(AddAgentCondition.getAccountName());
-        busiCompanyAccountEntry.setAccountNumber(AddAgentCondition.getAccountNumber());
+        busiCompanyAccountEntry.setBank(condition.getBank());
+        busiCompanyAccountEntry.setAccountName(condition.getAccountName());
+        busiCompanyAccountEntry.setAccountNumber(condition.getAccountNumber());
         logger.info("代理账户存入......");
+        /***
+         * 0网格 1代理收益账户 2代理原料账户(￥10000) 3代理押金返还 4代理原押金
+         */
+
+        busiCompanyAccountEntry.setType("1");
+        busiCompanyAccountEntry.setAmount(new BigDecimal(0));
         busiCompanyAccountMapper.insert(busiCompanyAccountEntry);
+
+        busiCompanyAccountEntry.setType("2");
+        busiCompanyAccountEntry.setAmount(new BigDecimal(10000));
+        busiCompanyAccountMapper.insert(busiCompanyAccountEntry);
+
+        busiCompanyAccountEntry.setType("3");
+        busiCompanyAccountEntry.setAmount(new BigDecimal(0));
+        busiCompanyAccountMapper.insert(busiCompanyAccountEntry);
+
+        busiCompanyAccountEntry.setType("4");
+        busiCompanyAccountEntry.setAmount(new BigDecimal(0));
+        busiCompanyAccountMapper.insert(busiCompanyAccountEntry);
+
+
         logger.info("二表存储完成......");
         return Response.success();
     }
 
     /**
+     *
      * 功能描述:修改代理公司
      *
-     * @param:
-     * @return: list
-     * @author: cwz
-     * @date: 2018/9/21 10:50
+     * @param editAgentCondition
+     * @return Response
+     * @author cwz
+     * @date 2018/9/21 10:50
      */
     @Override
     @Transactional
@@ -157,12 +178,13 @@ public class AgentServiceImpl implements AgentService {
     }
 
     /**
+     *
      * 功能描述:删除代理公司
      *
-     * @param:
-     * @return: list
-     * @author: cwz
-     * @date: 2018/9/21 10:50
+     * @param id
+     * @return Response
+     * @author cwz
+     * @date 2018/9/21 10:50
      */
     @Override
     @Transactional
@@ -177,20 +199,33 @@ public class AgentServiceImpl implements AgentService {
     }
 
     /**
+     *
      * 功能描述:代理数据统计
      *
-     * @param:
-     * @return: list
-     * @author: cwz
-     * @date: 2018/9/21 10:50
+     * @param
+     * @return Response
+     * @author cwz
+     * @date 2018/9/21 10:50
      */
     @Override
     public Response listStatistics() {
         return null;
     }
 
+    /**
+     *
+     * 功能描述: excel
+     *
+     * @param agentListCondition
+     * @param request
+     * @param response
+     * @return Response
+     * @author cwz
+     * @date 2018/10/11 11:49
+     * @throws Exception
+     */
     @Override
-    public Response excle(HttpServletRequest request, HttpServletResponse response, AgentListCondition agentListCondition) throws   Exception{
+    public Response excel(HttpServletRequest request, HttpServletResponse response, AgentListCondition agentListCondition) throws   Exception{
 
         logger.info("判断名字编号是否为空......");
         if(agentListCondition.getName() != "" && agentListCondition.getName() !=null){
@@ -221,17 +256,17 @@ public class AgentServiceImpl implements AgentService {
      *
      * 功能描述: 消息推送
      *
-     * @param: PushCondition
-     * @return: success
-     * @author: cwz
-     * @date: 2018/10/26 17:37
+     * @param pushCondition
+     * @return success
+     * @author cwz
+     * @date 2018/10/26 17:37
      */
     @Override
     public Response push(PushCondition pushCondition){
         logger.info("创建参数类list......");
         List<BasePushMessageEntry> list = new ArrayList<>();
         logger.info("转化ids为list数组......");
-        List<Long> longs = StringUtil.StringsToLong(pushCondition.getGridIds());
+        List<Long> longs = StringUtil.stringsToLong(pushCondition.getGridIds());
         for (Long l:longs
              ) {
             logger.info("循环拼装参数类......");
@@ -263,17 +298,17 @@ public class AgentServiceImpl implements AgentService {
      *
      * 功能描述: 推送历史
      *
-     * @param: commomPageCondition
-     * @return: list
-     * @author: cwz
-     * @date: 2018/10/26 17:37
+     * @param condition
+     * @return list
+     * @author cwz
+     * @date 2018/10/26 17:37
      */
     @Override
-    public Response pushHistory(CommomPageCondition commomPageCondition){
-        logger.info("执行分页页码："+commomPageCondition.getPageNum()+"每页数："+commomPageCondition.getPageSize());
-        Page<PushListBo> page =PageHelper.startPage(commomPageCondition.getPageNum(),commomPageCondition.getPageSize());
+    public Response pushHistory(CommomPageCondition condition){
+        logger.info("执行分页页码："+condition.getPageNum()+"每页数："+condition.getPageSize());
+        Page<PushListBo> page =PageHelper.startPage(condition.getPageNum(),condition.getPageSize());
         basePushMessageMapper.selectByAgent();
-        return Response.success(page.getResult(),page.getTotal(),commomPageCondition.getPageSize(),commomPageCondition.getPageNum());
+        return Response.success(page.getResult(),page.getTotal(),condition.getPageSize(),condition.getPageNum());
     }
 
 
@@ -281,42 +316,43 @@ public class AgentServiceImpl implements AgentService {
     *
     * 功能描述: 判断传入的name是否由数字构成
     *
-    * @param: str
-    * @return: boolean
-    * @author: cwz
-    * @date: 2018/9/25 12:00
+    * @param str
+    * @return boolean
+    * @author cwz
+    * @date 2018/9/25 12:00
     */
     private static boolean isInteger(String str) {
         logger.info("验证传入的字符串是否由数字构成......");
-        Pattern pattern = Pattern.compile("^[-\\+]?[\\d]*$");
+        String rex = "^[-\\+]?[\\d]*$";
+        Pattern pattern = Pattern.compile(rex);
         return pattern.matcher(str).matches();
     }
     /**
      *
      * 功能描述: 添加代理参数类拼装
      *
-     * @param: AddAgentCondition
-     * @return: AgentUserEntry
-     * @author: cwz
-     * @date: 2018/10/8 13:38
+     * @param condition
+     * @return AgentUserEntry
+     * @author cwz
+     * @date 2018/10/8 13:38
      */
-    private AgentUserEntry addAssembly(AddAgentCondition AddAgentCondition){
+    private AgentUserEntry addAssembly(AddAgentCondition condition){
         AgentUserEntry agentUserEntry = new AgentUserEntry();
         agentUserEntry.setGmtModified(new Date());
-        agentUserEntry.setStatus(AddAgentCondition.getStatus());
+        agentUserEntry.setStatus(condition.getStatus());
         agentUserEntry.setIsDeleted(Byte.valueOf("0"));
         agentUserEntry.setGmtCreate(new Date());
-        agentUserEntry.setAddr(AddAgentCondition.getAddr());
-        agentUserEntry.setArea(AddAgentCondition.getArea());
-        agentUserEntry.setCity(AddAgentCondition.getCity());
+        agentUserEntry.setAddr(condition.getAddr());
+        agentUserEntry.setArea(condition.getArea());
+        agentUserEntry.setCity(condition.getCity());
         agentUserEntry.setCompanyCode(null);
-        agentUserEntry.setCompanyName(AddAgentCondition.getCompanyName());
-        agentUserEntry.setContact(AddAgentCondition.getContact());
-        agentUserEntry.setContactWay(AddAgentCondition.getContactWay());
+        agentUserEntry.setCompanyName(condition.getCompanyName());
+        agentUserEntry.setContact(condition.getContact());
+        agentUserEntry.setContactWay(condition.getContactWay());
         agentUserEntry.setEmail(null);
-        agentUserEntry.setProvince(AddAgentCondition.getProvince());
-        agentUserEntry.setRemark(AddAgentCondition.getRemark());
-        agentUserEntry.setTel(AddAgentCondition.getTel());
+        agentUserEntry.setProvince(condition.getProvince());
+        agentUserEntry.setRemark(condition.getRemark());
+        agentUserEntry.setTel(condition.getTel());
         logger.info("参数处理完成");
         return agentUserEntry;
     }
@@ -325,10 +361,10 @@ public class AgentServiceImpl implements AgentService {
      *
      * 功能描述:
      *
-     * @param: AddAgentCondition
-     * @return: AgentUserEntry
-     * @author: cwz
-     * @date: 2018/10/8 13:38
+     * @param editAgentCondition
+     * @return AgentUserEntry
+     * @author cwz
+     * @date 2018/10/8 13:38
      */
     private AgentUserEntry editAssembly(EditAgentCondition editAgentCondition){
 

@@ -52,4 +52,22 @@ public class ExceptionAdvice {
         errors.forEach(error -> msgList.add(error.getDefaultMessage()));
         return Response.failureValid(msgList);
     }
+
+    @ExceptionHandler(value = RuntimeException.class)
+    public Response runtimeExceptionHandler(RuntimeException ex) {
+        return Response.failureValid(ex.getMessage());
+    }
+
+    /**
+     * 数据校验异常
+     *
+     * @param ex
+     * @return Response
+     */
+    @ExceptionHandler(value = Exception.class)
+    public Response exceptionhandler(Exception ex) {
+        String errors = ex.getMessage();
+        System.out.println(errors);
+        return Response.failureValid(errors);
+    }
 }

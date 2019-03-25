@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hema.newretail.backstage.dao.DMonthMachineUuidMapper" >
+  <resultMap id="BaseResultMap" type="com.hema.newretail.backstage.entry.data.DMonthMachineUuidEntry" >
+    <result column="dimension" property="dimension" jdbcType="VARCHAR" />
+    <result column="month" property="month" jdbcType="VARCHAR" />
+    <result column="machineUuid" property="machineuuid" jdbcType="VARCHAR" />
+  </resultMap>
+
+
+  <!--数据统计销量趋势接口sql-->
+  <select id="selectBaseResultMap" resultMap="BaseResultMap" parameterType="com.hema.newretail.backstage.common.queryparam.data.DataSalesTrendDBCondition">
+  SELECT
+	dimension,
+	`month`,
+	machineUuid
+
+FROM
+	`d_month$machineuuid`
+WHERE
+	machineUuid = #{machineId,jdbcType=VARCHAR}
+	and
+<![CDATA[
+    #{dateStart,jdbcType=VARCHAR} <= `month`
+    AND `month` <= #{dateEnd,jdbcType=VARCHAR}
+     ]]>
+  </select>
+
+
+  <insert id="insert" parameterType="com.hema.newretail.backstage.entry.data.DMonthMachineUuidEntry" >
+    insert into d_month$machineuuid (dimension, month, machineUuid
+      )
+    values (#{dimension,jdbcType=VARCHAR}, #{month,jdbcType=VARCHAR}, #{machineuuid,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.hema.newretail.backstage.entry.data.DMonthMachineUuidEntry" >
+    insert into d_month$machineuuid
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="dimension != null" >
+        dimension,
+      </if>
+      <if test="month != null" >
+        month,
+      </if>
+      <if test="machineuuid != null" >
+        machineUuid,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="dimension != null" >
+        #{dimension,jdbcType=VARCHAR},
+      </if>
+      <if test="month != null" >
+        #{month,jdbcType=VARCHAR},
+      </if>
+      <if test="machineuuid != null" >
+        #{machineuuid,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+</mapper>

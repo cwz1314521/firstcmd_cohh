@@ -5,6 +5,7 @@ import com.hema.newretail.backstage.common.utils.Response;
 import com.hema.newretail.backstage.model.grid.GridCompanyListBo;
 import com.hema.newretail.backstage.model.grid.SubCompanyBo;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
 
@@ -106,7 +107,7 @@ public interface GridService {
      * @date: 2018/9/21 9:31
      */
 
-    Response integral(GridIntegralCondition gridIntegralCondition);
+    Response integral(HttpServletRequest request, GridIntegralCondition gridIntegralCondition);
 
     /**
      *

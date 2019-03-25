@@ -10,6 +10,7 @@ import com.aliyun.oss.model.ObjectMetadata;
 import com.aliyun.oss.model.PutObjectResult;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
 
@@ -52,8 +53,15 @@ public class AliyunOSSClientUtil {
      */
     @Value("${oss.folder_img}")
     public String folder_img;
+
     @Value("${oss.web_url}")
     public String url;
+
+    /**
+     * 普通文件存放路径
+     */
+    @Value("${oss.folder_file}")
+    public String folderFile;
 
     /**
      * 获取阿里云OSS客户端对象
@@ -90,6 +98,16 @@ public class AliyunOSSClientUtil {
      */
     public String uploadObject2OSSImg(File file) {
         return uploadObject2OSS(file, folder_img);
+    }
+
+    /**
+     * 上传普通文件
+     *
+     * @param file
+     * @return
+     */
+    public String uploadFileToOSS(MultipartFile file) {
+        return uploadFileToOSS(file, folderFile);
     }
 
     /**
@@ -134,6 +152,7 @@ public class AliyunOSSClientUtil {
         return resultStr;
     }
 
+
     public void downloadFile(String key, String filename, String folder)
             throws OSSException, ClientException, IOException {
 
@@ -160,6 +179,7 @@ public class AliyunOSSClientUtil {
     public static String getContentType(String fileName) {
         //文件的后缀名
         String fileExtension = fileName.substring(fileName.lastIndexOf("."));
+        System.out.println("fileExtension:" + fileExtension);
         if (BMP.equalsIgnoreCase(fileExtension)) {
             return "image/bmp";
         }
@@ -189,6 +209,9 @@ public class AliyunOSSClientUtil {
         }
         if (JSON.equalsIgnoreCase(fileExtension)) {
             return "application/json";
+        }
+        if (APK.equalsIgnoreCase(fileExtension)) {
+            return "application/vnd.android.package-archive";
         }
 
         //默认返回类型
@@ -255,6 +278,69 @@ public class AliyunOSSClientUtil {
         }
     }
 
+    /**
+     * 上传单张图片
+     *
+     * @param file        MultipartFile
+     * @param newFileName 新生成的文件名
+     * @return 成功返回文件url
+     */
+    public String uploadObject2OSS(MultipartFile file, String newFileName) {
+        String resultStr = null;
+        try {
+            InputStream is = file.getInputStream();
+            ObjectMetadata metadata = new ObjectMetadata();
+            metadata.setContentLength(is.available());
+            metadata.setCacheControl("no-cache");
+            metadata.setHeader("Pragma", "no-cache");
+            metadata.setContentEncoding("utf-8");
+
+            metadata.setContentType(getContentType(newFileName));
+            metadata.setContentDisposition("filename/filesize=" + newFileName + "/" + file.getSize() + "Byte.");
+            PutObjectResult putResult = getOSSClient().putObject(backet_name, folder_img + newFileName, is, metadata);
+            if (putResult.getETag().isEmpty()) {
+                resultStr = "";
+            } else {
+                resultStr = url + folder_img + newFileName;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "";
+        }
+        System.out.println("oss url:" + resultStr);
+        return resultStr;
+    }
+
+    /**
+     * 上传文件
+     *
+     * @param file
+     * @param key
+     * @return
+     */
+    private String uploadFileToOSS(MultipartFile file, String key) {
+        String resultStr = "";
+        try {
+            InputStream is = file.getInputStream();
+            String fileName = file.getOriginalFilename();
+            System.out.println("@@fileName:" + fileName);
+            ObjectMetadata metadata = new ObjectMetadata();
+            metadata.setContentLength(is.available());
+            metadata.setCacheControl("no-cache");
+            metadata.setHeader("Pragma", "no-cache");
+            metadata.setContentEncoding("utf-8");
+            metadata.setContentType(getContentType(fileName));
+            metadata.setContentDisposition("filename/filesize=" + fileName + "/" + file.getSize() + "Byte.");
+            PutObjectResult putResult = getOSSClient().putObject(backet_name, key + fileName, is, metadata);
+            if (!putResult.getETag().isEmpty()) {
+                resultStr = url + key + fileName;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return resultStr;
+    }
+
     private static final String BMP = ".bmp";
 
     private static final String GIF = ".gif";
@@ -282,6 +368,8 @@ public class AliyunOSSClientUtil {
     private static final String PPTX = "pptx";
 
     private static final String DOCX = "docx";
+
+    private static final String APK = "apk";
 
     public String getSmallPicDiyUrl() {
         return url + folder_img + "small_pic_diy.gif";

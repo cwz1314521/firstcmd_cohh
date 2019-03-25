@@ -1,11 +1,10 @@
 package com.hema.newretail.backstage.controller.agent;
 
 import com.hema.newretail.CloudBohhApplication;
+import com.hema.newretail.backstage.annotation.AutoLog;
 import com.hema.newretail.backstage.common.queryparam.CommomPageCondition;
 import com.hema.newretail.backstage.common.queryparam.agent.*;
-import com.hema.newretail.backstage.common.queryparam.usermanagementparameter.CentralBillListCondition;
 import com.hema.newretail.backstage.common.utils.Response;
-import com.hema.newretail.backstage.entry.agent.AgentUserEntry;
 import com.hema.newretail.backstage.service.agent.AgentService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -13,8 +12,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -30,9 +27,10 @@ import javax.servlet.http.HttpServletResponse;
  * @Date 2018/9/21 9:17
  * @Version 1.2 --- 产品10.26修改代理 - C
  **/
-@Api(description = "≡(▔﹏▔)≡代理公司相关接口")
+@Api("代理公司")
 @Controller
 @RequestMapping("/agency")
+@AutoLog
 public class AgentController {
 
     @Autowired
@@ -53,7 +51,7 @@ public class AgentController {
      */
     @PostMapping(value = "/list")
     @ResponseBody
-    @ApiOperation("≡(▔﹏▔)≡代理公司列表")
+    @ApiOperation("列表查询")
     public Response list(@RequestBody @Validated AgentListCondition agentListCondition, BindingResult bindingResult){
         if (bindingResult.hasErrors()) {
             logger.error("参数验证失败......"+bindingResult.getFieldError().getDefaultMessage());
@@ -68,16 +66,16 @@ public class AgentController {
      * 功能描述: 代理excle导出
      *
      * @param: HttpServletRequest request, HttpServletResponse response,@RequestBody @Validated AgentListCondition agentListCondition
-     * @return: excle
+     * @return: excel
      * @author: cwz
      * @date: 2018/10/11 11:30
      */
     @GetMapping(value = "/excel")
-    @ApiOperation("excel导出  代理")
+    @ApiOperation("excel导出")
     @ResponseBody
     public Response excel(HttpServletRequest request, HttpServletResponse response,AgentListCondition agentListCondition)throws Exception{
         logger.info("开始执行导出service......");
-        return  agentService.excle(request,response,agentListCondition);
+        return  agentService.excel(request,response,agentListCondition);
 
     }
 
@@ -92,14 +90,14 @@ public class AgentController {
      */
     @PostMapping(value = "/add")
     @ResponseBody
-    @ApiOperation("≡(▔﹏▔)≡添加代理")
-    public Response add(@RequestBody @Validated AddAgentCondition AddAgentCondition, BindingResult bindingResult){
+    @ApiOperation("添加")
+    public Response add(@RequestBody @Validated AddAgentCondition condition, BindingResult bindingResult){
         if (bindingResult.hasErrors()) {
             logger.error("参数验证失败......"+bindingResult.getFieldError().getDefaultMessage());
             return Response.failure(bindingResult.getFieldError().getDefaultMessage());
         } else {
             logger.info("参数验证成功......");
-            return agentService.add(AddAgentCondition);
+            return agentService.add(condition);
         }
     }
 
@@ -114,7 +112,7 @@ public class AgentController {
      */
     @PostMapping(value = "/edit")
     @ResponseBody
-    @ApiOperation("≡(▔﹏▔)≡修改代理")
+    @ApiOperation("修改")
     public Response edit(@RequestBody @Validated EditAgentCondition editAgentCondition, BindingResult bindingResult){
         if (bindingResult.hasErrors()) {
             logger.error("参数验证失败......"+bindingResult.getFieldError().getDefaultMessage());
@@ -137,7 +135,7 @@ public class AgentController {
      */
     @PostMapping(value = "/delete")
     @ResponseBody
-    @ApiOperation("≡(▔﹏▔)≡删除代理")
+    @ApiOperation("删除")
     public Response delete(@RequestBody @Validated DeleteAgentCondition deleteAgentCondition, BindingResult bindingResult){
         if (bindingResult.hasErrors()) {
             logger.error("参数验证失败......"+bindingResult.getFieldError().getDefaultMessage());
@@ -160,7 +158,7 @@ public class AgentController {
      */
     @PostMapping(value = "/listStatistics")
     @ResponseBody
-    @ApiOperation("≡(▔﹏▔)≡代理数据统计")
+    @ApiOperation("数据统计")
     public Response listStatistics(@RequestBody  @Validated AgentListCondition agentListConditio, BindingResult bindingResult){
         if (bindingResult.hasErrors()) {
             logger.error("参数验证失败......"+bindingResult.getFieldError().getDefaultMessage());
@@ -181,7 +179,7 @@ public class AgentController {
      */
     @PostMapping(value = "/push")
     @ResponseBody
-    @ApiOperation("≡(▔﹏▔)≡消息推送")
+    @ApiOperation("消息推送")
     public Response push(@RequestBody @Validated PushCondition pushCondition, BindingResult bindingResult){
         if (bindingResult.hasErrors()) {
             logger.error("参数验证失败......."+bindingResult.getFieldError().getDefaultMessage());

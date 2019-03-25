@@ -62,6 +62,8 @@ public class TraceabilityServiceImpl implements TraceabilityService {
     private static final String EMPTY = "";
     private static final Integer AONE = -1;
     private static final Integer ZONE = 1;
+    private static final Integer AFOUR = -4;
+    private static final Integer ZTWO = 2;
 
     /**
      * 功能描述:原料厂商---总后台列表展示
@@ -153,11 +155,7 @@ public class TraceabilityServiceImpl implements TraceabilityService {
         entry.setRemark(manufacturerEditCondition.getRemark());
         entry.setId(manufacturerEditCondition.getId());
         entry.setPassword(manufacturerEditCondition.getPassword());
-/*        int i = erpIngredientManufacturerMapper.selectCountByUserNameEdit(entry.getUserName(),entry.getId());
-        if(i > 0){
-            logger.error("用户名重复....."+entry.getUserName());
-            return Response.failure("用户名重复.....");
-        }*/
+/**        int i = erpIngredientManufacturerMapper.selectCountByUserNameEdit(entry.getUserName(),entry.getId()); if(i > 0){ logger.error("用户名重复....."+entry.getUserName()); return Response.failure("用户名重复....."); }*/
         logger.info("拼装参数类" + ", userName='" + entry.getUserName() + '\''  + ", companyName='" + entry.getCompanyName()
                 + '\'' + ", remark='" + entry.getRemark() + '\'' +
                 ", gmtModified=" + entry.getGmtModified());
@@ -272,7 +270,7 @@ public class TraceabilityServiceImpl implements TraceabilityService {
             logger.error("参数有误");
             return Response.failure("参数关联有误");
         }
-        erpIngredientOrderEntry.setOrderCode(NumberUtils.OrderCode(erpIngredientManufacturerEntry.getCompanyCode(),erpIngredientOrderMapper.selectAllCount()+1));
+        erpIngredientOrderEntry.setOrderCode(NumberUtils.orderCode(erpIngredientManufacturerEntry.getCompanyCode(),erpIngredientOrderMapper.selectAllCount()+1));
         erpIngredientOrderEntry.setIngredientManufacturerId(orderAddCondition.getManufacturerId());
         erpIngredientOrderEntry.setOrderStatus(0);
         erpIngredientOrderEntry.setRemark(orderAddCondition.getRemark());
@@ -340,7 +338,7 @@ public class TraceabilityServiceImpl implements TraceabilityService {
     }
 
     /**
-     * 功能描述:分后台  列表--批量提交串码进入待入库
+     * 功能描述:分后台  列表--批量提交溯源码进入待入库
      *
      * @param inStoreListCondition
      * @param: InStoreListCondition
@@ -351,9 +349,9 @@ public class TraceabilityServiceImpl implements TraceabilityService {
     @Override
     public Response inStorePreAll(InStorePreAllCondition inStoreListCondition) {
         logger.info("第一步更新扫码枪扫到的数据......");
-        if(inStoreListCondition.getQrcodeCode() != null  && !EMPTY.equals(inStoreListCondition.getQrcodeCode())){
+        if(inStoreListCondition.getRandomCode() != null  && !EMPTY.equals(inStoreListCondition.getRandomCode())){
             int num = 0;
-            for (String qrcodeCode:inStoreListCondition.getQrcodeCode()
+            for (String qrcodeCode:inStoreListCondition.getRandomCode()
                     ) {
                 logger.info("循环更新待入库状态......"+qrcodeCode);
                 num += erpOrderQrcodeMapper.updateByQrcodeCode(qrcodeCode);
@@ -406,12 +404,16 @@ public class TraceabilityServiceImpl implements TraceabilityService {
         condition.setCompanyId(companyId);
         condition.setTime(new Date());
         condition.setUserId(userId);
-        erpOrderQrcodeMapper.updateByInStoreDBCondition(condition);
-        return Response.success(inStoreTodayBos);
+        int i = erpOrderQrcodeMapper.updateByInStoreDBCondition(condition);
+        if(i>0) {
+            return Response.success(inStoreTodayBos);
+        }else {
+            return Response.failure("待入库暂无数据，请先扫码上传数据");
+        }
     }
 
     /**
-     * 功能描述:分后台  输入串码入库
+     * 功能描述:分后台  输入溯源码入库
      *
      * @param inStoreNumCondition
      * @param: InStoreListCondition
@@ -421,17 +423,25 @@ public class TraceabilityServiceImpl implements TraceabilityService {
      */
     @Override
     public Response inStoreNum(HttpServletRequest request,InStoreNumCondition inStoreNumCondition) {
-        ErpOrderQrcodeEntry entry = erpOrderQrcodeMapper.selectByQrcodeCode(inStoreNumCondition.getQrcodeCode());
+        ErpOrderQrcodeEntry entry = erpOrderQrcodeMapper.selectByQrcodeCode(inStoreNumCondition.getRandomCode());
         if(entry == null){
-            return Response.failure("未检测到该串码");
+            return Response.failure("未检测到该溯源码");
         }else{
             if(AONE.equals(entry.getStatus())){
-                return Response.failure("该串码已录入待入库");
+                return Response.failure("该溯源码已录入待入库");
             }else  if(ZONE.equals(entry.getStatus())){
-                return Response.failure("该串码已入库");
+                return Response.failure("该溯源码已入库");
+            }else if(AFOUR.equals(entry.getStatus())) {
+                return Response.failure("该溯源码在库,并且已进入待出库");
+            }else if(ZTWO.equals(entry.getStatus())) {
+                return Response.failure("该溯源码已出库");
             }else {
-                erpOrderQrcodeMapper.updateByQrcodeCode(inStoreNumCondition.getQrcodeCode());
-                return Response.success("该串码已录入待入库");
+                int i = erpOrderQrcodeMapper.updateByQrcodeCode(inStoreNumCondition.getRandomCode());
+                if(i>0){
+                return Response.success("该溯源码已录入待入库");
+                }else {
+                    return Response.failure("未检测到该溯源码");
+                }
             }
         }
     }
@@ -468,7 +478,23 @@ public class TraceabilityServiceImpl implements TraceabilityService {
         erpOrderQrcodeMapper.updateDelete(inStoreDeleteCondition.getId());
         return Response.success();
     }
-
+    /**
+     * 功能描述:分后台  入库侧边栏
+     *
+     * @param: InStoreListCondition
+     * @return: list
+     * @author: cwz
+     * @date: 2018/11/2 14:07
+     */
+    @Override
+    public Response inStoreLoadList() {
+        List<InStoreTodayBo> inStoreTodayBos = erpOrderQrcodeMapper.selectInStoreNowMap();
+        if(inStoreTodayBos == null){
+            logger.error("暂无数据");
+            return  Response.failure("暂无数据");
+        }
+        return Response.success(inStoreTodayBos);
+    }
 
 
     /**

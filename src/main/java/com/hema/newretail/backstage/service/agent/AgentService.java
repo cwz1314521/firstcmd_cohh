@@ -25,10 +25,10 @@ public interface AgentService {
      *
      * 功能描述:展示代理公司列表
      *
-     * @param:
-     * @return: list
-     * @author: cwz
-     * @date: 2018/9/21 10:50
+     * @param agentListCondition
+     * @return list
+     * @author cwz
+     * @date 2018/9/21 10:50
      */
     Response list(AgentListCondition agentListCondition);
 
@@ -37,22 +37,22 @@ public interface AgentService {
      *
      * 功能描述:添加代理公司
      *
-     * @param:
-     * @return: list
-     * @author: cwz
-     * @date: 2018/9/21 10:50
+     * @param condition
+     * @return Response
+     * @author cwz
+     * @date 2018/9/21 10:50
      */
-    Response add(AddAgentCondition AddAgentCondition);
+    Response add(AddAgentCondition condition);
 
 
     /**
      *
      * 功能描述:修改代理公司
      *
-     * @param:
-     * @return: list
-     * @author: cwz
-     * @date: 2018/9/21 10:50
+     * @param editAgentCondition
+     * @return Response
+     * @author cwz
+     * @date 2018/9/21 10:50
      */
     Response edit(EditAgentCondition editAgentCondition);
 
@@ -61,10 +61,10 @@ public interface AgentService {
      *
      * 功能描述:删除代理公司
      *
-     * @param:
-     * @return: list
-     * @author: cwz
-     * @date: 2018/9/21 10:50
+     * @param id
+     * @return Response
+     * @author cwz
+     * @date 2018/9/21 10:50
      */
     Response delete(Long id);
 
@@ -73,32 +73,35 @@ public interface AgentService {
      *
      * 功能描述:代理数据统计
      *
-     * @param:
-     * @return: list
-     * @author: cwz
-     * @date: 2018/9/21 10:50
+     * @param
+     * @return Response
+     * @author cwz
+     * @date 2018/9/21 10:50
      */
     Response listStatistics();
 
     /**
      *
-     * 功能描述:导出excle
+     * 功能描述: excel
      *
-     * @param: AgentListCondition
-     * @return: excle
-     * @author: cwz
-     * @date: 2018/10/11 11:49
+     * @param agentListCondition
+     * @param request
+     * @param response
+     * @return Response
+     * @author cwz
+     * @date 2018/10/11 11:49
+     * @throws Exception
      */
-    Response excle(HttpServletRequest request, HttpServletResponse response, AgentListCondition agentListCondition) throws   Exception;
+    Response excel(HttpServletRequest request, HttpServletResponse response, AgentListCondition agentListCondition) throws   Exception;
 
     /**
      *
      * 功能描述: 消息推送
      *
-     * @param:
-     * @return: success
-     * @author: cwz
-     * @date: 2018/10/26 17:37
+     * @param pushCondition
+     * @return success
+     * @author cwz
+     * @date 2018/10/26 17:37
      */
     Response push(PushCondition pushCondition);
 
@@ -106,10 +109,10 @@ public interface AgentService {
      *
      * 功能描述: 推送历史
      *
-     * @param: commomPageCondition
-     * @return: list
-     * @author: cwz
-     * @date: 2018/10/26 17:37
+     * @param condition
+     * @return list
+     * @author cwz
+     * @date 2018/10/26 17:37
      */
-    Response pushHistory(CommomPageCondition commomPageCondition);
+    Response pushHistory(CommomPageCondition condition);
 }

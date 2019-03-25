@@ -4,6 +4,8 @@ import com.github.pagehelper.Page;
 import com.hema.newretail.CloudBohhApplication;
 import com.hema.newretail.backstage.common.queryparam.grid.*;
 import com.hema.newretail.backstage.common.utils.Response;
+import com.hema.newretail.backstage.controller.BaseController;
+import com.hema.newretail.backstage.entry.BaseUserInfoEntry;
 import com.hema.newretail.backstage.model.grid.GridCompanyListBo;
 import com.hema.newretail.backstage.model.grid.SubCompanyBo;
 import com.hema.newretail.backstage.service.grid.GridService;
@@ -19,6 +21,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -33,7 +36,7 @@ import java.util.List;
 @Api(description = "≡(▔﹏▔)≡网格公司管理相关接口")
 @RestController
 @RequestMapping("/grid")
-public class GridController {
+public class GridController extends BaseController {
 
 
     @Autowired
@@ -57,6 +60,11 @@ public class GridController {
             logger.error("参数校验失败......"+bindingResult.getFieldError().getDefaultMessage());
             return Response.failure(bindingResult.getFieldError().getDefaultMessage());
         } else {
+            BaseUserInfoEntry baseUserInfoEntry = this.getUserInfo();
+            if (null == baseUserInfoEntry || null == baseUserInfoEntry.getOrgCode()) {
+                return Response.failure("获取登录信息失败，请重新登录。");
+            }
+            gridListCondition.setOrgCode(baseUserInfoEntry.getOrgCode());
             return gridService.list(gridListCondition);
         }
     }
@@ -179,12 +187,12 @@ public class GridController {
     @PostMapping(value = "/integral")
     @ResponseBody
     @ApiOperation("≡(▔﹏▔)≡积分管理")
-    public Response integral(@RequestBody @Validated GridIntegralCondition gridIntegralCondition, BindingResult bindingResult) {
+    public Response integral(HttpServletRequest request, @RequestBody @Validated GridIntegralCondition gridIntegralCondition, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             logger.error("");
             return Response.failure(bindingResult.getFieldError().getDefaultMessage());
         } else {
-            return gridService.integral(gridIntegralCondition);
+            return gridService.integral(request,gridIntegralCondition);
         }
     }
 

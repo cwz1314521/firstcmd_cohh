@@ -5,7 +5,12 @@ import com.hema.newretail.backstage.entry.BasePost;
 
 import java.io.Serializable;
 import java.util.Date;
-
+/**
+ * @Department 新零售
+ * @Author ---CWZ
+ * @Date 2018/12/12 20:57
+ * @Version 1.0
+ **/
 public class BaseUserInfoBo implements Serializable {
     private Long id;
 
@@ -43,7 +48,39 @@ public class BaseUserInfoBo implements Serializable {
 
     private BasePost basePost;
 
+    private Integer status;
+
+    private Long orgId;
+
+    private String orgName;
+
     private BaseCompanyData baseCompanyEntry;
+
+
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
+    public Long getOrgId() {
+        return orgId;
+    }
+
+    public void setOrgId(Long orgId) {
+        this.orgId = orgId;
+    }
+
+    public String getOrgName() {
+        return orgName;
+    }
+
+    public void setOrgName(String orgName) {
+        this.orgName = orgName;
+    }
 
     public BasePost getBasePost() {
         return basePost;

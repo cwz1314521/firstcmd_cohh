@@ -20,16 +20,16 @@ public class RongCloudUtil {
     /**
      * // 申请的融云key
      */
-    private final static String appkey = "pkfcgjstpol18";
+    private final static String APPKEY = "pkfcgjstpol18";
     /**
      * // 申请的的云secret
      */
-    private final static String appSecret = "UUBf1kzU3Sx1l2";
+    private final static String APP_SECRET = "UUBf1kzU3Sx1l2";
 
     /**
      * // sha1加密产参数
      */
-    private final static int[] abcde = {0x67452301, 0xefcdab89,
+    private final static int[] ABCDE = {0x67452301, 0xefcdab89,
             0x98badcfe, 0x10325476, 0xc3d2e1f0};
 
     /**
@@ -41,6 +41,16 @@ public class RongCloudUtil {
      * // 计算过程中的临时数据存储数组
      */
     private static int[] tmpData = new int[80];
+    private static final Integer SIXTEEN = 16;
+    private static final Integer FIFTY_SIX = 56;
+    private static final Integer SEVENTY_NINE = 79;
+    private static final Integer NINETEEN = 19;
+    private static final Integer TWENTY = 20;
+    private static final Integer THIRTY_NINE = 39;
+    private static final Integer FORTY = 40;
+    private static final Integer FIFTY_NINE = 59;
+    private static final Integer SIXTY = 60;
+    private static final Integer TWOHUNDRED = 200;
 
 
     /**
@@ -49,9 +59,9 @@ public class RongCloudUtil {
      * @param bytedata
      * @return
      */
-    private static int process_input_bytes(byte[] bytedata) {
+    private static int processInputBytes(byte[] bytedata) {
         // 初试化常量
-        System.arraycopy(abcde, 0, digestInt, 0, abcde.length);
+        System.arraycopy(ABCDE, 0, digestInt, 0, ABCDE.length);
         // 格式化输入字节数组，补10及长度数据
         byte[] newbyte = byteArrayFormatData(bytedata);
         // 获取数据摘要计算的数据单元个数
@@ -59,7 +69,7 @@ public class RongCloudUtil {
         // 循环对每个数据单元进行摘要计算
         for (int pos = 0; pos < MCount; pos++) {
             // 将每个单元的数据转换成16个整型数据，并保存到tmpData的前16个数组元素中
-            for (int j = 0; j < 16; j++) {
+            for (int j = 0; j < SIXTEEN; j++) {
                 tmpData[j] = byteArrayToInt(newbyte, (pos * 64) + (j * 4));
             }
             // 摘要计算函数
@@ -84,10 +94,10 @@ public class RongCloudUtil {
         // 模64后的剩余位数
         int m = n % 64;
         // 计算添加0的个数以及添加10后的总长度
-        if (m < 56) {
+        if (m < FIFTY_SIX) {
             zeros = 55 - m;
             size = n - m + 64;
-        } else if (m == 56) {
+        } else if (m == FIFTY_SIX) {
             zeros = 63;
             size = n + 8 + 64;
         } else {
@@ -147,7 +157,7 @@ public class RongCloudUtil {
      * 单元摘要计算函数
      */
     private static void encrypt() {
-        for (int i = 16; i <= 79; i++) {
+        for (int i = SIXTEEN; i <= SEVENTY_NINE; i++) {
             tmpData[i] = f4(tmpData[i - 3] ^ tmpData[i - 8] ^ tmpData[i - 14]
                     ^ tmpData[i - 16], 1);
         }
@@ -155,7 +165,7 @@ public class RongCloudUtil {
         for (int i1 = 0; i1 < tmpabcde.length; i1++) {
             tmpabcde[i1] = digestInt[i1];
         }
-        for (int j = 0; j <= 19; j++) {
+        for (int j = 0; j <= NINETEEN; j++) {
             int tmp = f4(tmpabcde[0], 5)
                     + f1(tmpabcde[1], tmpabcde[2], tmpabcde[3]) + tmpabcde[4]
                     + tmpData[j] + 0x5a827999;
@@ -165,7 +175,7 @@ public class RongCloudUtil {
             tmpabcde[1] = tmpabcde[0];
             tmpabcde[0] = tmp;
         }
-        for (int k = 20; k <= 39; k++) {
+        for (int k = TWENTY; k <= THIRTY_NINE; k++) {
             int tmp = f4(tmpabcde[0], 5)
                     + f2(tmpabcde[1], tmpabcde[2], tmpabcde[3]) + tmpabcde[4]
                     + tmpData[k] + 0x6ed9eba1;
@@ -175,7 +185,7 @@ public class RongCloudUtil {
             tmpabcde[1] = tmpabcde[0];
             tmpabcde[0] = tmp;
         }
-        for (int l = 40; l <= 59; l++) {
+        for (int l = FORTY; l <= FIFTY_NINE; l++) {
             int tmp = f4(tmpabcde[0], 5)
                     + f3(tmpabcde[1], tmpabcde[2], tmpabcde[3]) + tmpabcde[4]
                     + tmpData[l] + 0x8f1bbcdc;
@@ -185,7 +195,7 @@ public class RongCloudUtil {
             tmpabcde[1] = tmpabcde[0];
             tmpabcde[0] = tmp;
         }
-        for (int m = 60; m <= 79; m++) {
+        for (int m = SIXTY; m <= SEVENTY_NINE; m++) {
             int tmp = f4(tmpabcde[0], 5)
                     + f2(tmpabcde[1], tmpabcde[2], tmpabcde[3]) + tmpabcde[4]
                     + tmpData[m] + 0xca62c1d6;
@@ -270,7 +280,7 @@ public class RongCloudUtil {
      * @return
      */
     public static byte[] getDigestOfBytes(byte[] byteData) {
-        process_input_bytes(byteData);
+        processInputBytes(byteData);
         byte[] digest = new byte[20];
         for (int i = 0; i < digestInt.length; i++) {
             intToByteArray(digestInt[i], digest, i * 4);
@@ -303,7 +313,7 @@ public class RongCloudUtil {
         byte[] resultBuffer = null;
         Double nonce = Math.floor(Math.random() * 100000 + 100000);
         Long timestamp = Timestamp.valueOf("2015-3-18 00:00:00").getTime();
-        String signature = getDigestOfString((appSecret + nonce + timestamp)
+        String signature = getDigestOfString((APP_SECRET + nonce + timestamp)
                 .getBytes());
         StringBuilder parambuilder = new StringBuilder("");
         if (params != null && !params.isEmpty()) {
@@ -330,7 +340,7 @@ public class RongCloudUtil {
                         "application/x-ms-application, application/vnd.ms-excel, " +
                         "application/vnd.ms-powerpoint, application/msword, */*");
         conn.setRequestProperty("Accept-Language", "zh-CN");
-        conn.setRequestProperty("App-Key", appkey);
+        conn.setRequestProperty("App-Key", APPKEY);
         conn.setRequestProperty("Nonce", nonce + "");
         conn.setRequestProperty("Timestamp", timestamp + "");
         conn.setRequestProperty("Signature", signature);
@@ -348,7 +358,7 @@ public class RongCloudUtil {
         outStream.write(data);
         outStream.flush();
         outStream.close();
-        if (conn.getResponseCode() == 200) {
+        if (conn.getResponseCode() == TWOHUNDRED) {
             resultBuffer = readStream(conn.getInputStream());
         }
         conn.disconnect();

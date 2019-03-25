@@ -160,7 +160,7 @@ public class IndexServiceImpl implements IIndexService {
      * @param map
      */
     private void manageData(Map<String, String> map, Integer type) {
-//        map.put("##id##", "&nbsp;");
+/**        map.put("##id##", "&nbsp;");*/
         map.put("##ioc##", "http://newretail.hemaapp.com/img/default-empty.png");
         map.put("##small_pic##", "https://newretail.hemaapp.com/img/default_small_pic.png");
         map.put("##middle_pic##", "https://newretail.hemaapp.com/img/default_middle_pic.png");

@@ -59,10 +59,23 @@
         <result column="amount" property="amount" jdbcType="DECIMAL" />
         <result column="integral" property="integral" jdbcType="DECIMAL" />
   </resultMap>
+  <resultMap id="BaseCommonMap" type="com.hema.newretail.backstage.model.common.GridCompanyBo" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="company_name" property="companyName" jdbcType="VARCHAR" />
+  </resultMap>
   <sql id="Base_Column_List" >
     id, gmt_create, gmt_modified, company_name, company_code, is_deleted, user_name, 
     password, company_id, contact_way, contact, province, city, area, addr, status, remark,integral
   </sql>
+  <select id="selectCommon" resultMap="BaseCommonMap" parameterType="com.hema.newretail.backstage.common.queryparam.common.CompanyNameCondition" >
+    select
+    id,company_name
+    from grid_company
+    where 1 = 1
+    <if test="companyName != null and companyName !=''" >
+      and company_name like "%"#{companyName,jdbcType=VARCHAR}"%"
+    </if>
+  </select>
   <update id="deleteUpdateById" parameterType="java.lang.Long">
     UPDATE grid_company SET is_deleted = 1 WHERE id = #{id,jdbcType=BIGINT}
   </update>
@@ -106,8 +119,9 @@ ORDER by r.gmt_create DESC LIMIT 1
         select g.company_name,g.id,g.gmt_create,g.`status`,g.integral,a.amount
         from grid_company g
         LEFT JOIN busi_company_account a on g.id = a.ref_id and a.type = '0'
+        INNER JOIN base_company as c on g.company_id=c.id
         where
-        g.is_deleted = 0
+        g.is_deleted = 0 and (c.org_code like CONCAT(#{orgCode,jdbcType=VARCHAR},'%') or #{orgCode,jdbcType=VARCHAR} like CONCAT(c.org_code,'%'))
         <if test="province != null and province != ''">
             and g.province = #{province}
             <if test="city != null and city != ''">
@@ -127,7 +141,7 @@ ORDER by r.gmt_create DESC LIMIT 1
             and g.status=#{status}
         </if>
         <if test="name != null and name != ''">
-            and g.company_name like #{name,jdbcType=VARCHAR}"%"
+            and (g.company_name like #{name,jdbcType=VARCHAR}"%" or g.user_name like #{name,jdbcType=VARCHAR}"%")
         </if>
         order by g.id desc
   </select>

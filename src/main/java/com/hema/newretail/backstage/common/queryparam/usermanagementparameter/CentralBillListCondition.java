@@ -2,17 +2,24 @@ package com.hema.newretail.backstage.common.queryparam.usermanagementparameter;
 
 
 
+import lombok.Data;
+
 import java.math.BigDecimal;
 
 /**
- * @Auther: 程文政
+ * @author 程文政
  * @Date: 2018/8/24 13:34
  * @Description:   订单中心查询参数类
  * @Version: 1.0
  */
+@Data
 public class CentralBillListCondition {
 
-    private String id;//主键 账单号
+    private String id;//订单号
+
+    private String billId;//主键 账单号
+
+    private String userId;//用户id
 
     private String paySerialNumbers;//支付流水号
 
@@ -60,156 +67,36 @@ public class CentralBillListCondition {
     //机器编号查询
     private String deviceNumber;
 
-    public String getDeviceNumber() {
-        return deviceNumber;
-    }
+	/**
+	 * refundCode 退款单号：待定，每次重新发起退款，重新生成
+	 */
+	private String refundCode;
+	/**
+	 * 出杯单号
+	 */
+	private String makeCode;
+	/**
+	 * 申请退款时间开始
+	 */
+	private String refundStartDate;
+	/**
+	 * 申请退款结束开始
+	 */
+	private String refundEndDate;
+	/**
+	 * 退款原因
+	 */
+	private String refundDesc;
+	/**
+	 * 退款状态
+	 */
+	private String refundState;
+	/**
+	 * 备注
+	 */
+	private String remarks;
 
-    public void setDeviceNumber(String deviceNumber) {
-        this.deviceNumber = deviceNumber;
-    }
+    private String shipType;
 
-    public String getProvince() {
-        return province;
-    }
-
-    public void setProvince(String province) {
-        this.province = province;
-    }
-
-    public String getCity() {
-        return city;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
-    }
-
-    public String getArea() {
-        return area;
-    }
-
-    public void setArea(String area) {
-        this.area = area;
-    }
-
-    public String getAgent() {
-        return agent;
-    }
-
-    public void setAgent(String agent) {
-        this.agent = agent;
-    }
-
-    public String getGrid() {
-        return grid;
-    }
-
-    public void setGrid(String grid) {
-        this.grid = grid;
-    }
-
-    public String getOrderStatus() {
-        return orderStatus;
-    }
-
-    public void setOrderStatus(String orderStatus) {
-        this.orderStatus = orderStatus;
-    }
-
-    public Integer getPageSize() {
-        return pageSize;
-    }
-
-    public void setPageSize(Integer pageSize) {
-        this.pageSize = pageSize;
-    }
-
-    public Integer getPageNum() {
-        return pageNum;
-    }
-
-    public void setPageNum(Integer pageNum) {
-        this.pageNum = pageNum;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getPaySerialNumbers() {
-        return paySerialNumbers;
-    }
-
-    public void setPaySerialNumbers(String paySerialNumbers) {
-        this.paySerialNumbers = paySerialNumbers;
-    }
-
-
-    public BigDecimal getPreAmt() {
-        return preAmt;
-    }
-
-    public void setPreAmt(BigDecimal preAmt) {
-        this.preAmt = preAmt;
-    }
-
-    public BigDecimal getAmt() {
-        return amt;
-    }
-
-    public void setAmt(BigDecimal amt) {
-        this.amt = amt;
-    }
-
-    public String getPreBillTime() {
-        return preBillTime;
-    }
-
-    public void setPreBillTime(String preBillTime) {
-        this.preBillTime = preBillTime;
-    }
-
-    public String getBillTime() {
-        return billTime;
-    }
-
-    public void setBillTime(String billTime) {
-        this.billTime = billTime;
-    }
-
-    public String getNickName() {
-        return nickName;
-    }
-
-    public void setNickName(String nickName) {
-        this.nickName = nickName;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
-    public String getPaymentType() {
-        return paymentType;
-    }
-
-    public void setPaymentType(String paymentType) {
-        this.paymentType = paymentType;
-    }
-
-    public String getBillStatus() {
-        return billStatus;
-    }
-
-    public void setBillStatus(String billStatus) {
-        this.billStatus = billStatus;
-    }
+    private String givenScountId;
 }

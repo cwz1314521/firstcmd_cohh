@@ -6,15 +6,14 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.hema.newretail.CloudBohhApplication;
 import com.hema.newretail.backstage.common.queryparam.grid.*;
-import com.hema.newretail.backstage.common.utils.Response;
-import com.hema.newretail.backstage.common.utils.StringUtil;
-import com.hema.newretail.backstage.common.utils.TimeUtil;
+import com.hema.newretail.backstage.common.utils.*;
 import com.hema.newretail.backstage.common.utils.ossutil.AliyunOSSClientUtil;
 import com.hema.newretail.backstage.dao.*;
 import com.hema.newretail.backstage.entry.BaseGlobalInfoEntry;
 import com.hema.newretail.backstage.entry.BaseIngredientInfoEntry;
 import com.hema.newretail.backstage.entry.BusiCompanyAccountEntry;
 import com.hema.newretail.backstage.entry.grid.*;
+import com.hema.newretail.backstage.interceptor.AuthConstants;
 import com.hema.newretail.backstage.model.grid.*;
 import com.hema.newretail.backstage.service.grid.GridService;
 import org.slf4j.Logger;
@@ -24,6 +23,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import java.math.BigDecimal;
+import java.security.MessageDigest;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Pattern;
@@ -38,6 +41,9 @@ import java.util.regex.Pattern;
  **/
 @Service
 public class GridServiceImpl implements GridService {
+
+    @Autowired
+    private RedisUtils redisUtils;
 
     @Autowired
     private AliyunOSSClientUtil aliyunOSSClientUtil;
@@ -73,6 +79,13 @@ public class GridServiceImpl implements GridService {
     @Autowired
     private BaseGlobalInfoMapper baseGlobalInfoMapper;
 
+    @Autowired
+    private GridTaskProfitLogMapper gridTaskProfitLogMapper;
+
+    @Autowired
+    private GridSysUserInfoMapper gridSysUserInfo;
+
+
     private static final Logger logger = LoggerFactory.getLogger(CloudBohhApplication.class);
 
 
@@ -82,6 +95,7 @@ public class GridServiceImpl implements GridService {
     private final static String BOXCODE = "boxCode";
     private final static String ERRORCODE = "errorCode";
     private final static String TASKCONTENT = "taskContent";
+    private final static Integer TWO =2;
 
     /**
      * 功能描述: 网格公司列表，分页显示
@@ -95,15 +109,15 @@ public class GridServiceImpl implements GridService {
     public Response list(GridListCondition gridListCondition) {
         logger.info("网格公司列表参数处理......");
         gridListCondition = listCondition(gridListCondition);
-        /*判断名字编号是否为空   不为空判断是否为数字  若为数字转化为id 清空name*/
-        logger.info("判断name是否存在......"+gridListCondition.getName());
-        if(gridListCondition.getName() != "" && gridListCondition.getName() !=null){
-            if(isInteger(gridListCondition.getName())){
-                logger.info("name由数字构成转化为Id"+gridListCondition.getName());
-                gridListCondition.setId(Long.parseLong(gridListCondition.getName()));
-                gridListCondition.setName(null);
-            }
-        }
+//        /*判断名字编号是否为空   不为空判断是否为数字  若为数字转化为id 清空name*/
+//        logger.info("判断name是否存在......"+gridListCondition.getName());
+//        if(gridListCondition.getName() != "" && gridListCondition.getName() !=null){
+//            if(isInteger(gridListCondition.getName())){
+//                logger.info("name由数字构成转化为Id"+gridListCondition.getName());
+//                gridListCondition.setId(Long.parseLong(gridListCondition.getName()));
+//                gridListCondition.setName(null);
+//            }
+//        }
         logger.info("加入分页查询数据库");
         Page<GridListBo> page =PageHelper.startPage(gridListCondition.getPageNum(), gridListCondition.getPageSize());
         gridCompanyMapper.selectGridList(gridListCondition);
@@ -140,8 +154,26 @@ public class GridServiceImpl implements GridService {
         busiCompanyAccountEntry.setAccountName(gridAddCondition.getAccountName());
         busiCompanyAccountEntry.setAccountNumber(gridAddCondition.getAccountNumber());
         busiCompanyAccountMapper.insert(busiCompanyAccountEntry);
+        GridSysUserInfoEntry entry = new GridSysUserInfoEntry();
+        entry.setCompanyId(gridCompanyEntry.getId());
+        entry.setCreateBy(0L);
+        entry.setPositionId(0L);
+        entry.setCreateTime(new Date());
+        entry.setIsDeleted("0");
+        entry.setJoinTime(new Date());
+        entry.setLoginAccount(gridAddCondition.getUserName());
+        entry.setLoginCount(0);
+        entry.setNickName(gridAddCondition.getCompanyName());
+
+        entry.setPassword(getMD5Str(gridAddCondition.getPwd()));
+        entry.setPhone(gridAddCondition.getContactWay());
+        entry.setSex("0");
+        entry.setState("0");
+        entry.setUserName(gridAddCondition.getUserName());
+        gridSysUserInfo.insert(entry);
         Map<String, Object> map = new HashMap<>(1);
         map.put("gridCompanyId", gridCompanyEntry.getId());
+        gridKpiModeMapper.addCompanySelfRule(map);
         return Response.success(map);
     }
 
@@ -170,7 +202,8 @@ public class GridServiceImpl implements GridService {
     @Override
     public Response updatePassword(Long id){
         logger.info("重置id为"+id+"的密码......");
-        return Response.success(gridCompanyMapper.updatePassword(id));
+        String md5Str = getMD5Str("123456");
+        return Response.success(gridCompanyMapper.updatePassword(id)+gridSysUserInfo.updateReset(id,md5Str));
     }
 
     /**
@@ -252,9 +285,41 @@ public class GridServiceImpl implements GridService {
      * @date: 2018/9/21 9:31
      */
     @Override
-    public Response integral(GridIntegralCondition gridIntegralCondition) {
-        GridIntegralRecordEntry gridIntegralRecordEntry = IntegralGridIntegralRecordEntry(gridIntegralCondition);
+    public Response integral(HttpServletRequest request, GridIntegralCondition gridIntegralCondition) {
+        GridIntegralRecordEntry gridIntegralRecordEntry = integralGridIntegralRecordEntry(request,gridIntegralCondition);
         gridIntegralRecordMapper.insert(gridIntegralRecordEntry);
+        GridTaskProfitLogEntry gridTaskProfitLogEntry = new GridTaskProfitLogEntry();
+        List<GridIntegralRuleEntry> list = gridIntegralRuleMapper.selectByCompany(gridIntegralCondition.getGridCompanyId());
+        BigDecimal money;
+        logger.info("判断规则条数......");
+        if(list.size() > 1){
+            logger.info("判断最新一条是否生效......");
+            if(list.get(0).getEffectiveTime().getTime() > System.currentTimeMillis()){
+                money = gridIntegralRecordEntry.getIntegral().multiply(list.get(1).getRewardAmount());
+                logger.info("未生效");
+            }else {
+                money = gridIntegralRecordEntry.getIntegral().multiply(list.get(0).getRewardAmount());
+                logger.info("已生效");
+            }
+        }else {
+            money = gridIntegralRecordEntry.getIntegral().multiply(list.get(0).getRewardAmount());
+        }
+        if(1 == gridIntegralRecordEntry.getOpType()){
+            gridTaskProfitLogEntry.setEvent("增");
+            gridTaskProfitLogEntry.setProfit(money.doubleValue());
+        }else if(TWO .equals(gridIntegralRecordEntry.getOpType())){
+            gridTaskProfitLogEntry.setProfit(money.doubleValue()*(-1));
+            gridTaskProfitLogEntry.setEvent("减");
+        }
+
+        gridTaskProfitLogEntry.setOperationTime(new Date());
+        gridTaskProfitLogEntry.setStatus("0");
+        gridTaskProfitLogEntry.setGridCompanyId(gridIntegralRecordEntry.getGridCompanyId());
+        gridTaskProfitLogEntry.setGmtCreateTime(new Date());
+        gridTaskProfitLogEntry.setGmtModifiedTime(new Date());
+        gridTaskProfitLogEntry.setType("2");
+        gridTaskProfitLogMapper.insertSelective(gridTaskProfitLogEntry);
+
         return Response.success();
     }
 
@@ -284,7 +349,7 @@ public class GridServiceImpl implements GridService {
     @Override
     public Response serviceEdit(ServiceCondition serviceCondition) {
         GridCompanyGeohashEntry gridCompanyGeohashEntry = new GridCompanyGeohashEntry();
-        List<String> list = StringUtil.StringsToString(serviceCondition.getGeoHashs());
+        List<String> list = StringUtil.stringsToString(serviceCondition.getGeoHashs());
         gridCompanyGeohashMapper.deleteByCompanyId(serviceCondition.getGridCompanyId());
         for (String hashcode : list) {
             if(StringUtils.isEmpty(hashcode)) {
@@ -416,7 +481,7 @@ public class GridServiceImpl implements GridService {
                 if(gridTaskBo.getAssigner() == 0){
                     details.append("补料:");
                     List<BoxLogBo> list = baseMachineBoxLogMapper.selectByCreate(Long.valueOf(String.valueOf(jsStr.get(VERSION))).longValue());
-                    List<Integer> ss = StringUtil.StringsToInteger(jsStr.get(BOXCODE).toString());
+                    List<Integer> ss = StringUtil.stringsToInteger(jsStr.get(BOXCODE).toString());
                     for (Integer a:ss
                          ) {
                         for (BoxLogBo b:list
@@ -568,7 +633,8 @@ public class GridServiceImpl implements GridService {
      * @date: 2018/9/25 12:00
      */
     private static boolean isInteger(String str) {
-        Pattern pattern = Pattern.compile("^[-\\+]?[\\d]*$");
+        String rex = "^[-\\+]?[\\d]*$";
+        Pattern pattern = Pattern.compile(rex);
         return pattern.matcher(str).matches();
     }
     /**
@@ -608,7 +674,7 @@ public class GridServiceImpl implements GridService {
      */
     private GridCompanyEntry addGridCompanyEntry(GridAddCondition gridAddCondition){
         GridCompanyEntry gridCompanyEntry = new GridCompanyEntry();
-        gridCompanyEntry.setPassword(gridAddCondition.getPassword());
+        gridCompanyEntry.setPassword(gridAddCondition.getPwd());
         gridCompanyEntry.setCompanyId(gridAddCondition.getCompanyId());
         gridCompanyEntry.setCompanyName(gridAddCondition.getCompanyName());
         gridCompanyEntry.setUserName(gridAddCondition.getUserName());
@@ -687,14 +753,21 @@ public class GridServiceImpl implements GridService {
      * @author: cwz
      * @date: 2018/9/27 17:52
      */
-    private GridIntegralRecordEntry IntegralGridIntegralRecordEntry(GridIntegralCondition gridIntegralCondition) {
+    private GridIntegralRecordEntry integralGridIntegralRecordEntry(HttpServletRequest request,GridIntegralCondition gridIntegralCondition) {
         GridIntegralRecordEntry gridIntegralRecordEntry = new GridIntegralRecordEntry();
 
         gridIntegralRecordEntry.setGridCompanyId(gridIntegralCondition.getGridCompanyId());
         gridIntegralRecordEntry.setIntegral(gridIntegralCondition.getIntegral());
         gridIntegralRecordEntry.setOpType(gridIntegralCondition.getOpType());
         gridIntegralRecordEntry.setOpReason(gridIntegralCondition.getOpReason());
-        gridIntegralRecordEntry.setOpName(gridIntegralCondition.getOpName());
+        String userinfoJson = redisUtils.hget(AuthConstants.SESSION + request.getSession().getId(), AuthConstants.USER_INFO, AuthConstants.REDIS_DB_INDEX);
+        if (userinfoJson == null) {
+            logger.error("未检测到登录人数据");
+        }
+        JSONObject jsStr = JSONObject.parseObject(userinfoJson);
+        String user = String.valueOf(jsStr.get("userName"));
+        logger.info(user);
+        gridIntegralRecordEntry.setOpName(user);
         gridIntegralRecordEntry.setRemark(gridIntegralCondition.getRemark());
         gridIntegralRecordEntry.setGmtCreate(new Date());
         gridIntegralRecordEntry.setGmtModified(new Date());
@@ -715,8 +788,11 @@ public class GridServiceImpl implements GridService {
         if(EMPTY.equals(gridListTaskCondition.getTaskCode())){
             gridListTaskCondition.setTaskCode(null);
         }
-        if(EMPTY.equals(gridListTaskCondition.getTaskStatus())){
+        if(gridListTaskCondition.getTaskStatus().length == 0){
             gridListTaskCondition.setTaskStatus(null);
+        }
+        if(gridListTaskCondition.getTaskType().length == 0){
+            gridListTaskCondition.setTaskType(null);
         }
         if(EMPTY.equals(gridListTaskCondition.getCity())){
             gridListTaskCondition.setCity(null);
@@ -742,7 +818,7 @@ public class GridServiceImpl implements GridService {
             }
         }else {
             if(gridListTaskCondition.getAssignTimes() != null){
-                gridListTaskCondition.setAssignTime(sdf.parse(gridListTaskCondition.getAssignTimes()));
+                gridListTaskCondition.setAssignTime(TimeUtil.getEndTime(sdf.parse(gridListTaskCondition.getAssignTimes())));
             }
         }
         if(EMPTY.equals(gridListTaskCondition.getEndTimes())){
@@ -753,7 +829,7 @@ public class GridServiceImpl implements GridService {
             }
         }else {
             if(gridListTaskCondition.getEndTimes() != null){
-                gridListTaskCondition.setEndTime(sdf.parse(gridListTaskCondition.getEndTimes()));
+                gridListTaskCondition.setEndTime(TimeUtil.getEndTime(sdf.parse(gridListTaskCondition.getEndTimes())));
             }
         }
         if(EMPTY.equals(gridListTaskCondition.getPreEndTimes())){
@@ -831,5 +907,27 @@ public class GridServiceImpl implements GridService {
         }
         return gridListCondition;
     }
-}
 
+    public  String getMD5Str(String str) {
+        MessageDigest messageDigest = null;
+        try {
+            messageDigest = MessageDigest.getInstance("MD5");
+            messageDigest.reset();
+            messageDigest.update(str.getBytes("UTF-8"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        byte[] byteArray = messageDigest.digest();
+        StringBuffer md5StrBuff = new StringBuffer();
+        for (int i = 0; i < byteArray.length; i++) {
+            if (Integer.toHexString(0xFF & byteArray[i]).length() == 1) {
+                md5StrBuff.append("0").append(Integer.toHexString(0xFF & byteArray[i]));
+            }
+            else{
+                md5StrBuff.append(Integer.toHexString(0xFF & byteArray[i]));
+            }
+        }
+        return md5StrBuff.toString();
+    }
+}

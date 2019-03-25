@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hema.newretail.backstage.dao.VFinanceAuditingMapper" >
+  <resultMap id="BaseResultMap" type="com.hema.newretail.backstage.entry.VFinanceAuditing" >
+    <result column="id" property="id" jdbcType="BIGINT" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="type" property="type" jdbcType="BIGINT" />
+    <result column="auditContent" property="auditcontent" jdbcType="VARCHAR" />
+    <result column="applyTime" property="applytime" jdbcType="TIMESTAMP" />
+    <result column="applicant" property="applicant" jdbcType="VARCHAR" />
+    <result column="auditStatus" property="auditstatus" jdbcType="INTEGER" />
+    <result column="auditor" property="auditor" jdbcType="VARCHAR" />
+    <result column="auditTime" property="audittime" jdbcType="TIMESTAMP" />
+    <result column="auditDesc" property="auditdesc" jdbcType="VARCHAR" />
+  </resultMap>
+  <insert id="insert" parameterType="com.hema.newretail.backstage.entry.VFinanceAuditing" >
+    insert into v_finance_auditing (id, title, type, 
+      auditContent, applyTime, applicant, 
+      auditStatus, auditor, auditTime, 
+      auditDesc)
+    values (#{id,jdbcType=BIGINT}, #{title,jdbcType=VARCHAR}, #{type,jdbcType=BIGINT}, 
+      #{auditcontent,jdbcType=VARCHAR}, #{applytime,jdbcType=TIMESTAMP}, #{applicant,jdbcType=VARCHAR}, 
+      #{auditstatus,jdbcType=INTEGER}, #{auditor,jdbcType=VARCHAR}, #{audittime,jdbcType=TIMESTAMP}, 
+      #{auditdesc,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.hema.newretail.backstage.entry.VFinanceAuditing" >
+    insert into v_finance_auditing
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="title != null" >
+        title,
+      </if>
+      <if test="type != null" >
+        type,
+      </if>
+      <if test="auditcontent != null" >
+        auditContent,
+      </if>
+      <if test="applytime != null" >
+        applyTime,
+      </if>
+      <if test="applicant != null" >
+        applicant,
+      </if>
+      <if test="auditstatus != null" >
+        auditStatus,
+      </if>
+      <if test="auditor != null" >
+        auditor,
+      </if>
+      <if test="audittime != null" >
+        auditTime,
+      </if>
+      <if test="auditdesc != null" >
+        auditDesc,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="title != null" >
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        #{type,jdbcType=BIGINT},
+      </if>
+      <if test="auditcontent != null" >
+        #{auditcontent,jdbcType=VARCHAR},
+      </if>
+      <if test="applytime != null" >
+        #{applytime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="applicant != null" >
+        #{applicant,jdbcType=VARCHAR},
+      </if>
+      <if test="auditstatus != null" >
+        #{auditstatus,jdbcType=INTEGER},
+      </if>
+      <if test="auditor != null" >
+        #{auditor,jdbcType=VARCHAR},
+      </if>
+      <if test="audittime != null" >
+        #{audittime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="auditdesc != null" >
+        #{auditdesc,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+
+    <select id="getUnCheckedData" parameterType="com.hema.newretail.backstage.entry.VFinanceAuditing" resultMap="BaseResultMap">
+        select id, title, type,
+      auditContent, applyTime, applicant,
+      auditStatus, auditor, auditTime,
+      auditDesc FROM
+      v_finance_auditing
+      WHERE 1=1
+        <if test="auditstatus != null" >
+          AND auditStatus= #{auditstatus}
+        </if>
+        <if test="type != null" >
+         and type = #{type}
+        </if>
+    </select>
+</mapper>

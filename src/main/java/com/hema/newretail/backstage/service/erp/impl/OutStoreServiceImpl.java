@@ -37,12 +37,13 @@ import java.util.List;
 public class OutStoreServiceImpl implements OutStoreService {
     @Autowired
     private ErpOrderQrcodeMapper erpOrderQrcodeMapper;
-    private static final Logger logger = LoggerFactory.getLogger(CloudBohhApplication.class);
-    private static final String EMPTY = "";
-    private static final Integer AONE = -1;
-    private static final Integer ZONE = 1;
     @Autowired
     private RedisUtils redisUtils;
+    private static final Logger logger = LoggerFactory.getLogger(CloudBohhApplication.class);
+    private static final String EMPTY = "";
+    private static final Integer AFOUR = -4;
+    private static final Integer ZTWO = 2;
+
     /**
      * 功能描述:分后台  入库记录--待入库列表
      *
@@ -105,12 +106,12 @@ public class OutStoreServiceImpl implements OutStoreService {
     @Override
     public Response outstorePre(InStorePreAllCondition inStoreListCondition) {
         logger.info("第一步更新扫码枪扫到的数据......");
-        if(inStoreListCondition.getQrcodeCode() != null  && !EMPTY.equals(inStoreListCondition.getQrcodeCode())){
+        if(inStoreListCondition.getRandomCode() != null  && !EMPTY.equals(inStoreListCondition.getRandomCode())){
             int num = 0;
-            for (String qrcodeCode:inStoreListCondition.getQrcodeCode()
+            for (String randomCode:inStoreListCondition.getRandomCode()
                     ) {
-                num += erpOrderQrcodeMapper.updateByQrcodeCodeOut(qrcodeCode);
-                logger.info("循环更新待出库状态......"+qrcodeCode);
+                num += erpOrderQrcodeMapper.updateByQrcodeCodeOut(randomCode);
+                logger.info("循环更新待出库状态......"+randomCode);
             }
             if(num > 0) {
                 return Response.success();
@@ -123,7 +124,7 @@ public class OutStoreServiceImpl implements OutStoreService {
     }
 
     /**
-     * 功能描述: 分后台--输码出库
+     * 功能描述: 分后台--输溯源码出库
      *
      * @param request
      * @param inStoreNumCondition
@@ -134,12 +135,22 @@ public class OutStoreServiceImpl implements OutStoreService {
      */
     @Override
     public Response outstoreNum(HttpServletRequest request, InStoreNumCondition inStoreNumCondition) {
-        ErpOrderQrcodeEntry entry = erpOrderQrcodeMapper.selectByQrcodeCodeOut(inStoreNumCondition.getQrcodeCode());
+        ErpOrderQrcodeEntry entry = erpOrderQrcodeMapper.selectByQrcodeCodeOut(inStoreNumCondition.getRandomCode());
         if(entry == null){
-            return Response.failure("未检测到该串码,串码可能已出库");
+            return Response.failure("未检测到该溯源码");
         }else{
-                erpOrderQrcodeMapper.updateByQrcodeCodeOut(inStoreNumCondition.getQrcodeCode());
-                return Response.success("该串码已录入待出库");
+            if(AFOUR.equals(entry.getStatus())){
+                return Response.failure("该溯源码已录入待出库");
+            }else  if(ZTWO.equals(entry.getStatus())){
+                return Response.failure("该溯源码已出库");
+            }else {
+                int i = erpOrderQrcodeMapper.updateByQrcodeCodeOut(inStoreNumCondition.getRandomCode());
+                if(i>0) {
+                    return Response.success("该溯源码已录入待出库");
+                }else {
+                    return Response.failure("未检测到该溯源码");
+                }
+            }
         }
     }
 
@@ -153,7 +164,7 @@ public class OutStoreServiceImpl implements OutStoreService {
      */
     @Override
     public Response outstore(HttpServletRequest request) {
-        List<InStoreTodayBo> inStoreTodayBos = erpOrderQrcodeMapper.selectInStoreNowMap();
+        List<InStoreTodayBo> inStoreTodayBos = erpOrderQrcodeMapper.selectOutStoreNowMap();
         String userinfoJson = redisUtils.hget(AuthConstants.SESSION + request.getSession().getId(), AuthConstants.USER_INFO, AuthConstants.REDIS_DB_INDEX);
         if(userinfoJson == null){
             logger.error("未检测到登录人数据");
@@ -165,7 +176,11 @@ public class OutStoreServiceImpl implements OutStoreService {
         InStoreDBCondition condition = new InStoreDBCondition();
         condition.setTime(new Date());
         condition.setUserId(userId);
-        erpOrderQrcodeMapper.updateByOutStoreDBCondition(condition);
-        return Response.success(inStoreTodayBos);
+        int i = erpOrderQrcodeMapper.updateByOutStoreDBCondition(condition);
+        if(i>0) {
+            return Response.success(inStoreTodayBos);
+        }else {
+            return Response.failure("待出库暂无数据，请先扫码上传数据");
+        }
     }
 }

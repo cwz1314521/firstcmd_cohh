@@ -1,7 +1,12 @@
 package com.hema.newretail.backstage.entry;
 
 import java.io.Serializable;
-
+/**
+ * @Department 新零售
+ * @Author ---CWZ
+ * @Date 2018/12/12 20:57
+ * @Version 1.0
+ **/
 public class BaseIngredientBoxEntry implements Serializable {
     private Long id;
 

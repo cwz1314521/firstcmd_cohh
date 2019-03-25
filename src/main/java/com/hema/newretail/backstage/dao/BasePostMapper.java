@@ -65,8 +65,8 @@ public interface BasePostMapper {
      * @return List
      */
     List<BasePost> selectPostByCondition(@Param("pageNum") Integer pageNum, @Param("pageSize") Integer pageSize);
+
     /**
-     *
      * 功能描述:查询全部
      *
      * @param
@@ -75,6 +75,7 @@ public interface BasePostMapper {
      * @date 2018/9/12 10:48
      */
     List<BasePost> selectAll();
+
     /**
      * 查询岗位是否存在
      *
@@ -82,5 +83,13 @@ public interface BasePostMapper {
      * @return 0 不存在 大于0 存在
      */
     int selectPostExistByPostName(String postName);
+
+    /**
+     * 查询指定岗位下关联的用户数
+     *
+     * @param postId 岗位ID
+     * @return 用户数
+     */
+    int selectUserCountByPostId(Long postId);
 }
 

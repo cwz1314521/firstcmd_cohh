@@ -33,19 +33,34 @@
     <result column="discarded_time" property="discardedTime" jdbcType="TIMESTAMP" />
     <result column="discarded_user_id" property="discardedUserId" jdbcType="BIGINT" />
     <result column="out_factory_time" property="outFactoryTime" jdbcType="TIMESTAMP" />
+    <result column="random_code" property="randomCode" jdbcType="VARCHAR" />
   </resultMap>
   <resultMap id="BaseInStoreListMap" type="com.hema.newretail.backstage.model.erp.InStoreListBo" >
   <id column="id" property="id" jdbcType="BIGINT" />
   <result column="quality_guarantee_period" property="qualityGuaranteePeriod" jdbcType="TIMESTAMP" />
   <result column="status" property="status" jdbcType="VARCHAR" />
   <result column="ingredientName" property="ingredientName" jdbcType="VARCHAR" />
-  <result column="qrcode_code" property="qrcodeCode" jdbcType="VARCHAR" />
+    <result column="qrcode_code" property="qrcodeCode" jdbcType="VARCHAR" />
   </resultMap>
   <resultMap id="InStoreTodayMap" type="com.hema.newretail.backstage.model.erp.InStoreTodayBo" >
   <id column="id" property="id" jdbcType="BIGINT" />
   <result column="orderCode" property="orderCode" jdbcType="VARCHAR" />
   <result column="status" property="status" jdbcType="INTEGER" />
   <collection property="ingredients" select="selectInStoreTodaySonMap" column="{status=status,id=id}" javaType="java.util.List"
+                ofType="InStoreTodaySonMap"></collection>
+  </resultMap>
+  <resultMap id="InStoreTodayMap1" type="com.hema.newretail.backstage.model.erp.InStoreTodayBo" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="orderCode" property="orderCode" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <collection property="ingredients" select="selectInStoreTodaySonMap1" column="{id=id}" javaType="java.util.List"
+                ofType="InStoreTodaySonMap"></collection>
+  </resultMap>
+  <resultMap id="InStoreTodayMap2" type="com.hema.newretail.backstage.model.erp.InStoreTodayBo" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="orderCode" property="orderCode" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <collection property="ingredients" select="selectInStoreTodaySonMap2" column="{id=id}" javaType="java.util.List"
                 ofType="InStoreTodaySonMap"></collection>
   </resultMap>
   <resultMap id="InStoreTodaySonMap" type="com.hema.newretail.backstage.model.erp.InStoreTodaySonBo" >
@@ -162,11 +177,10 @@ WHERE q.`status` not in (-1,0)
    </if>
     order by q.company_instore_time desc
   </select>
-  <select id="selectInStoreTodayMap" resultMap="InStoreTodayMap">
+  <select id="selectInStoreTodayMap" resultMap="InStoreTodayMap1">
         SELECT DISTINCT
 	ioa.ingredient_order_id id,
-	eio.order_code orderCode,
-	eoq.status status
+	eio.order_code orderCode
 FROM
 	erp_order_qrcode AS eoq,
 	erp_order_ingredient AS eoi,
@@ -174,8 +188,7 @@ FROM
 	erp_ingredient_order_address AS ioa,
 	erp_ingredient_order AS eio
 WHERE
-	eoq.`status` = 1
-AND eoq.order_ingredient_id = eoi.id
+	eoq.order_ingredient_id = eoi.id
 AND eoi.ingredient_id = bii.id
 AND eoi.ingredient_order_address_id = ioa.id
 AND ioa.ingredient_order_id = eio.id
@@ -183,7 +196,7 @@ AND to_days(eoq.company_instore_time) = to_days(now())
 order by eoq.gmt_create desc
 
   </select>
-  <select id="selectOutStoreTodayMap" resultMap="InStoreTodayMap">
+  <select id="selectOutStoreTodayMap" resultMap="InStoreTodayMap2">
         SELECT DISTINCT
 	ioa.ingredient_order_id id,
 	eio.order_code orderCode,
@@ -195,8 +208,7 @@ FROM
 	erp_ingredient_order_address AS ioa,
 	erp_ingredient_order AS eio
 WHERE
-	eoq.`status` = 2
-AND eoq.order_ingredient_id = eoi.id
+	 eoq.order_ingredient_id = eoi.id
 AND eoi.ingredient_id = bii.id
 AND eoi.ingredient_order_address_id = ioa.id
 AND ioa.ingredient_order_id = eio.id
@@ -268,6 +280,46 @@ GROUP BY
 	eoi.ingredient_id
 
   </select>
+  <select id="selectInStoreTodaySonMap1" resultMap="InStoreTodaySonMap" parameterType="java.util.Map" >
+    SELECT distinct
+    bii.ingredient_name ingredientName,
+    count(eoi.num) AS num
+    FROM
+    erp_order_qrcode AS eoq,
+    erp_order_ingredient AS eoi,
+    base_ingredient_info AS bii,
+    erp_ingredient_order_address AS ioa
+    WHERE
+    eoq.`status` in (1,2)
+    AND eoq.order_ingredient_id = eoi.id
+    AND eoi.ingredient_id = bii.id
+    AND eoi.ingredient_order_address_id = ioa.id
+    and ioa.ingredient_order_id= #{id,jdbcType=BIGINT}
+     and  to_days(eoq.company_instore_time) = to_days(now())
+    GROUP BY
+    eoi.ingredient_id
+
+  </select>
+  <select id="selectInStoreTodaySonMap2" resultMap="InStoreTodaySonMap" parameterType="java.util.Map" >
+    SELECT distinct
+    bii.ingredient_name ingredientName,
+    count(eoi.num) AS num
+    FROM
+    erp_order_qrcode AS eoq,
+    erp_order_ingredient AS eoi,
+    base_ingredient_info AS bii,
+    erp_ingredient_order_address AS ioa
+    WHERE
+    eoq.`status` in  (1,2)
+    AND eoq.order_ingredient_id = eoi.id
+    AND eoi.ingredient_id = bii.id
+    AND eoi.ingredient_order_address_id = ioa.id
+    and ioa.ingredient_order_id= #{id,jdbcType=BIGINT}
+    and  to_days(eoq.company_outstore_time) = to_days(now())
+    GROUP BY
+    eoi.ingredient_id
+
+  </select>
   <select id="selectBaseInStoreListMap" resultMap="BaseInStoreListMap" >
 SELECT DISTINCT
 	e.id,
@@ -279,7 +331,7 @@ IF (
 	'未过期'
 ) `status`,
  f.ingredient_name ingredientName,
- qrcode_code
+ e.qrcode_code
 FROM
 	erp_order_qrcode e
 LEFT JOIN erp_order_ingredient i ON e.order_ingredient_id = i.id
@@ -298,7 +350,7 @@ IF (
 	'未过期'
 ) `status`,
  f.ingredient_name ingredientName,
- qrcode_code
+  e.qrcode_code
 FROM
 	erp_order_qrcode e
 LEFT JOIN erp_order_ingredient i ON e.order_ingredient_id = i.id
@@ -309,23 +361,22 @@ WHERE
   <update id="updateByQrcodeCode" parameterType="java.lang.String" >
     update erp_order_qrcode
     set status = -1
-    where qrcode_code = #{qrcodeCode,jdbcType=VARCHAR}
+    where random_code = #{randomCode,jdbcType=VARCHAR}
     and  status in  (0,8)
   </update>
   <update id="updateByQrcodeCodeOut" parameterType="java.lang.String" >
     update erp_order_qrcode
     set status = -4
-    where qrcode_code = #{qrcodeCode,jdbcType=VARCHAR}
+    where random_code = #{randomCode,jdbcType=VARCHAR}
     and  status in  (1,8)
   </update>
   <select id="selectByQrcodeCode" resultMap="BaseResultMap" parameterType="java.lang.String" >
    select * from erp_order_qrcode
-    where qrcode_code = #{qrcodeCode,jdbcType=VARCHAR}
+    where random_code = #{randomCode,jdbcType=VARCHAR}
   </select>
   <select id="selectByQrcodeCodeOut" resultMap="BaseResultMap" parameterType="java.lang.String" >
    select * from erp_order_qrcode
-    where qrcode_code = #{qrcodeCode,jdbcType=VARCHAR}
-    and status = 1
+    where random_code = #{randomCode,jdbcType=VARCHAR}
   </select>
   <update id="updateByInStoreDBCondition" parameterType="com.hema.newretail.backstage.common.queryparam.erp.InStoreDBCondition" >
     update erp_order_qrcode
@@ -649,7 +700,7 @@ WHERE
 
   <select id="selectCompanyStockList" resultType="com.hema.newretail.backstage.model.erp.StockManageBo">
       SELECT DISTINCT eoq.id, eoq.qrcode_code AS qrcodeCode, eio.order_code AS orderCode,
-      CONCAT(bii.ingredient_name, bii.ingredient_code) AS ingredientName, eoq.quality_guarantee_period AS qualityGuaranteePeriod,
+      CONCAT(bii.ingredient_name, bii.ingredient_code) AS ingredientName, DATE_FORMAT(eoq.quality_guarantee_period,'%Y-%m-%d') AS qualityGuaranteePeriod,
       IF (eoq.quality_guarantee_period > now(), '未过期', '已过期') AS isPeriod,
       CASE eoq.`status`
       WHEN 1 THEN
@@ -663,8 +714,8 @@ WHERE
       END AS `status`,
       (SELECT user_name FROM base_user_info WHERE id = eoq.company_instore_user_id) AS companyInstoreUser,
       (SELECT user_name FROM base_user_info WHERE id = eoq.company_outstore_user_id) AS companyOutstoreUser,
-      eoq.company_instore_time AS companyInstoreTime,
-      eoq.company_outstore_time AS companyOutstoreTime
+      DATE_FORMAT(eoq.company_instore_time,'%Y-%m-%d %H:%i:%S') AS companyInstoreTime,
+      DATE_FORMAT(eoq.company_outstore_time,'%Y-%m-%d %H:%i:%S') AS companyOutstoreTime
       FROM erp_order_qrcode AS eoq, erp_order_ingredient AS eoi, erp_ingredient_order_address AS eioa, erp_ingredient_order AS eio, base_ingredient_info AS bii
       <where>
           eoq.order_ingredient_id = eoi.id AND eoi.ingredient_order_address_id = eioa.id AND eioa.ingredient_order_id = eio.id AND bii.id = eoi.ingredient_id
@@ -695,7 +746,10 @@ WHERE
               <otherwise></otherwise>
           </choose>
           <if test="data.startDate != null and data.startDate !='' and data.endDate != null and data.endDate != ''">
-              AND eoq.company_instore_time BETWEEN #{data.startDate} and #{data.endDate}
+              AND eoq.company_instore_time BETWEEN #{data.startDate} and DATE_ADD(#{data.endDate}, INTERVAL 1 DAY)
+          </if>
+          <if test="data.startDateOutstore != null and data.startDateOutstore !='' and data.endDateOutstore != null and data.endDateOutstore != ''">
+            AND eoq.company_outstore_time BETWEEN #{data.startDateOutstore} and DATE_ADD(#{data.endDateOutstore}, INTERVAL 1 DAY)
           </if>
           <if test="data.companyInstoreUser != null and data.companyInstoreUser != ''">
               AND eoq.company_instore_user_id IN (

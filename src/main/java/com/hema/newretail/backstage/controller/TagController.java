@@ -1,5 +1,6 @@
 package com.hema.newretail.backstage.controller;
 
+import com.hema.newretail.backstage.annotation.AutoLog;
 import com.hema.newretail.backstage.common.utils.Response;
 import com.hema.newretail.backstage.model.tag.BaseTagEditBo;
 import com.hema.newretail.backstage.service.ITagService;
@@ -13,6 +14,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 
 /**
  * @Author: 程文政
@@ -20,10 +23,10 @@ import org.springframework.web.bind.annotation.*;
  * @Description:
  * @Version: 1.0
  */
-@Api(description = "≡(▔﹏▔)≡标签管理相关接口")
+@Api(description = "标签管理")
 @Controller
 @RequestMapping(value = "/tag")
-
+@AutoLog
 public class TagController {
 
     @Autowired
@@ -41,7 +44,7 @@ public class TagController {
      * @author: cwz
      * @date: 2018/8/20 14:37
      */
-    @ApiOperation("全部饮品")
+    @ApiOperation("查询全部饮品")
     @PostMapping(value = "/alldrink")
     @ResponseBody
     public Response allDrink(@RequestParam(defaultValue = "1") Integer pageNum, @RequestParam(defaultValue = "10")Integer pageSize){
@@ -56,7 +59,7 @@ public class TagController {
      * @author: cwz
      * @date: 2018/8/20 16:48
      */
-    @ApiOperation("全部标签")
+    @ApiOperation("查询全部标签")
     @PostMapping(value = "/findTag")
     @ResponseBody
     public Response tagIndex(@RequestParam(defaultValue = "1") Integer pageNum, @RequestParam(defaultValue = "10")Integer pageSize){
@@ -75,7 +78,7 @@ public class TagController {
     @ApiOperation("添加标签")
     @PostMapping(value = "/addTag")
     @ResponseBody
-    public Response tagAdd(@RequestBody @Validated BaseTagEditBo baseTagEditBo,BindingResult bindingResult){
+    public Response tagAdd(@RequestBody @Valid BaseTagEditBo baseTagEditBo, BindingResult bindingResult){
         if (bindingResult.hasErrors()) {
             return Response.failure(bindingResult.getFieldError().getDefaultMessage());
         } else {
@@ -91,7 +94,7 @@ public class TagController {
      * @auther: cwz
      * @date: 2018/8/21 13:49
      */
-    @ApiOperation("更新数据操作---详情")
+    @ApiOperation("查看标签")
     @PostMapping(value = "/findOneTag")
     @ResponseBody
     public Response tagShow(Long tagId){
@@ -111,7 +114,7 @@ public class TagController {
      * @auther: cwz
      * @date: 2018/8/21 13:46
      */
-    @ApiOperation("更新数据操作")
+    @ApiOperation("更新标签")
     @PostMapping(value = "/updateTag")
     @ResponseBody
     public Response updateTag(@RequestBody BaseTagEditBo baseTagEditBo){

@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hema.newretail.backstage.dao.BaseMachineScreenPicMapper" >
+  <resultMap id="BaseResultMap" type="com.hema.newretail.backstage.entry.BaseMachineScreenPicEntry" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="info" property="info" jdbcType="VARCHAR" />
+    <result column="pic_url" property="picUrl" jdbcType="VARCHAR" />
+    <result column="gmt_create" property="gmtCreate" jdbcType="TIMESTAMP" />
+    <result column="gmt_modify" property="gmtModify" jdbcType="TIMESTAMP" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="gmt_start" property="gmtStart" jdbcType="TIMESTAMP" />
+    <result column="gmt_end" property="gmtEnd" jdbcType="TIMESTAMP" />
+    <result column="sort" property="sort" jdbcType="DECIMAL" />
+  </resultMap>
+  <resultMap id="ListMap" type="com.hema.newretail.backstage.model.system.PicListBo" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="info" property="info" jdbcType="VARCHAR" />
+    <result column="pic_url" property="picUrl" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="gmtStart" property="gmtStart" jdbcType="VARCHAR" />
+    <result column="gmtEnd" property="gmtEnd" jdbcType="VARCHAR" />
+    <result column="gmtCreate" property="gmtCreate" jdbcType="VARCHAR" />
+    <result column="sort" property="sort" jdbcType="DECIMAL" />
+    <collection property="list" select="selectListSonMap" column="{id=id}" javaType="java.util.List"
+                ofType="ListSonMap"></collection>
+  </resultMap>
+  <resultMap id="ListSonMap" type="com.hema.newretail.backstage.model.system.ListZnoeBo" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="zoneName" property="zoneName" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, info, pic_url, gmt_create, gmt_modify, status, gmt_start, gmt_end, sort
+  </sql>
+<!--列表查询sql-->
+  <select id="selectListMap" resultMap="ListMap" parameterType="com.hema.newretail.backstage.common.queryparam.system.MachinePicListCondition" >
+    SELECT
+	date_format(b.gmt_end,'%Y-%m-%d') as gmtEnd,
+	date_format(b.gmt_start,'%Y-%m-%d') as gmtStart,
+	date_format(b.gmt_create,'%Y-%m-%d %H:%i:%S') as gmtCreate,
+	b.id as id,
+	b.info,
+	b.pic_url,
+	b.sort,
+	b.`status`
+FROM
+	base_machine_screen_pic b
+    <if test="status != 0 and status != null" >
+      where b.status = #{status,jdbcType=INTEGER}
+    </if>
+   ORDER BY b.sort DESC,b.gmt_modify DESC
+  </select>
+<!--列表子查询sql-->
+  <select id="selectListSonMap" resultMap="ListSonMap" parameterType="java.util.Map" >
+    SELECT
+	z.id AS id,
+	z.zone_name AS zoneName
+FROM
+	base_zone z
+    where z.machine_screen_pic_id= #{id,jdbcType=BIGINT}
+  </select>
+
+
+
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from base_machine_screen_pic
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from base_machine_screen_pic
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert"  useGeneratedKeys="true"   keyProperty="id"  parameterType="com.hema.newretail.backstage.entry.BaseMachineScreenPicEntry" >
+    insert into base_machine_screen_pic (id, info, pic_url, 
+      gmt_create, gmt_modify, status, 
+      gmt_start, gmt_end, sort
+      )
+    values (#{id,jdbcType=BIGINT}, #{info,jdbcType=VARCHAR}, #{picUrl,jdbcType=VARCHAR}, 
+      #{gmtCreate,jdbcType=TIMESTAMP}, #{gmtModify,jdbcType=TIMESTAMP}, #{status,jdbcType=INTEGER}, 
+      #{gmtStart,jdbcType=TIMESTAMP}, #{gmtEnd,jdbcType=TIMESTAMP}, #{sort,jdbcType=DECIMAL}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.hema.newretail.backstage.entry.BaseMachineScreenPicEntry" >
+    insert into base_machine_screen_pic
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="info != null" >
+        info,
+      </if>
+      <if test="picUrl != null" >
+        pic_url,
+      </if>
+      <if test="gmtCreate != null" >
+        gmt_create,
+      </if>
+      <if test="gmtModify != null" >
+        gmt_modify,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="gmtStart != null" >
+        gmt_start,
+      </if>
+      <if test="gmtEnd != null" >
+        gmt_end,
+      </if>
+      <if test="sort != null" >
+        sort,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="info != null" >
+        #{info,jdbcType=VARCHAR},
+      </if>
+      <if test="picUrl != null" >
+        #{picUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="gmtCreate != null" >
+        #{gmtCreate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gmtModify != null" >
+        #{gmtModify,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="gmtStart != null" >
+        #{gmtStart,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gmtEnd != null" >
+        #{gmtEnd,jdbcType=TIMESTAMP},
+      </if>
+      <if test="sort != null" >
+        #{sort,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hema.newretail.backstage.entry.BaseMachineScreenPicEntry" >
+    update base_machine_screen_pic
+    <set >
+      <if test="info != null" >
+        info = #{info,jdbcType=VARCHAR},
+      </if>
+      <if test="picUrl != null" >
+        pic_url = #{picUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="gmtCreate != null" >
+        gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gmtModify != null" >
+        gmt_modify = #{gmtModify,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="gmtStart != null" >
+        gmt_start = #{gmtStart,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gmtEnd != null" >
+        gmt_end = #{gmtEnd,jdbcType=TIMESTAMP},
+      </if>
+      <if test="sort != null" >
+        sort = #{sort,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hema.newretail.backstage.entry.BaseMachineScreenPicEntry" >
+    update base_machine_screen_pic
+    set info = #{info,jdbcType=VARCHAR},
+      pic_url = #{picUrl,jdbcType=VARCHAR},
+      gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      gmt_modify = #{gmtModify,jdbcType=TIMESTAMP},
+      status = #{status,jdbcType=INTEGER},
+      gmt_start = #{gmtStart,jdbcType=TIMESTAMP},
+      gmt_end = #{gmtEnd,jdbcType=TIMESTAMP},
+      sort = #{sort,jdbcType=DECIMAL}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

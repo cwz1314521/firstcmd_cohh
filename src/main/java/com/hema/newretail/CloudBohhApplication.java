@@ -1,5 +1,7 @@
 package com.hema.newretail;
 
+
+import com.hema.newretail.backstage.aspect.device.InsertAspect;
 import com.hema.newretail.backstage.interceptor.AuthInterceptor;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
@@ -21,7 +23,7 @@ import javax.servlet.MultipartConfigElement;
  * @author zhs
  */
 @EnableSwagger2
-@SpringBootApplication(exclude = DataSourceAutoConfiguration.class)
+@SpringBootApplication(exclude = DataSourceAutoConfiguration.class,scanBasePackages = {"com.hema.newretail.backstage"})
 @MapperScan("com.hema.newretail.backstage.dao")
 @EnableTransactionManagement
 @EnableCaching
@@ -50,6 +52,11 @@ public class CloudBohhApplication extends WebMvcConfigurerAdapter {
     @Bean
     public AuthInterceptor getAuthInterceptor() {
         return new AuthInterceptor();
+    }
+
+    @Bean(name = "insertAspect")
+    public InsertAspect initMyAspect(){
+        return new InsertAspect();
     }
 
     @Override

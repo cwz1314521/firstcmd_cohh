@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hema.newretail.backstage.dao.BaseOperationLogsMapper" >
+  <resultMap id="BaseResultMap" type="com.hema.newretail.backstage.entry.BaseOperationLogs" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="operator" property="operator" jdbcType="VARCHAR" />
+    <result column="op_time" property="opTime" jdbcType="BIGINT" />
+    <result column="op_menu" property="opMenu" jdbcType="VARCHAR" />
+    <result column="op_content" property="opContent" jdbcType="VARCHAR" />
+    <result column="op_ip" property="opIp" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, operator, op_time, op_menu, op_content, op_ip
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from base_operation_logs
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from base_operation_logs
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.hema.newretail.backstage.entry.BaseOperationLogs" >
+    insert into base_operation_logs (id, operator, op_time, 
+      op_menu, op_content, op_ip
+      )
+    values (#{id,jdbcType=BIGINT}, #{operator,jdbcType=VARCHAR}, #{opTime,jdbcType=BIGINT}, 
+      #{opMenu,jdbcType=VARCHAR}, #{opContent,jdbcType=VARCHAR}, #{opIp,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.hema.newretail.backstage.entry.BaseOperationLogs" >
+    insert into base_operation_logs
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="operator != null" >
+        operator,
+      </if>
+      <if test="opTime != null" >
+        op_time,
+      </if>
+      <if test="opMenu != null" >
+        op_menu,
+      </if>
+      <if test="opContent != null" >
+        op_content,
+      </if>
+      <if test="opIp != null" >
+        op_ip,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="operator != null" >
+        #{operator,jdbcType=VARCHAR},
+      </if>
+      <if test="opTime != null" >
+        #{opTime,jdbcType=BIGINT},
+      </if>
+      <if test="opMenu != null" >
+        #{opMenu,jdbcType=VARCHAR},
+      </if>
+      <if test="opContent != null" >
+        #{opContent,jdbcType=VARCHAR},
+      </if>
+      <if test="opIp != null" >
+        #{opIp,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hema.newretail.backstage.entry.BaseOperationLogs" >
+    update base_operation_logs
+    <set >
+      <if test="operator != null" >
+        operator = #{operator,jdbcType=VARCHAR},
+      </if>
+      <if test="opTime != null" >
+        op_time = #{opTime,jdbcType=BIGINT},
+      </if>
+      <if test="opMenu != null" >
+        op_menu = #{opMenu,jdbcType=VARCHAR},
+      </if>
+      <if test="opContent != null" >
+        op_content = #{opContent,jdbcType=VARCHAR},
+      </if>
+      <if test="opIp != null" >
+        op_ip = #{opIp,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hema.newretail.backstage.entry.BaseOperationLogs" >
+    update base_operation_logs
+    set operator = #{operator,jdbcType=VARCHAR},
+      op_time = #{opTime,jdbcType=BIGINT},
+      op_menu = #{opMenu,jdbcType=VARCHAR},
+      op_content = #{opContent,jdbcType=VARCHAR},
+      op_ip = #{opIp,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <select id="selectList" resultMap="BaseResultMap" parameterType="com.hema.newretail.backstage.common.queryparam.authority.OperationLogsCondition" >
+--     select id, operator, FROM_UNIXTIME(op_time/1000, '%Y-%m-%d %H:%i:%S') as op_time, op_menu, op_content, op_ip
+    select id, operator, op_time, op_menu, op_content, op_ip
+    from base_operation_logs
+    <where>
+      1=1
+      <choose>
+        <when test="startDate != null and startDate != '' and endDate == null and endDate == ''">
+          and FROM_UNIXTIME(op_time/1000) between #{startDate,jdbcType=TIMESTAMP} and now()
+        </when>
+        <when test="startDate == null and startDate == '' and endDate != null and endDate != ''">
+          and FROM_UNIXTIME(op_time/1000) between #{'1970-01-01 00:00:00',jdbcType=TIMESTAMP} and #{endDate,jdbcType=TIMESTAMP}
+        </when>
+        <when test="startDate != null and startDate != '' and endDate != null and endDate != ''">
+          and FROM_UNIXTIME(op_time/1000) between #{startDate,jdbcType=TIMESTAMP} and #{endDate,jdbcType=TIMESTAMP}
+        </when>
+      </choose>
+    </where>
+    order by op_time desc
+  </select>
+</mapper>

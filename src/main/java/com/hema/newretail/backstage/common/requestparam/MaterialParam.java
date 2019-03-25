@@ -9,6 +9,7 @@ import javax.validation.constraints.NotNull;
 
 /**
  * Created by jiahao on 2018-08-25
+ * @author admin
  */
 public class MaterialParam {
 
